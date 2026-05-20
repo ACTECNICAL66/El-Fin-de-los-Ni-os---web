@@ -224,7 +224,7 @@ export default function Home() {
                             <div className="absolute -inset-4 bg-gradient-to-r from-water-500/20 to-eco-500/20 rounded-3xl blur-2xl opacity-50" />
                             <div className="glass-card overflow-hidden border-white/10 aspect-video relative">
                                 <img
-                                    src="./nasa_water_basins_satellite_visualization_1779314876453.png"
+                                    src="nasa_water_basins_satellite_visualization_1779314876453.png"
                                     alt="Visualización NASA Earthdata"
                                     className="w-full h-full object-cover opacity-80"
                                 />
