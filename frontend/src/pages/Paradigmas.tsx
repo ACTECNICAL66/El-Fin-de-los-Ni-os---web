@@ -4,7 +4,7 @@ import Navigation from '../components/Navigation'
 import Footer from '../components/Footer'
 import { useScrollAnimation } from '../hooks/useAnimations'
 import {
-    Building2, Database, ShieldAlert, Cpu, Sparkles, AlertTriangle, CloudSunRain
+    Building2, Database, ShieldAlert, Cpu, Sparkles, AlertTriangle, CloudSunRain, Sprout
 } from 'lucide-react'
 import { paradigmComparison, centralizedProjects } from '../data/projectData'
 
@@ -116,8 +116,8 @@ export default function Paradigmas() {
                                     key={project.id}
                                     onClick={() => setSelectedProject(i)}
                                     className={`w-full text-left p-5 rounded-xl border transition-all duration-300 ${selectedProject === i
-                                            ? 'bg-red-500/10 border-red-500/30 text-white shadow-[0_0_20px_rgba(239,68,68,0.1)]'
-                                            : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10'
+                                        ? 'bg-red-500/10 border-red-500/30 text-white shadow-[0_0_20px_rgba(239,68,68,0.1)]'
+                                        : 'bg-white/5 border-white/10 text-white/60 hover:bg-white/10'
                                         }`}
                                 >
                                     <h4 className="font-bold font-display mb-1">{project.name}</h4>

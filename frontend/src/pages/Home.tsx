@@ -5,8 +5,8 @@ import Footer from '../components/Footer'
 import { useScrollAnimation, useCountUp } from '../hooks/useAnimations'
 import {
     Droplets, Satellite, Target, Globe,
-    Map as MapIcon, ChevronRight, Activity, Sprout, ShieldAlert,
-    ArrowRight, Download, BarChart3, Building2, Zap
+    Map as MapIcon, ChevronRight, Activity, ArrowRight, Download, BarChart3,
+    Building2, Database, ShieldAlert, Cpu, Sparkles, AlertTriangle, CloudSunRain, Sprout
 } from 'lucide-react'
 import { cuencasData, predictNDVI, techStack, efficiencyMetrics, paradigmComparison } from '../data/projectData'
 
@@ -224,7 +224,7 @@ export default function Home() {
                             <div className="absolute -inset-4 bg-gradient-to-r from-water-500/20 to-eco-500/20 rounded-3xl blur-2xl opacity-50" />
                             <div className="glass-card overflow-hidden border-white/10 aspect-video relative">
                                 <img
-                                    src="/nasa_water_basins_satellite_visualization_1779314876453.png"
+                                    src="./nasa_water_basins_satellite_visualization_1779314876453.png"
                                     alt="Visualización NASA Earthdata"
                                     className="w-full h-full object-cover opacity-80"
                                 />
