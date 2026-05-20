@@ -1,0 +1,157 @@
+import { useEffect } from 'react'
+import Navigation from '../components/Navigation'
+import Footer from '../components/Footer'
+import { FileText, Cpu, Map as MapIcon, Link as LinkIcon, Download, Github } from 'lucide-react'
+import { useScrollAnimation } from '../hooks/useAnimations'
+
+export default function Documentacion() {
+    const { ref, isVisible } = useScrollAnimation()
+
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [])
+
+    return (
+        <div className="min-h-screen bg-nasa-dark selection:bg-water-500/30">
+            <Navigation />
+
+            {/* HEADER */}
+            <section className="pt-40 pb-20 relative overflow-hidden section-dark border-b border-white/[0.05]">
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-water-500/10 via-eco-500/5 to-transparent rounded-full blur-[100px] pointer-events-none" />
+
+                <div className="max-w-4xl mx-auto px-6 relative z-10 text-center">
+                    <div className="inline-flex items-center justify-center p-3 rounded-2xl bg-white/5 text-white/80 mb-6 border border-white/10">
+                        <FileText className="w-6 h-6" />
+                    </div>
+                    <h1 className="text-4xl md:text-6xl font-display font-black text-white mb-6 tracking-tight">
+                        Documentación <br />
+                        <span className="gradient-text">Técnica y Eficiencia</span>
+                    </h1>
+                    <p className="text-xl text-white/60 leading-relaxed max-w-2xl mx-auto">
+                        Detalles arquitectónicos, justificación técnica y métricas de eficiencia del sistema distribuido de gestión hídrica.
+                    </p>
+                </div>
+            </section>
+
+            {/* CONTENT */}
+            <section className="py-24 relative section-alt">
+                <div className="max-w-4xl mx-auto px-6 space-y-24">
+
+                    {/* Intro */}
+                    <div ref={ref} className={`space-y-6 ${isVisible ? 'animate-slide-up' : 'opacity-0'}`}>
+                        <h2 className="text-3xl font-display font-bold text-white border-b border-white/10 pb-4">Introducción al Sistema</h2>
+                        <p className="text-white/70 leading-relaxed text-lg">
+                            "El Fin de los Niños" es una arquitectura de ingeniería civil y software diseñada para contrarrestar los efectos extremos de los fenómenos El Niño y La Niña (ENSO) en la provincia de Córdoba. Se aleja deliberadamente de los grandes embalses centralizados para apostar por una red distribuida de micro-represas conectadas.
+                        </p>
+                        <div className="glass-card p-6 border-l-4 border-l-water-400 bg-water-500/5">
+                            <h4 className="font-bold text-white mb-2">Concepto Core: El "Gemelo Digital" Hídrico</h4>
+                            <p className="text-white/60 text-sm leading-relaxed">
+                                El sistema utiliza una réplica virtual alimentada por datos satelitales y sensores IoT en terreno para modelar el comportamiento del agua y la vegetación, permitiendo retener o liberar agua aguas arriba antes de que el problema llegue a los núcleos urbanos.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Efficiency Details */}
+                    <div className="space-y-8">
+                        <div className="flex items-center gap-4 mb-8">
+                            <h2 className="text-3xl font-display font-bold text-white">Análisis de Eficiencia</h2>
+                            <span className="tag-green">Validado</span>
+                        </div>
+
+                        <div className="grid sm:grid-cols-2 gap-6">
+                            <div className="glass-card border-eco-500/20 p-6 flex flex-col items-center text-center">
+                                <span className="text-4xl font-bold text-eco-400 mb-2">~80%</span>
+                                <h4 className="font-bold text-white mb-2">Reducción de Costos</h4>
+                                <p className="text-white/50 text-sm">Frente al mantenimiento y construcción de una mega-represa tradicional, una red capilar de micro-represas representa una fracción del costo.</p>
+                            </div>
+                            <div className="glass-card border-water-500/20 p-6 flex flex-col items-center text-center">
+                                <span className="text-4xl font-bold text-water-400 mb-2">100%</span>
+                                <h4 className="font-bold text-white mb-2">Redundancia Hídrica</h4>
+                                <p className="text-white/50 text-sm">Al estar el agua almacenada en múltiples nodos independientes, el fallo de uno no compromete el abastecimiento o la seguridad general.</p>
+                            </div>
+                        </div>
+
+                        <div className="bg-white/5 rounded-2xl p-8 border border-white/10 mt-8">
+                            <h4 className="text-white font-bold mb-4">¿Por qué es más eficiente?</h4>
+                            <ul className="space-y-4 text-white/70">
+                                <li className="flex items-start gap-3">
+                                    <div className="mt-1 w-1.5 h-1.5 rounded-full bg-water-500 shrink-0" />
+                                    <p><strong>Evaporación Mitigada:</strong> Los grandes espejos de agua pierden volúmenes inmensos por evaporación. Espejos más pequeños y protegidos topográficamente retienen mejor el líquido.</p>
+                                </li>
+                                <li className="flex items-start gap-3">
+                                    <div className="mt-1 w-1.5 h-1.5 rounded-full bg-water-500 shrink-0" />
+                                    <p><strong>Impacto Ecológico Nulo:</strong> No requiere el desplazamiento de comunidades ni la anegación de valles enteros. La topografía natural se aprovecha mínimamente.</p>
+                                </li>
+                                <li className="flex items-start gap-3">
+                                    <div className="mt-1 w-1.5 h-1.5 rounded-full bg-water-500 shrink-0" />
+                                    <p><strong>Control de Crecientes:</strong> "Atrapar el agua donde cae". Ralentizar el escurrimiento en las cuencas altas previene inundaciones repentinas en las cuencas bajas (ej. ciudad de Córdoba).</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    {/* Architecture */}
+                    <div className="space-y-8">
+                        <h2 className="text-3xl font-display font-bold text-white border-b border-white/10 pb-4">Arquitectura Tecnológica</h2>
+
+                        <div className="space-y-6">
+                            {[
+                                {
+                                    icon: Cpu, title: 'Capa 1: Hardware Edge (IoT) y Firmware',
+                                    content: 'Firmware desarrollado en C++ para microcontroladores ESP32 y simulado en Proteus. El hardware supervisa en terreno sensores de nivel hidrostático, pluviómetros de balancín y humedad del suelo, reportando datos vía GSM/LoRa.'
+                                },
+                                {
+                                    icon: MapIcon, title: 'Capa 2: Inteligencia Espacial (GIS)',
+                                    content: 'Modelado intensivo de elevación digital (DEM) utilizando QGIS y Global Mapper. Identificación de sumideros naturales e integración con los modelos predictivos de la NASA WorldWind.'
+                                },
+                                {
+                                    icon: LinkIcon, title: 'Capa 3: Integración Web',
+                                    content: 'El backend ha sido modernizado a una Arquitectura Estática (Frontend-Only) alojada en GitHub Pages para máxima resiliencia. Desarrollada con React, TypeScript, y TailwindCSS, consume los modelos matemáticos directamente en el navegador sin requerir servidores intermedios.'
+                                }
+                            ].map((layer, i) => (
+                                <div key={i} className="flex gap-6 items-start bg-white/[0.02] p-6 rounded-xl border border-white/5 hover:bg-white/[0.04] transition-colors">
+                                    <div className="p-3 bg-white/5 rounded-lg shrink-0">
+                                        <layer.icon className="w-6 h-6 text-water-400" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-white mb-2">{layer.title}</h3>
+                                        <p className="text-white/60 text-sm leading-relaxed">{layer.content}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* NASA DATA */}
+                    <div className="glass-card p-8 text-center sm:text-left flex flex-col sm:flex-row items-center gap-8 relative overflow-hidden group">
+                        <div className="absolute inset-0 bg-nasa-deep transition-opacity opacity-0 group-hover:opacity-100 duration-500" />
+                        <div className="relative z-10 w-20 h-20 shrink-0 bg-gradient-to-br from-white/10 to-transparent rounded-full flex items-center justify-center p-4 shadow-xl">
+                            {/* Simplistic NASA-like meatball representation */}
+                            <div className="w-full h-full rounded-full bg-blue-600 relative overflow-hidden">
+                                <div className="absolute top-1/2 left-0 right-0 h-1 bg-red-500 -rotate-45" />
+                                <div className="absolute inset-0 flex items-center justify-center text-[10px] font-black text-white">EARTH</div>
+                            </div>
+                        </div>
+                        <div className="relative z-10 flex-1">
+                            <h3 className="text-2xl font-display font-bold text-white mb-2">Datasets Utilizados</h3>
+                            <p className="text-white/60 mb-6">
+                                El proyecto depende de los archivos climáticos y topográficos abiertos distribuidos mediante los programas Earthdata de la NASA para alimentar la algoritmia de Predicción NDVI y simulación ENSO.
+                            </p>
+                            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4">
+                                <a href="https://earthdata.nasa.gov/" target="_blank" rel="noopener noreferrer" className="btn-secondary text-sm px-4 py-2">
+                                    <Download className="w-4 h-4 mr-2" /> Portal Earthdata
+                                </a>
+                                <a href="https://github.com/ACTECNICAL66/El-Fin-de-los-Ni-os---web" target="_blank" rel="noopener noreferrer" className="btn-primary text-sm px-4 py-2">
+                                    <Github className="w-4 h-4 mr-2" /> Repositorio del Proyecto
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <Footer />
+        </div>
+    )
+}
