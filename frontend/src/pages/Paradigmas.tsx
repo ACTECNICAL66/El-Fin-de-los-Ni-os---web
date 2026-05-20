@@ -4,7 +4,7 @@ import Navigation from '../components/Navigation'
 import Footer from '../components/Footer'
 import { useScrollAnimation } from '../hooks/useAnimations'
 import {
-    Building2, Database, ShieldAlert, Cpu, Sparkles, AlertTriangle, CloudSunRain, Sprout, ArrowRight
+    Building2, Database, ShieldAlert, Cpu, Sparkles, AlertTriangle, CloudSun, Sprout, ArrowRight
 } from 'lucide-react'
 import { paradigmComparison, centralizedProjects } from '../data/projectData'
 
@@ -104,7 +104,7 @@ export default function Paradigmas() {
                                 >
                                     <h4 className="font-bold font-display mb-1">{project.name}</h4>
                                     <p className="text-xs opacity-70 flex items-center gap-1">
-                                        <CloudSunRain className="w-3 h-3" /> {project.location}
+                                        <CloudSun className="w-3 h-3" /> {project.location}
                                     </p>
                                 </button>
                             ))}
