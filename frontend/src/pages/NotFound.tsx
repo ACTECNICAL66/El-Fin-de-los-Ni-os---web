@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 export default function NotFound() {
     return (
         <div className="min-h-screen flex items-center justify-center section-dark text-center px-6">
@@ -8,9 +10,9 @@ export default function NotFound() {
                 <p className="text-white/60 mb-8">
                     La coordenada satelital que buscas no se encuentra en nuestra base de datos climática.
                 </p>
-                <a href="/" className="btn-primary w-full justify-center">
+                <Link to="/" className="btn-primary w-full justify-center">
                     Volver al Centro de Control
-                </a>
+                </Link>
             </div>
         </div>
     )

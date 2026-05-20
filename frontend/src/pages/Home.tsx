@@ -6,9 +6,9 @@ import { useScrollAnimation, useCountUp } from '../hooks/useAnimations'
 import {
     Droplets, Satellite, Target, Globe,
     Map as MapIcon, ChevronRight, Activity, Sprout, ShieldAlert,
-    ArrowRight, Download
+    ArrowRight, Download, BarChart3, Building2, Zap
 } from 'lucide-react'
-import { cuencasData, predictNDVI, techStack, projectTimeline, efficiencyMetrics } from '../data/projectData'
+import { cuencasData, predictNDVI, techStack, efficiencyMetrics, paradigmComparison } from '../data/projectData'
 
 function SectionHeader({ title, subtitle, icon: Icon }: { title: string, subtitle?: string, icon: any }) {
     const { ref, isVisible } = useScrollAnimation()
@@ -170,6 +170,78 @@ export default function Home() {
                 </div>
             </section>
 
+            {/* PARADIGM COMPARISON SECTION - NEW */}
+            <section className="py-32 relative overflow-hidden section-dark">
+                <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-red-500/10 rounded-full blur-[120px] pointer-events-none" />
+                <div className="absolute top-1/4 right-0 w-[400px] h-[400px] bg-eco-500/10 rounded-full blur-[100px] pointer-events-none" />
+
+                <div className="max-w-7xl mx-auto px-6 relative z-10">
+                    <SectionHeader
+                        title="Cambio de Paradigma"
+                        subtitle="Superando la ingeniería civil centralizada mediante inteligencia geoespacial capilar."
+                        icon={Building2}
+                    />
+
+                    <div className="grid lg:grid-cols-2 gap-16 items-center">
+                        <div className="space-y-8">
+                            <div className="glass-card p-8 border-l-4 border-l-red-500/50 bg-red-500/5">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <h3 className="text-xl font-bold text-white">Siglo XX: Centralizado</h3>
+                                    <span className="tag-red">RIESGO ALTO</span>
+                                </div>
+                                <p className="text-white/60 text-sm leading-relaxed mb-4">
+                                    Mega-represas costosas, alto impacto ambiental y vulnerabilidad total ante extremos sísmicos o climáticos severos.
+                                </p>
+                                <div className="flex items-center gap-4 text-xs font-mono text-red-400">
+                                    <span>VULNERABILIDAD: 85%</span>
+                                    <span>COSTO: USD 2B+</span>
+                                </div>
+                            </div>
+
+                            <div className="glass-card p-8 border-l-4 border-l-eco-500/50 bg-eco-500/5 translate-x-4 md:translate-x-8">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <h3 className="text-xl font-bold text-white">Siglo XXI: Distribuido</h3>
+                                    <span className="tag-green">RESILIENTE</span>
+                                </div>
+                                <p className="text-white/60 text-sm leading-relaxed mb-4">
+                                    Red capilar de micro-represas IoT que "atrapan el agua donde cae", minimizando costos y maximizando la resiliencia territorial.
+                                </p>
+                                <div className="flex items-center gap-4 text-xs font-mono text-eco-400">
+                                    <span>RESILIENCIA: 92%</span>
+                                    <span>COSTO: -80%</span>
+                                </div>
+                            </div>
+
+                            <div className="pt-6">
+                                <Link to="/paradigmas" className="btn-secondary group">
+                                    Explorar Análisis Detallado
+                                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                                </Link>
+                            </div>
+                        </div>
+
+                        <div className="relative">
+                            <div className="absolute -inset-4 bg-gradient-to-r from-water-500/20 to-eco-500/20 rounded-3xl blur-2xl opacity-50" />
+                            <div className="glass-card overflow-hidden border-white/10 aspect-video relative">
+                                <img
+                                    src="/nasa_water_basins_satellite_visualization_1779314876453.png"
+                                    alt="Visualización NASA Earthdata"
+                                    className="w-full h-full object-cover opacity-80"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-nasa-dark via-transparent to-transparent" />
+                                <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-2 h-2 rounded-full bg-eco-500 animate-pulse" />
+                                        <span className="text-[10px] font-mono text-white/50 tracking-wider">MAPA DE FLUJO CAPILAR v.2.4</span>
+                                    </div>
+                                    <div className="text-[10px] font-mono text-white/30 uppercase tracking-widest">Earthdata Dataset</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* TECH STACK */}
             <section className="py-32 relative section-dark">
                 <div className="max-w-7xl mx-auto px-6">
@@ -278,21 +350,21 @@ export default function Home() {
                             {/* Display Result */}
                             <div className="p-10 flex flex-col justify-center items-center relative overflow-hidden">
                                 <div className={`absolute inset-0 bg-gradient-to-br opacity-5 ${prediction.status.includes('Saludable') ? 'from-green-500 to-transparent' :
-                                        prediction.status.includes('Leve') ? 'from-yellow-500 to-transparent' : 'from-red-500 to-transparent'
+                                    prediction.status.includes('Leve') ? 'from-yellow-500 to-transparent' : 'from-red-500 to-transparent'
                                     }`} />
 
                                 <h3 className="text-white/50 uppercase tracking-widest text-sm font-bold mb-4 relative z-10">Valor Predicho (NDVI)</h3>
 
                                 <div className="relative mb-8 text-center z-10">
                                     <span className={`text-[6rem] font-display font-black leading-none bg-clip-text text-transparent bg-gradient-to-b ${prediction.status.includes('Saludable') ? 'from-eco-400 to-eco-600' :
-                                            prediction.status.includes('Leve') ? 'from-yellow-400 to-yellow-600' : 'from-red-400 to-red-600'
+                                        prediction.status.includes('Leve') ? 'from-yellow-400 to-yellow-600' : 'from-red-400 to-red-600'
                                         }`}>
                                         {prediction.ndvi.toFixed(2)}
                                     </span>
                                 </div>
 
                                 <div className={`tag ${prediction.status.includes('Saludable') ? 'tag-green' :
-                                        prediction.status.includes('Leve') ? 'tag-orange' : 'tag-red'
+                                    prediction.status.includes('Leve') ? 'tag-orange' : 'tag-red'
                                     } px-6 py-2 text-sm mb-6 z-10`}>
                                     ESTADO: {prediction.status}
                                 </div>
