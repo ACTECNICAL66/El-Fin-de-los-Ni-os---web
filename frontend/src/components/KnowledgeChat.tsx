@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { MessageSquare, Send, X, Bot, User, Sparkles, Database, Satellite } from 'lucide-react'
-import { knowledgeBase } from '../data/projectData'
+import { MessageSquare, Send, X, Bot, Sparkles, Database, Satellite } from 'lucide-react'
 
 interface Message {
     id: number
@@ -9,13 +8,66 @@ interface Message {
     timestamp: Date
 }
 
+const KB: { keywords: string[]; answer: string }[] = [
+    {
+        keywords: ['cuenca', 'cuencas', 'basin', 'basins', 'territorio', 'sitios'],
+        answer: `Analizamos **7 cuencas hidrográficas** en las Sierras de Córdoba:\n\n• **Cuenca Norte-Oeste** (125.5 km²) — Prioridad alta, ideal para recarga de acuíferos\n• **Cuenca Norte-Este** (98.3 km²) — Retención hídrica con bajo riesgo de erosión\n• **Cuenca Centro** (156.7 km²) — Microdiques para uso rural y agrícola\n• **Cuenca Centro-Sur** (134.2 km²) — Control de excedentes e inundaciones\n• **Cuenca Sur-Este** (187.4 km²) — Mayor área, mitigación de crecidas\n• **Cuenca Sur-Este Secundaria** (78.6 km²) — Captación estacional de bajo costo\n• **Dique San Roque** (16.5 km²) — Nodo central del sistema hídrico regional`
+    },
+    {
+        keywords: ['nasa', 'satélite', 'satelite', 'landsat', 'modis', 'ecostress', 'data', 'earthdata', 'dato'],
+        answer: `Utilizamos **4 datasets de NASA/NOAA**:\n\n📡 **Landsat 8/9** — Imágenes multiespectrales para calcular NDVI y cobertura vegetal\n🌡️ **MODIS** — Temperatura de superficie y evapotranspiración\n💧 **ECOSTRESS** — Estrés hídrico preciso en plantas\n📊 **VIIRS** — Reflectancia para índices de sequía (ESI)\n\nTodo disponible en NASA Earthdata (earthdata.nasa.gov)`
+    },
+    {
+        keywords: ['ndvi', 'vegetación', 'vegetacion', 'indice', 'índice', 'verde'],
+        answer: `El **NDVI (Índice de Vegetación de Diferencia Normalizada)** mide la salud de la vegetación:\n\n🟢 **NDVI > 0.65** → Saludable — monitoreo rutinario\n🟡 **NDVI 0.40-0.65** → Estrés leve — considerar riego\n🔴 **NDVI < 0.40** → Estrés severo — acción urgente\n\nNuestro algoritmo combina precipitación, temperatura y el fenómeno ENSO activo para predecir el NDVI con meses de antelación.`
+    },
+    {
+        keywords: ['niño', 'niña', 'enso', 'clima', 'sequía', 'sequia', 'inundación', 'inundacion'],
+        answer: `Los fenómenos **ENSO** son el desafío central del proyecto:\n\n⛈️ **El Niño** → Lluvias extremas, inundaciones en Córdoba. Sistema libera agua anticipadamente aguas abajo.\n🌵 **La Niña** → Sequías prolongadas. Sistema retiene agua capturada en épocas previas.\n⚖️ **Normal** → Monitoreo predictivo para anticipar anomalías.\n\nNuestro modelo puede predecir el impacto **3-6 meses** antes del evento climático.`
+    },
+    {
+        keywords: ['costo', 'precio', 'economía', 'economia', 'presupuesto', 'dinero', 'ahorro'],
+        answer: `Comparativa de costos del paradigma centralizado vs distribuido:\n\n🏗️ **Mega-represas (Siglo XX)**:\n• Proyecto "Segundo San Roque" → USD 2.000M+\n• Acueducto Río Paraná → USD 5.000M+\n• Ampliación Los Molinos → USD 800M+\n\n✅ **Micro-represas distribuidas (nuestro modelo)**:\n• **85% más económicas** por unidad de almacenamiento\n• Sin costos de relocalización de comunidades\n• Mantenimiento descentralizado y comunitario`
+    },
+    {
+        keywords: ['esp32', 'iot', 'sensor', 'hardware', 'arduino', 'proteus', 'firmware'],
+        answer: `La capa **IoT Edge** del sistema:\n\n🔧 **Microcontrolador**: ESP32 programado en C++\n📡 **Comunicación**: GSM/LoRa para zonas remotas\n🌊 **Sensores**: Nivel hidrostático, pluviómetro de balancín, humedad de suelo\n🖥️ **Simulación**: Proteus IDE para validación previa al campo\n\nCada nodo IoT reporta datos en tiempo real al gemelo digital hídrico.`
+    },
+    {
+        keywords: ['qgis', 'gis', 'dem', 'mapa', 'geoespacial', 'sig', 'google earth', 'global mapper'],
+        answer: `Herramientas **GIS y geoespaciales** utilizadas:\n\n🗺️ **QGIS** — Análisis de DEM, identificación de sumideros naturales (flow accumulation)\n🌍 **Google Earth Pro** — Reconocimiento visual de territorio y cuencas\n📊 **Global Mapper** — Procesamiento avanzado de modelos de elevación\n🛰️ **NASA WorldWind** — Visualización 3D de datos satelitales\n\nEste análisis permitió identificar los 7 sitios óptimos para micro-represas.`
+    },
+    {
+        keywords: ['paradigma', 'centralizado', 'distribuido', 'diferencia', 'por qué', 'porque'],
+        answer: `**Paradigma Centralizado (Siglo XX)** vs **Distribuido (Siglo XXI)**:\n\n❌ **Centralizado**: Costo 9/10 · Impacto ambiental 9/10 · Vulnerabilidad 8/10\n✅ **Distribuido**: Costo 3/10 · Impacto 2/10 · Vulnerabilidad 2/10\n\nEl principio clave: **"Atrapar el agua donde cae"** — reducir el escurrimiento en cuencas altas previene inundaciones aguas abajo sin infraestructura costosa.`
+    },
+    {
+        keywords: ['proyecto', 'qué es', 'que es', 'objetivo', 'fin de los niños', 'nasa space apps'],
+        answer: `**"El Fin de los Niños"** es un proyecto presentado en el NASA Space Apps Challenge 2025.\n\n🎯 **Objetivo**: Diseñar un sistema distribuido de micro-represas para gestionar el agua en Córdoba bajo eventos ENSO extremos.\n\n🧠 **Innovación**: Un "Gemelo Digital Hídrico" que combina datos satelitales + sensores IoT + modelos predictivos para actuar meses antes de cada emergencia climática.`
+    },
+    {
+        keywords: ['san roque', 'dique', 'embalse', 'represa'],
+        answer: `El **Dique San Roque** (inaugurado en 1891) es el nodo hídrico central de Córdoba. Capacidad: ~200 hm³. Problemas actuales: sedimentación, presión de demanda y vulnerabilidad ante eventos climáticos extremos.\n\nNuestro proyecto propone aliviar su carga regulando el agua **aguas arriba** mediante las 6 cuencas analizadas, extendiendo su vida útil y eficiencia.`
+    },
+]
+
+function generateResponse(query: string): string {
+    const q = query.toLowerCase()
+    for (const item of KB) {
+        if (item.keywords.some(kw => q.includes(kw))) {
+            return item.answer
+        }
+    }
+    return `Gracias por tu pregunta sobre **"${query}"**. Mi base de conocimiento cubre cuencas hidrográficas, datos NASA, tecnología ESP32/IoT, análisis NDVI, fenómenos El Niño/La Niña y la comparativa de paradigmas hídricos.\n\n¿Sobre cuál de estos temas te gustaría profundizar?`
+}
+
 export default function KnowledgeChat() {
     const [isOpen, setIsOpen] = useState(false)
     const [input, setInput] = useState('')
     const [messages, setMessages] = useState<Message[]>([
         {
             id: 1,
-            text: "¡Hola! Soy el Asistente de Inteligencia Geoespacial del proyecto 'El Fin de los Niños'. ¿En qué puedo ayudarte hoy?",
+            text: "¡Hola! Soy **GeoAssistant**, el asistente de inteligencia hídrica del proyecto 'El Fin de los Niños'. Puedo responder sobre cuencas analizadas, datos NASA, tecnología IoT y más. ¿En qué puedo ayudarte?",
             sender: 'bot',
             timestamp: new Date()
         }
@@ -31,55 +83,20 @@ export default function KnowledgeChat() {
         scrollToBottom()
     }, [messages, isTyping])
 
-    const handleSend = async () => {
-        if (!input.trim()) return
+    const handleSend = async (text?: string) => {
+        const msg = (text ?? input).trim()
+        if (!msg) return
 
-        const userMsg: Message = {
-            id: Date.now(),
-            text: input,
-            sender: 'user',
-            timestamp: new Date()
-        }
-
+        const userMsg: Message = { id: Date.now(), text: msg, sender: 'user', timestamp: new Date() }
         setMessages(prev => [...prev, userMsg])
         setInput('')
         setIsTyping(true)
 
-        // Simular procesamiento de IA
         setTimeout(() => {
-            const botResponse = generateResponse(input)
-            const botMsg: Message = {
-                id: Date.now() + 1,
-                text: botResponse,
-                sender: 'bot',
-                timestamp: new Date()
-            }
+            const botMsg: Message = { id: Date.now() + 1, text: generateResponse(msg), sender: 'bot', timestamp: new Date() }
             setMessages(prev => [...prev, botMsg])
             setIsTyping(false)
-        }, 1500)
-    }
-
-    const generateResponse = (query: string): string => {
-        const q = query.toLowerCase()
-
-        // Búsqueda simple en base de conocimiento
-        if (q.includes('cuenca')) {
-            return "Hemos analizado 7 cuencas principales en Córdoba, incluyendo Cuenca Norte-Oeste, Centro y Dique San Roque. Cada una tiene un plan de micro-represas diseñado según su DEM (Modelo de Elevación Digital)."
-        }
-        if (q.includes('nasa') || q.includes('dato') || q.includes('satélite')) {
-            return "Utilizamos datasets de NASA Earthdata, incluyendo Landsat 8/9 para vegetación, MODIS para temperatura y ECOSTRESS para estrés hídrico. Esto nos permite predecir el impacto de El Niño con meses de antelación."
-        }
-        if (q.includes('costo') || q.includes('dinero') || q.includes('presupuesto')) {
-            return "Nuestro modelo distribuido reduce los costos de infraestructura en un 85% comparado con mega-represas centralizadas, además de evitar el costo social y ambiental de inundar grandes valles."
-        }
-        if (q.includes('tecnología') || q.includes('iot') || q.includes('esp32')) {
-            return "La arquitectura tecnológica utiliza nodos IoT basados en ESP32, sensores de nivel y una plataforma web estática resiliente. Todo el procesamiento de datos geoespaciales se hace con QGIS y Python."
-        }
-        if (q.includes('niño') || q.includes('niña') || q.includes('clima')) {
-            return "El Niño trae excesos hídricos e inundaciones a Córdoba, mientras que La Niña provoca sequías severas. Nuestro sistema busca 'atrapar el agua donde cae' para regular ambos extremos."
-        }
-
-        return "Esa es una pregunta interesante. Sobre '" + query + "', puedo decirte que nuestro enfoque de gestión hídrica distribuida busca soluciones resilientes y sostenibles. ¿Te gustaría saber más sobre las cuencas o los datos de la NASA?"
+        }, Math.random() * 600 + 900)
     }
 
     return (
@@ -120,10 +137,26 @@ export default function KnowledgeChat() {
                     {messages.map((msg) => (
                         <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                             <div className={`max-w-[85%] p-3 rounded-2xl text-sm ${msg.sender === 'user'
-                                    ? 'bg-water-500 text-white rounded-tr-none'
-                                    : 'bg-white/5 text-white/80 border border-white/10 rounded-tl-none'
+                                ? 'bg-water-500 text-white rounded-tr-none'
+                                : 'bg-white/5 text-white/80 border border-white/10 rounded-tl-none'
                                 }`}>
-                                {msg.text}
+                                {msg.sender === 'bot'
+                                    ? <div className="space-y-1 leading-relaxed">
+                                        {msg.text.split('\n').map((line, li) => {
+                                            const parts = line.split(/\*\*(.*?)\*\*/g)
+                                            return (
+                                                <p key={li}>
+                                                    {parts.map((part, pi) =>
+                                                        pi % 2 === 1
+                                                            ? <strong key={pi} className="text-white font-semibold">{part}</strong>
+                                                            : <span key={pi}>{part}</span>
+                                                    )}
+                                                </p>
+                                            )
+                                        })}
+                                    </div>
+                                    : msg.text
+                                }
                                 <div className={`text-[10px] mt-1 opacity-40 ${msg.sender === 'user' ? 'text-right' : 'text-left'}`}>
                                     {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                 </div>
@@ -174,7 +207,7 @@ export default function KnowledgeChat() {
                             className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-4 pr-12 text-sm text-white focus:outline-none focus:border-water-500/50 transition-colors"
                         />
                         <button
-                            onClick={handleSend}
+                            onClick={() => handleSend()}
                             disabled={!input.trim()}
                             className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-water-500 text-white rounded-lg disabled:opacity-50 hover:bg-water-400 transition-colors"
                         >

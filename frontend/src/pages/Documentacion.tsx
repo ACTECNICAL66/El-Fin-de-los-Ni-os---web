@@ -1,8 +1,9 @@
 import { useEffect } from 'react'
 import Navigation from '../components/Navigation'
 import Footer from '../components/Footer'
-import { FileText, Cpu, Map as MapIcon, Link as LinkIcon, Download, Github } from 'lucide-react'
+import { FileText, Cpu, Map as MapIcon, Link as LinkIcon, Download, Github, Satellite, ExternalLink, BookOpen } from 'lucide-react'
 import { useScrollAnimation } from '../hooks/useAnimations'
+import { dataSources } from '../data/projectData'
 
 export default function Documentacion() {
     const { ref, isVisible } = useScrollAnimation()
@@ -154,20 +155,50 @@ export default function Documentacion() {
                         </div>
                     </div>
 
+                    {/* SATELLITE DATA SOURCES */}
+                    <div className="space-y-8">
+                        <div className="flex items-center gap-4">
+                            <h2 className="text-3xl font-display font-bold text-white">Fuentes de Datos Satelitales</h2>
+                            <span className="tag-blue">NASA &amp; NOAA</span>
+                        </div>
+                        <div className="grid sm:grid-cols-2 gap-4">
+                            {dataSources.map((ds, i) => (
+                                <a
+                                    key={i}
+                                    href={ds.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="glass-card p-6 flex items-start gap-4 hover:border-water-500/40 transition-all group"
+                                >
+                                    <div className="p-2.5 bg-water-500/10 rounded-lg border border-water-500/20 shrink-0">
+                                        <Satellite className="w-5 h-5 text-water-400" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <h4 className="text-white font-bold">{ds.name}</h4>
+                                            <span className="text-[10px] bg-white/5 text-white/40 px-2 py-0.5 rounded border border-white/10">{ds.type}</span>
+                                        </div>
+                                        <p className="text-white/50 text-xs leading-relaxed">{ds.description}</p>
+                                    </div>
+                                    <ExternalLink className="w-4 h-4 text-white/20 group-hover:text-water-400 transition-colors shrink-0 mt-0.5" />
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+
                     {/* NASA DATA */}
                     <div className="glass-card p-8 text-center sm:text-left flex flex-col sm:flex-row items-center gap-8 relative overflow-hidden group">
                         <div className="absolute inset-0 bg-nasa-deep transition-opacity opacity-0 group-hover:opacity-100 duration-500" />
                         <div className="relative z-10 w-20 h-20 shrink-0 bg-gradient-to-br from-white/10 to-transparent rounded-full flex items-center justify-center p-4 shadow-xl">
-                            {/* Simplistic NASA-like meatball representation */}
                             <div className="w-full h-full rounded-full bg-blue-600 relative overflow-hidden">
                                 <div className="absolute top-1/2 left-0 right-0 h-1 bg-red-500 -rotate-45" />
                                 <div className="absolute inset-0 flex items-center justify-center text-[10px] font-black text-white">EARTH</div>
                             </div>
                         </div>
                         <div className="relative z-10 flex-1">
-                            <h3 className="text-2xl font-display font-bold text-white mb-2">Datasets Utilizados</h3>
+                            <h3 className="text-2xl font-display font-bold text-white mb-2">Acceso a Datasets</h3>
                             <p className="text-white/60 mb-6">
-                                El proyecto depende de los archivos climáticos y topográficos abiertos distribuidos mediante los programas Earthdata de la NASA para alimentar la algoritmia de Predicción NDVI y simulación ENSO.
+                                Todos los datos climáticos y topográficos utilizados en el proyecto son abiertos y accesibles mediante el portal NASA Earthdata. También puedes explorar el código fuente completo en GitHub.
                             </p>
                             <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4">
                                 <a href="https://earthdata.nasa.gov/" target="_blank" rel="noopener noreferrer" className="btn-secondary text-sm px-4 py-2">
@@ -177,6 +208,29 @@ export default function Documentacion() {
                                     <Github className="w-4 h-4 mr-2" /> Repositorio del Proyecto
                                 </a>
                             </div>
+                        </div>
+                    </div>
+
+                    {/* REPORT DOWNLOAD */}
+                    <div className="relative overflow-hidden rounded-2xl border border-white/10 p-8 bg-gradient-to-br from-water-500/10 via-transparent to-eco-500/10">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-water-500/5 rounded-full blur-3xl pointer-events-none" />
+                        <div className="relative z-10 flex flex-col sm:flex-row items-center gap-6">
+                            <div className="p-4 bg-white/5 border border-white/10 rounded-2xl">
+                                <BookOpen className="w-10 h-10 text-water-400" />
+                            </div>
+                            <div className="flex-1 text-center sm:text-left">
+                                <h3 className="text-2xl font-display font-bold text-white mb-2">Informe Técnico Completo</h3>
+                                <p className="text-white/60 text-sm">
+                                    Descarga el informe técnico completo del proyecto con metodología, análisis de cuencas, modelos predictivos y resultados.
+                                </p>
+                            </div>
+                            <a
+                                href="/El-Fin-de-los-Ni-os---web/Proyecto_El_Fin_de_los_Ninos.pdf"
+                                download
+                                className="shrink-0 btn-primary px-6 py-3"
+                            >
+                                <Download className="w-4 h-4 mr-2" /> Descargar PDF
+                            </a>
                         </div>
                     </div>
 
