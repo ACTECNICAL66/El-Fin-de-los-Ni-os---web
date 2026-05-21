@@ -170,6 +170,47 @@ export default function Home() {
                 </div>
             </section>
 
+            {/* ANALYZED TERRITORY */}
+            <section className="py-24 relative overflow-hidden section-dark">
+                <div className="max-w-7xl mx-auto px-6 relative z-10">
+                    <SectionHeader
+                        title="Territorio Analizado"
+                        subtitle="Mapeo estratégico de cuencas en las Sierras de Córdoba utilizando inteligencia geoespacial."
+                        icon={Globe}
+                    />
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {cuencasData.slice(0, 6).map((cuenca, i) => (
+                            <div
+                                key={i}
+                                className="glass-card hover:border-water-500/30 transition-all p-6 relative overflow-hidden group"
+                            >
+                                <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/5 rounded-full blur-2xl group-hover:bg-water-500/10 transition-colors" />
+                                <div className="flex justify-between items-start mb-4">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-8 h-8 rounded-lg bg-water-500/10 flex items-center justify-center text-water-400 font-black text-xs border border-water-500/20">
+                                            {cuenca.number}
+                                        </div>
+                                        <h4 className="text-white font-bold">{cuenca.name}</h4>
+                                    </div>
+                                    <span className={`text-[10px] font-bold px-2 py-1 rounded border ${cuenca.potential === 'high' ? 'bg-eco-500/10 border-eco-500/20 text-eco-400' : 'bg-yellow-500/10 border-yellow-500/20 text-yellow-400'
+                                        }`}>
+                                        POTENCIAL: {cuenca.potential === 'high' ? 'ALTO' : 'MEDIO'}
+                                    </span>
+                                </div>
+                                <p className="text-white/50 text-xs leading-relaxed line-clamp-3 mb-4">
+                                    {cuenca.description}
+                                </p>
+                                <div className="flex items-center gap-4 text-[10px] font-bold text-white/30 uppercase tracking-tighter">
+                                    <span>Área: {cuenca.area}</span>
+                                    <span>•</span>
+                                    <span>Coords: {cuenca.lat}, {cuenca.lng}</span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
             {/* PARADIGM COMPARISON SECTION - NEW */}
             <section className="py-32 relative overflow-hidden section-dark">
                 <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-red-500/10 rounded-full blur-[120px] pointer-events-none" />

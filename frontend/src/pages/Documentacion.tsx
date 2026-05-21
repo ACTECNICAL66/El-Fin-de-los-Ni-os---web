@@ -122,6 +122,38 @@ export default function Documentacion() {
                         </div>
                     </div>
 
+                    {/* BASIN ANALYSIS */}
+                    <div className="space-y-8">
+                        <h2 className="text-3xl font-display font-bold text-white border-b border-white/10 pb-4">Sitios de Cuencas Analizadas</h2>
+                        <div className="grid gap-6">
+                            {[
+                                { name: "Cuencas Norte (N-Oeste y N-Este)", desc: "Zonas de transición con pendientes medias. Ideales para recarga de acuíferos y regulación estacional.", tag: "Prioridad Alta" },
+                                { name: "Cuencas Centro y Centro-Sur", desc: "Escurrimiento estacional sobre laderas suaves. Óptimas para microdiques reguladores de uso rural.", tag: "Uso Agrícola" },
+                                { name: "Cuenca Sur-Este y Secundaria", desc: "Morfología compleja con red de drenaje intermitente. Enfocadas en mitigación de crecidas repentinas.", tag: "Resiliencia" },
+                                { name: "Dique San Roque (Nodo Central)", desc: "Referencia geográfica y punto de confluencia. El estudio propone optimizar su balance hídrico mediante regulación aguas arriba.", tag: "Sistema Core" }
+                            ].map((c, i) => (
+                                <div key={i} className="glass-card p-6 border-white/5 hover:border-water-500/30 transition-all group">
+                                    <div className="flex justify-between items-start mb-4">
+                                        <h3 className="text-xl font-bold text-white group-hover:text-water-400 transition-colors">{c.name}</h3>
+                                        <span className="text-[10px] font-bold uppercase tracking-wider bg-white/5 px-2 py-1 rounded border border-white/10 text-white/50">{c.tag}</span>
+                                    </div>
+                                    <p className="text-white/60 text-sm leading-relaxed">{c.desc}</p>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="bg-eco-500/5 border border-eco-500/20 rounded-2xl p-6 flex items-start gap-4">
+                            <div className="p-2 bg-eco-500/20 rounded-lg shrink-0">
+                                <MapIcon className="w-5 h-5 text-eco-400" />
+                            </div>
+                            <div>
+                                <h4 className="text-white font-bold mb-1">Metodología de Selección</h4>
+                                <p className="text-white/60 text-xs leading-relaxed">
+                                    Los sitios fueron identificados mediante el análisis de Modelos Digitales de Elevación (DEM) y mapas de acumulación de flujo, priorizando sumideros naturales donde la intervención estructural sea mínima pero el impacto en el retardo del flujo sea máximo.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
                     {/* NASA DATA */}
                     <div className="glass-card p-8 text-center sm:text-left flex flex-col sm:flex-row items-center gap-8 relative overflow-hidden group">
                         <div className="absolute inset-0 bg-nasa-deep transition-opacity opacity-0 group-hover:opacity-100 duration-500" />
