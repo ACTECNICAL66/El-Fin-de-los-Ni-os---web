@@ -27,8 +27,17 @@ export default function HeroSection() {
           Sistema de gestión hídrica resiliente ante los fenómenos de El Niño y
           La Niña en Córdoba, Argentina
         </p>
-        <div className="flex flex-wrap justify-center gap-6">
-          <StatCard number={7} label="Cuencas Analizadas" />
+        <div className="flex flex-wrap justify-center gap-6 items-center">
+          <div className="glass-card p-3 min-w-[180px] hover-lift group">
+            <img
+              src={asset("/mapa-cuencas.png")}
+              alt="Mapa de Cuencas - Región de Córdoba"
+              className="w-full h-auto rounded-lg"
+            />
+            <span className="text-xs font-medium uppercase tracking-wider text-white/50 mt-2 block text-center">
+              Cuencas Analizadas
+            </span>
+          </div>
           <StatCard number={100} label="Codigo Abierto" suffix="%" />
           <StatCard number={15} label="Anos de Datos Climaticos" suffix="+" />
         </div>
