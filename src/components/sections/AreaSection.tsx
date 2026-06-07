@@ -1,5 +1,6 @@
 import { Map, Droplets } from "lucide-react";
 import { SectionHeading } from "./shared";
+import { asset } from "@/lib/utils";
 import { trpc } from "@/providers/trpc";
 
 export default function AreaSection() {
@@ -28,7 +29,7 @@ export default function AreaSection() {
 
         <div className="mb-10 rounded-xl overflow-hidden shadow-lg">
           <img
-            src="/study-area.jpg"
+            src={asset("/study-area.jpg")}
             alt="Area de Estudio - Region de Cordoba"
             className="w-full h-auto"
           />

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { CloudSunRain, AlertTriangle, Leaf, TrendingUp } from "lucide-react";
+import { asset } from "@/lib/utils";
 import { SectionHeading } from "./shared";
 
 export default function ClimateSection() {
@@ -113,7 +114,7 @@ export default function ClimateSection() {
                   </div>
                   <div className="rounded-xl overflow-hidden shadow-md">
                     <img
-                      src="/el-nino-satellite.jpg"
+                      src={asset("/el-nino-satellite.jpg")}
                       alt="El Nino satellite image"
                       className="w-full h-64 object-cover"
                     />
@@ -163,7 +164,7 @@ export default function ClimateSection() {
                   </div>
                   <div className="rounded-xl overflow-hidden shadow-md">
                     <img
-                      src="/la-nina-satellite.jpg"
+                      src={asset("/la-nina-satellite.jpg")}
                       alt="La Nina satellite image"
                       className="w-full h-64 object-cover"
                     />
