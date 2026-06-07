@@ -15,8 +15,8 @@ export default function DownloadsSection() {
       title: "Codigo del Prototipo",
       desc: "Archivo .INO para Arduino/ESP32.",
       icon: Code,
-      color: "bg-green-600",
-      hoverColor: "hover:bg-green-700",
+      color: "bg-eco-600",
+      hoverColor: "hover:bg-eco-700",
       url: "https://drive.google.com/file/d/1gDedyEV_ftD4zLbC15I4TpdL7YI0SRrP/view?usp=drive_link",
     },
     {
@@ -31,28 +31,28 @@ export default function DownloadsSection() {
       title: "Mapa de Cuencas",
       desc: "Recurso cartografico de Cordoba.",
       icon: Map,
-      color: "bg-gray-400",
+      color: "bg-white/20",
       hoverColor: "",
       url: null,
     },
   ];
 
   return (
-    <section className="bg-white py-20">
+    <section className="section-alt py-20">
       <div className="max-w-5xl mx-auto px-6">
         <SectionHeading icon={Download} title="Datos y Recursos Abiertos" />
-        <p className="text-slate-600 leading-relaxed mb-10 max-w-4xl">
+        <p className="text-white/70 leading-relaxed mb-10 max-w-4xl">
           En el espiritu de la ciencia abierta de la NASA, compartimos todos
           nuestros datos, metodologias y resultados para que otros
           investigadores puedan replicar y mejorar nuestro trabajo.
         </p>
 
-        <div className="bg-white rounded-2xl shadow-lg border overflow-hidden p-8">
-          <div className="text-center border-b pb-6 mb-8">
-            <h3 className="text-3xl font-bold text-slate-800">
+        <div className="glass-card overflow-hidden p-8">
+          <div className="text-center border-b border-white/10 pb-6 mb-8">
+            <h3 className="text-3xl font-bold text-white">
               El Fin de los Ninos
             </h3>
-            <p className="text-lg text-slate-500 mt-2">
+            <p className="text-lg text-white/50 mt-2">
               Recursos y Descargas del Proyecto
             </p>
           </div>
@@ -61,7 +61,7 @@ export default function DownloadsSection() {
             {downloads.map(item => (
               <div
                 key={item.title}
-                className={`flex flex-col p-6 bg-gray-50 rounded-xl border border-gray-200 transition-all ${item.url ? "hover:scale-105 hover:shadow-lg" : "opacity-60"}`}
+                className={`flex flex-col p-6 glass-card-light rounded-xl border border-white/10 transition-all ${item.url ? "hover:scale-105 hover:shadow-lg" : "opacity-60"}`}
               >
                 <div className="flex-shrink-0 mx-auto">
                   <div
@@ -71,10 +71,10 @@ export default function DownloadsSection() {
                   </div>
                 </div>
                 <div className="text-center mt-4 flex-grow">
-                  <h4 className="text-lg font-semibold text-slate-700">
+                  <h4 className="text-lg font-semibold text-white/80">
                     {item.title}
                   </h4>
-                  <p className="text-sm text-slate-500 mt-1">{item.desc}</p>
+                  <p className="text-sm text-white/50 mt-1">{item.desc}</p>
                 </div>
                 {item.url ? (
                   <a
@@ -89,7 +89,7 @@ export default function DownloadsSection() {
                       : "Descargar"}
                   </a>
                 ) : (
-                  <div className="mt-6 w-full text-center bg-gray-400 text-white font-semibold py-3 px-6 rounded-lg cursor-not-allowed">
+                  <div className="mt-6 w-full text-center bg-white/10 text-white/40 font-semibold py-3 px-6 rounded-lg cursor-not-allowed">
                     No Disponible
                   </div>
                 )}

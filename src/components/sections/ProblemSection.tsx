@@ -76,13 +76,13 @@ const problemData: ProblemItem[] = [
 
 export default function ProblemSection() {
   return (
-    <section className="bg-white py-20" id="analisis-problema">
+    <section className="section-dark py-20" id="analisis-problema">
       <div className="max-w-7xl mx-auto px-6">
         <SectionHeading
           icon={Activity}
           title="Analisis del Problema: El Nino y La Nina en Cordoba"
         />
-        <p className="text-slate-600 leading-relaxed mb-8 max-w-4xl">
+        <p className="text-white/70 leading-relaxed mb-8 max-w-4xl">
           Un analisis integral del fenomeno ENSO y su impacto en la provincia de
           Cordoba, abordando causas, consecuencias y estrategias de accion para
           construir resiliencia hidrica.
@@ -96,37 +96,37 @@ export default function ProblemSection() {
             return (
               <div
                 key={item.question}
-                className={`flex flex-col md:flex-row gap-6 p-6 rounded-xl border-2 border-slate-200 hover:border-slate-300 transition-all shadow-sm ${
-                  item.actionable ? "bg-green-50/30" : "bg-white"
+                className={`flex flex-col md:flex-row gap-6 p-6 rounded-xl border border-white/10 transition-all glass-card-light ${
+                  item.actionable ? "border-eco-500/30" : ""
                 }`}
               >
                 <div className="flex md:flex-col items-center md:items-start gap-3 md:gap-2 md:min-w-[200px]">
                   <div
                     className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${
-                      item.actionable ? "bg-green-100" : "bg-blue-100"
+                      item.actionable ? "bg-eco-500/20" : "bg-water-500/20"
                     }`}
                   >
                     <Icon
-                      className={`w-6 h-6 ${item.actionable ? "text-green-600" : "text-[#0B3D91]"}`}
+                      className={`w-6 h-6 ${item.actionable ? "text-eco-400" : "text-water-400"}`}
                     />
                   </div>
-                  <h3 className="font-bold text-slate-800 text-lg md:text-center md:w-full">
+                  <h3 className="font-bold text-white text-lg md:text-center md:w-full">
                     {item.question}
                   </h3>
                 </div>
-                <div className="flex-1 border-t md:border-t-0 md:border-l border-slate-200 pt-4 md:pt-0 md:pl-6">
-                  <p className="text-slate-600 text-sm leading-relaxed">
+                <div className="flex-1 border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0 md:pl-6">
+                  <p className="text-white/70 text-sm leading-relaxed">
                     {item.answer}
                   </p>
                   {item.actionable && item.actionDescription && (
-                    <div className="mt-4 bg-green-50 border-l-4 border-green-500 rounded-r-lg p-4">
+                    <div className="mt-4 bg-eco-500/10 border-l-4 border-eco-500 rounded-r-lg p-4">
                       <div className="flex items-center gap-2 mb-1">
-                        <Shield className="w-4 h-4 text-green-600" />
-                        <span className="font-semibold text-sm text-green-800">
+                        <Shield className="w-4 h-4 text-eco-400" />
+                        <span className="font-semibold text-sm text-eco-400">
                           Acciones posibles:
                         </span>
                       </div>
-                      <p className="text-green-700 text-sm">
+                      <p className="text-eco-300/80 text-sm">
                         {item.actionDescription}
                       </p>
                     </div>
@@ -137,25 +137,23 @@ export default function ProblemSection() {
           })}
         </div>
 
-        <div className="bg-gradient-to-br from-[#F5F7FA] to-white rounded-2xl p-8 border border-slate-200">
-          <h3 className="text-xl font-bold text-slate-800 mb-4 text-center">
+        <div className="section-alt rounded-2xl p-8 border border-white/10">
+          <h3 className="text-xl font-bold text-white mb-4 text-center">
             Resumen del Analisis
           </h3>
           <div className="grid sm:grid-cols-2 gap-6">
-            <div className="bg-white rounded-xl p-5 border-l-4 border-[#E74C3C] shadow-sm">
-              <h4 className="font-bold text-[#E74C3C] mb-2">
-                Sobre las causas
-              </h4>
-              <p className="text-sm text-slate-600">
+            <div className="glass-card-light rounded-xl p-5 border-l-4 border-red-500">
+              <h4 className="font-bold text-red-400 mb-2">Sobre las causas</h4>
+              <p className="text-sm text-white/60">
                 El ENSO es un fenomeno natural e inevitable. No podemos evitar
                 que ocurra, pero podemos predecirlo y prepararnos.
               </p>
             </div>
-            <div className="bg-white rounded-xl p-5 border-l-4 border-[#1A936F] shadow-sm">
-              <h4 className="font-bold text-[#1A936F] mb-2">
+            <div className="glass-card-light rounded-xl p-5 border-l-4 border-eco-500">
+              <h4 className="font-bold text-eco-400 mb-2">
                 Sobre las consecuencias
               </h4>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-white/60">
                 Ahi reside nuestra capacidad de accion: mitigar impactos
                 mediante tecnologia, planificacion y gestion adaptativa.
               </p>

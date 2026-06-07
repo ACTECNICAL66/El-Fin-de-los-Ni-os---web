@@ -1,136 +1,195 @@
-import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router'
-import { useAuth } from '@/hooks/useAuth'
-import { Menu, X, Droplets, Shield } from 'lucide-react'
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router";
+import { useAuth } from "@/hooks/useAuth";
+import { useScrollProgress } from "@/hooks/useAnimations";
+import { Droplets, Menu, X, ExternalLink, Shield } from "lucide-react";
 
 export default function Navigation() {
-  const [scrolled, setScrolled] = useState(false)
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const location = useLocation()
-  const { user, isAdmin } = useAuth()
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const location = useLocation();
+  const { user, isAdmin } = useAuth();
+  const progress = useScrollProgress();
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50)
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+    const handleScroll = () => setScrolled(window.scrollY > 30);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-  const isHome = location.pathname === '/'
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [location]);
 
   const navLinks = [
-    { label: 'Proyecto', href: '/', active: isHome },
-    { label: 'Paradigmas', href: '/paradigmas', active: location.pathname === '/paradigmas' },
-    ...(isAdmin ? [{ label: 'Admin', href: '/admin', active: location.pathname === '/admin', icon: Shield }] : []),
-  ]
+    { label: "Inicio", href: "/", active: location.pathname === "/" },
+    {
+      label: "Paradigmas",
+      href: "/paradigmas",
+      active: location.pathname === "/paradigmas",
+    },
+    ...(isAdmin
+      ? [
+          {
+            label: "Admin",
+            href: "/admin",
+            active: location.pathname === "/admin",
+            icon: Shield,
+          },
+        ]
+      : []),
+  ];
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-md border-b border-slate-200'
-          : 'bg-transparent'
-      }`}
-    >
-      <div className="max-w-7xl mx-auto px-6 h-[72px] flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 group">
-          <Droplets className={`w-7 h-7 transition-colors ${scrolled ? 'text-[#0B3D91]' : 'text-white'}`} />
-          <span className={`font-montserrat font-bold text-xl transition-colors ${scrolled ? 'text-[#0B3D91]' : 'text-white'}`}>
-            Panel Hidrico
-          </span>
-        </Link>
-
-        <nav className="hidden md:flex items-center gap-1">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              to={link.href}
-              className={`px-4 py-2 text-sm font-medium transition-all border-b-4 ${
-                link.active
-                  ? scrolled
-                    ? 'border-[#0B3D91] text-[#0B3D91] font-bold'
-                    : 'border-white text-white font-bold'
-                  : scrolled
-                  ? 'border-transparent text-slate-600 hover:text-[#0B3D91]'
-                  : 'border-transparent text-white/80 hover:text-white'
-              }`}
-            >
-              <span className="flex items-center gap-1.5">
-                {'icon' in link && link.icon && <link.icon className="w-4 h-4" />}
-                {link.label}
-              </span>
-            </Link>
-          ))}
-        </nav>
-
-        <div className="hidden md:flex items-center gap-3">
-          {user ? (
-            <div className="flex items-center gap-3">
-              <span className={`text-sm font-medium ${scrolled ? 'text-slate-700' : 'text-white'}`}>
-                {user.name}
-              </span>
-              {user.avatar ? (
-                <img src={user.avatar ?? undefined} alt={user.name ?? ''} className="w-8 h-8 rounded-full border-2 border-white/30" />
-              ) : null}
-            </div>
-          ) : (
-            <Link
-              to="/login"
-              className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
-                scrolled
-                  ? 'bg-[#0B3D91] text-white hover:bg-[#FC3D21]'
-                  : 'bg-white/20 text-white hover:bg-white/30 backdrop-blur-sm'
-              }`}
-            >
-              Iniciar Sesion
-            </Link>
-          )}
-        </div>
-
-        <button
-          className="md:hidden p-2"
-          onClick={() => setMobileOpen(!mobileOpen)}
-        >
-          {mobileOpen ? (
-            <X className={`w-6 h-6 ${scrolled ? 'text-slate-800' : 'text-white'}`} />
-          ) : (
-            <Menu className={`w-6 h-6 ${scrolled ? 'text-slate-800' : 'text-white'}`} />
-          )}
-        </button>
+    <>
+      <div className="fixed top-0 left-0 right-0 z-[60] h-[2px]">
+        <div
+          className="h-full bg-gradient-to-r from-water-400 via-water-500 to-eco-400 transition-all duration-150 ease-out"
+          style={{ width: `${progress}%` }}
+        />
       </div>
 
-      {mobileOpen && (
-        <div className="md:hidden bg-white border-t border-slate-200 shadow-lg">
-          <div className="px-6 py-4 space-y-2">
-            {navLinks.map((link) => (
+      <header
+        className={`fixed top-[2px] left-0 right-0 z-50 transition-all duration-500 ${
+          scrolled
+            ? "bg-nasa-dark/80 backdrop-blur-2xl border-b border-white/[0.06] shadow-2xl shadow-black/20"
+            : "bg-transparent"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-6 h-[72px] flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="relative">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-water-400 to-water-600 flex items-center justify-center shadow-lg shadow-water-500/20 group-hover:shadow-water-500/40 transition-shadow">
+                <Droplets className="w-5 h-5 text-white" />
+              </div>
+              <div className="absolute -top-0.5 -right-0.5 w-3 h-3 bg-eco-400 rounded-full border-2 border-nasa-dark animate-pulse-slow" />
+            </div>
+            <div className="hidden sm:block">
+              <span className="font-display font-bold text-lg text-white block leading-tight">
+                El Fin de los Niños
+              </span>
+              <span className="text-[10px] uppercase tracking-[0.2em] text-water-400/80 font-medium">
+                NASA Space Apps
+              </span>
+            </div>
+          </Link>
+
+          <nav className="hidden md:flex items-center gap-1">
+            {navLinks.map(link => (
               <Link
                 key={link.href}
                 to={link.href}
-                onClick={() => setMobileOpen(false)}
-                className={`block px-4 py-3 rounded-lg text-sm font-medium ${
+                className={`relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-lg ${
                   link.active
-                    ? 'bg-[#0B3D91]/10 text-[#0B3D91]'
-                    : 'text-slate-600 hover:bg-slate-50'
+                    ? "text-water-300"
+                    : "text-white/60 hover:text-white/90 hover:bg-white/5"
                 }`}
               >
-                {link.label}
+                <span className="flex items-center gap-1.5">
+                  {"icon" in link && link.icon && (
+                    <link.icon className="w-4 h-4" />
+                  )}
+                  {link.label}
+                </span>
+                {link.active && (
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-water-400 rounded-full" />
+                )}
               </Link>
             ))}
-            <div className="pt-2 border-t border-slate-200">
-              {user ? (
-                <span className="block px-4 py-3 text-sm text-slate-700">{user.name}</span>
-              ) : (
+          </nav>
+
+          <div className="hidden md:flex items-center gap-3">
+            {user ? (
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-white/80">{user.name}</span>
+                {user.avatar && (
+                  <img
+                    src={user.avatar}
+                    alt={user.name ?? ""}
+                    className="w-8 h-8 rounded-full border-2 border-white/20"
+                  />
+                )}
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white/80 text-sm font-medium hover:bg-white/10 hover:text-white transition-all"
+              >
+                Iniciar Sesión
+              </Link>
+            )}
+            <a
+              href="https://github.com/ACTECNICAL66/El-Fin-de-los-Ni-os---web"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white/80 text-sm font-medium hover:bg-white/10 hover:text-white transition-all"
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+              GitHub
+            </a>
+          </div>
+
+          <button
+            className="md:hidden p-2 text-white/80 hover:text-white"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label="Toggle menu"
+          >
+            {mobileOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
+          </button>
+        </div>
+
+        {mobileOpen && (
+          <div className="md:hidden bg-nasa-dark/95 backdrop-blur-2xl border-t border-white/5 animate-fade-in">
+            <div className="px-6 py-6 space-y-2">
+              {navLinks.map(link => (
                 <Link
-                  to="/login"
-                  onClick={() => setMobileOpen(false)}
-                  className="block px-4 py-3 text-sm font-semibold text-[#0B3D91]"
+                  key={link.href}
+                  to={link.href}
+                  className={`block px-4 py-3 rounded-xl text-sm font-medium transition-all ${
+                    link.active
+                      ? "bg-water-500/10 text-water-300 border border-water-500/20"
+                      : "text-white/60 hover:bg-white/5 hover:text-white"
+                  }`}
                 >
-                  Iniciar Sesion
+                  <span className="flex items-center gap-2">
+                    {"icon" in link && link.icon && (
+                      <link.icon className="w-4 h-4" />
+                    )}
+                    {link.label}
+                  </span>
                 </Link>
-              )}
+              ))}
+              <div className="pt-2 border-t border-white/10 space-y-2">
+                {user ? (
+                  <span className="block px-4 py-3 text-sm text-white/60">
+                    {user.name}
+                  </span>
+                ) : (
+                  <Link
+                    to="/login"
+                    className="block px-4 py-3 text-sm font-medium text-white/60 hover:text-white"
+                  >
+                    Iniciar Sesión
+                  </Link>
+                )}
+                <a
+                  href="https://github.com/ACTECNICAL66/El-Fin-de-los-Ni-os---web"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-4 py-3 text-sm text-white/60 hover:text-white"
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  Ver en GitHub
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </header>
-  )
+        )}
+      </header>
+    </>
+  );
 }

@@ -17,34 +17,34 @@ export default function AreaSection() {
   ];
 
   return (
-    <section className="bg-white py-20">
+    <section className="section-alt py-20">
       <div className="max-w-7xl mx-auto px-6">
         <SectionHeading icon={Map} title="Area de Estudio" />
-        <p className="text-slate-600 leading-relaxed mb-8 max-w-4xl">
+        <p className="text-white/70 leading-relaxed mb-8 max-w-4xl">
           La region de Cordoba, Argentina, representa un caso de estudio ideal
           para analizar los impactos de El Nino y La Nina debido a su
           vulnerabilidad hidrica y la importancia economica de sus actividades
           agricolas.
         </p>
 
-        <div className="mb-10 rounded-xl overflow-hidden shadow-lg">
+        <div className="mb-10 rounded-xl overflow-hidden shadow-lg border border-white/10">
           <img
             src={asset("/study-area.jpg")}
             alt="Area de Estudio - Region de Cordoba"
             className="w-full h-auto"
           />
-          <p className="text-center text-sm text-slate-500 italic py-3 bg-slate-50">
+          <p className="text-center text-sm text-white/50 italic py-3 bg-white/5">
             Figura 1. Area de estudio - Region de Cordoba, Argentina. Zona
             focalizada en las cuencas hidrograficas identificadas.
           </p>
         </div>
 
-        <div className="bg-[#f0f7ff] rounded-xl p-6 border-l-4 border-[#0B3D91] mb-8">
-          <h3 className="text-xl font-bold text-[#0B3D91] mb-3 flex items-center gap-2">
-            <Droplets className="w-5 h-5" />
+        <div className="glass-card p-6 border-l-4 border-water-500 mb-8">
+          <h3 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
+            <Droplets className="w-5 h-5 text-water-400" />
             Cuencas Hidrograficas Identificadas
           </h3>
-          <p className="text-slate-600 text-sm mb-6">
+          <p className="text-white/60 text-sm mb-6">
             Mediante el analisis de datos topograficos y climaticos utilizando
             QGIS, hemos identificado 7 cuencas principales con potencial para la
             implementacion de sistemas de gestion hidrica resilientes:
@@ -54,15 +54,15 @@ export default function AreaSection() {
             {(cuencasData ?? []).map((cuenca, index) => (
               <div
                 key={cuenca.id}
-                className="bg-white rounded-lg p-5 border-l-4 border-[#1A936F] shadow-sm hover:translate-x-1 transition-transform"
+                className="glass-card-light rounded-lg p-5 border-l-4 border-eco-500 shadow-sm hover:translate-x-1 transition-transform"
               >
-                <h4 className="font-bold text-[#0B3D91] mb-2 flex items-center gap-3">
-                  <span className="w-8 h-8 rounded-full bg-[#0B3D91] text-white flex items-center justify-center text-sm font-bold">
+                <h4 className="font-bold text-white mb-2 flex items-center gap-3">
+                  <span className="w-8 h-8 rounded-full bg-water-500 text-white flex items-center justify-center text-sm font-bold">
                     {cuenca.number}
                   </span>
                   {cuenca.name}
                 </h4>
-                <p className="text-slate-600 text-sm">
+                <p className="text-white/60 text-sm">
                   {cuencasDescriptions[index] || cuenca.description}
                 </p>
               </div>
