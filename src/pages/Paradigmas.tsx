@@ -1,8 +1,9 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, type ReactNode } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import ChatWidget from "@/components/ChatWidget";
 import { trpc } from "@/providers/trpc";
+import { useScrollAnimation } from "@/hooks/useAnimations";
 import {
   Sparkles,
   Leaf,
@@ -63,7 +64,89 @@ const FALLBACK_PROJECTS = [
     impactIndex: 75,
     vulnerabilityIndex: 72,
   },
+  {
+    id: "4",
+    name: "Aprovechamiento Integral del Río Tercero",
+    number: 4,
+    location: "Río Tercero (Ctalamochita), Tercero Arriba",
+    description:
+      "Megaproyecto de aprovechamiento múltiple del Río Tercero que incluye una presa de 65 m de altura, un embalse de 280 hm³ y 150 km de canales para riego de 50.000 ha y abastecimiento a 12 localidades. Presupuesto estimado de 2.800 millones de dólares.",
+    inviabilityReason:
+      "Alto impacto sobre humedales del valle del Ctalamochita (7/10), conflicto por expropiaciones rurales (6/10), sedimentación acelerada del embalse (7/10), y vulnerabilidad a sequías prolongadas que dejarían el embalse inoperativo (7/10).",
+    costIndex: 82,
+    impactIndex: 74,
+    vulnerabilityIndex: 68,
+  },
+  {
+    id: "5",
+    name: "Sistema de Riego del Noroeste - Dique Pichanas",
+    number: 5,
+    location: "Río Pichanas, noroeste de Córdoba",
+    description:
+      "Dique de 55 m con embalse de 180 hm³ para riego y agua potable en la región más árida del noroeste cordobés. Incluye 120 km de canales revestidos y 8 estaciones de bombeo. Costo estimado de 1.900 millones de dólares.",
+    inviabilityReason:
+      "Relación costo-beneficio desfavorable por baja densidad poblacional (7/10), pérdidas por evaporación en clima árido (8/10), escurrimiento insuficiente en años secos que compromete el llenado (8/10), y conflicto con comunidades originarias (5/10).",
+    costIndex: 75,
+    impactIndex: 70,
+    vulnerabilityIndex: 82,
+  },
+  {
+    id: "6",
+    name: "Canal Madre del Sur Cordobés",
+    number: 6,
+    location: "Sur de Córdoba (Río Cuarto, Gral. Roca, Juárez Celman)",
+    description:
+      "Canal troncal de 200 km para conectar los principales ríos del sur y distribuir agua a 120.000 ha agrícolas. Incluye 4 embalses reguladores y un acueducto complementario de 80 km. Inversión de 4.200 millones de dólares.",
+    inviabilityReason:
+      "Inversión con retorno incierto (9/10), salinización progresiva de suelos por riego continuo (7/10), dependencia de caudales cada vez más erráticos por cambio climático (8/10), y fragmentación de ecosistemas del espinal (7/10).",
+    costIndex: 88,
+    impactIndex: 72,
+    vulnerabilityIndex: 78,
+  },
+  {
+    id: "7",
+    name: "Trasvase Sistema Embalses del Sur",
+    number: 7,
+    location: "Embalse Los Molinos — Cuenca del Río Cuarto",
+    description:
+      "Trasvase intercuencas de 100 km desde el sistema Los Molinos hacia la cuenca del Río Cuarto, con 8 km de túneles y estaciones de bombeo de 300 m de altura. Costo estimado de 3.100 millones de dólares.",
+    inviabilityReason:
+      "Costo energético prohibitivo por bombeo de gran altura (9/10), impacto geológico en zona de fallas activas (6/10), reducción crítica del caudal ecológico en cuenca donante (8/10), y riesgo de dependencia total de un único sistema vulnerable a desastres (7/10).",
+    costIndex: 90,
+    impactIndex: 76,
+    vulnerabilityIndex: 72,
+  },
 ];
+
+function SectionDivider() {
+  return (
+    <div className="relative h-24 flex items-center justify-center overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-water-500/5 to-transparent" />
+      <div className="relative w-full max-w-4xl mx-auto px-6">
+        <div className="h-px bg-gradient-to-r from-transparent via-water-500/30 to-transparent" />
+      </div>
+      <div className="absolute left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-water-500/40 animate-pulse" />
+    </div>
+  );
+}
+
+function ScrollReveal({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  const { ref, isVisible } = useScrollAnimation();
+  return (
+    <div
+      ref={ref}
+      className={`transition-all duration-700 ${isVisible ? "aos-visible" : "aos-hidden"} ${className}`}
+    >
+      {children}
+    </div>
+  );
+}
 
 const FALLBACK_COMPARISON = {
   dimensions: [
@@ -82,6 +165,7 @@ function ParadigmaHero() {
   const [summary, setSummary] = useState("");
   const [loading, setLoading] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
+  const heroRef = useScrollAnimation();
 
   const generateSummary = async () => {
     setLoading(true);
@@ -119,9 +203,20 @@ function ParadigmaHero() {
   };
 
   return (
-    <section className="pt-32 pb-16 section-dark relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-water-500/5 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-eco-500/5 rounded-full blur-[100px] pointer-events-none" />
+    <section
+      ref={heroRef.ref}
+      className={`pt-32 pb-16 section-dark relative overflow-hidden particles-bg grid-overlay ${heroRef.isVisible ? "aos-visible" : "aos-hidden"}`}
+    >
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-water-500/5 rounded-full blur-[120px] pointer-events-none animate-pulse-slow" />
+      <div
+        className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-eco-500/5 rounded-full blur-[100px] pointer-events-none animate-pulse-slow"
+        style={{ animationDelay: "-2s" }}
+      />
+      <div className="absolute top-20 left-10 w-20 h-20 border border-water-500/10 rounded-full animate-float" />
+      <div
+        className="absolute bottom-20 right-16 w-32 h-32 border border-eco-500/5 rounded-full animate-float"
+        style={{ animationDelay: "-3s" }}
+      />
       <div className="max-w-5xl mx-auto px-6 text-center relative z-10">
         <span className="inline-block tag-blue mb-6">
           NASA Space Apps Challenge 2025
@@ -197,8 +292,12 @@ function ParadigmaI() {
   ];
 
   return (
-    <section className="section-alt py-20">
-      <div className="max-w-7xl mx-auto px-6">
+    <section
+      ref={sectionRef.ref}
+      className={`section-alt py-20 relative overflow-hidden particles-bg ${sectionRef.isVisible ? "aos-visible" : "aos-hidden"}`}
+    >
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-red-500/3 rounded-full blur-[120px] pointer-events-none" />
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="text-center mb-12">
           <span className="inline-block text-sm font-semibold text-red-400 bg-red-500/10 border border-red-500/20 px-4 py-1.5 rounded-full mb-4">
             PARADIGMA I
@@ -228,15 +327,20 @@ function ParadigmaI() {
                 <XCircle className="w-5 h-5 text-red-400" />
                 Proyectos Evaluados
               </h4>
-              <p className="text-xs text-white/40 mb-4">
-                Seleccioná un proyecto para ver su análisis detallado
-              </p>
-              <div className="space-y-2">
+              <div className="flex items-baseline gap-2 mb-4">
+                <p className="text-xs text-white/40">
+                  {projectList.length} proyectos analizados
+                </p>
+                <span className="text-[10px] text-white/20">
+                  — seleccioná uno
+                </span>
+              </div>
+              <div className="space-y-1.5 max-h-[380px] overflow-y-auto pr-1">
                 {projectList.map((project, index) => (
                   <button
                     key={project.id}
                     onClick={() => setSelectedProject(index)}
-                    className={`w-full text-left px-4 py-3 rounded-xl transition-all text-sm ${
+                    className={`w-full text-left px-4 py-2.5 rounded-xl transition-all text-sm ${
                       selectedProject === index
                         ? "bg-red-500/15 text-red-300 font-semibold border border-red-500/30 shadow-lg shadow-red-500/5"
                         : "hover:bg-white/5 text-white/60"
@@ -244,9 +348,12 @@ function ParadigmaI() {
                   >
                     <span className="flex items-center gap-2">
                       <span
-                        className={`w-2 h-2 rounded-full ${selectedProject === index ? "bg-red-400" : "bg-white/20"}`}
+                        className={`w-2 h-2 rounded-full flex-shrink-0 ${selectedProject === index ? "bg-red-400 animate-pulse" : "bg-white/20"}`}
                       />
-                      {project.name}
+                      <span className="flex-1 truncate">{project.name}</span>
+                      <span className="text-[10px] font-mono text-white/20">
+                        {project.number}
+                      </span>
                     </span>
                   </button>
                 ))}
@@ -416,6 +523,7 @@ function ParadigmaI() {
 }
 
 function ParadigmaII() {
+  const sectionRef = useScrollAnimation();
   const foundations = [
     {
       title: "Resiliencia Climática",
@@ -464,8 +572,12 @@ function ParadigmaII() {
   ];
 
   return (
-    <section className="section-dark py-20">
-      <div className="max-w-7xl mx-auto px-6">
+    <section
+      ref={sectionRef.ref}
+      className={`section-dark py-20 relative overflow-hidden particles-bg grid-overlay ${sectionRef.isVisible ? "aos-visible" : "aos-hidden"}`}
+    >
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-eco-500/3 rounded-full blur-[120px] pointer-events-none" />
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
         <div className="text-center mb-12">
           <span className="inline-block text-sm font-semibold text-eco-400 bg-eco-500/10 border border-eco-500/20 px-4 py-1.5 rounded-full mb-4">
             PARADIGMA II
@@ -557,6 +669,7 @@ function ParadigmaII() {
 }
 
 function ComparisonSection() {
+  const sectionRef = useScrollAnimation();
   const { data: trpcComparison } = trpc.paradigms.getComparison.useQuery();
   const [analysis, setAnalysis] = useState("");
   const [loading, setLoading] = useState(false);
@@ -601,8 +714,12 @@ function ComparisonSection() {
   };
 
   return (
-    <section className="section-alt py-20">
-      <div className="max-w-5xl mx-auto px-6">
+    <section
+      ref={sectionRef.ref}
+      className={`section-alt py-20 relative overflow-hidden grid-overlay ${sectionRef.isVisible ? "aos-visible" : "aos-hidden"}`}
+    >
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-water-500/3 rounded-full blur-[150px] pointer-events-none" />
+      <div className="max-w-5xl mx-auto px-6 relative z-10">
         <div className="text-center mb-12">
           <span className="inline-block tag-orange mb-4">
             COMPARACIÓN DIRECTA
@@ -624,24 +741,25 @@ function ComparisonSection() {
           </p>
         </div>
 
-        <div className="glass-card p-6 md:p-8">
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
+        <div className="glass-card p-6 md:p-8 relative overflow-hidden">
+          <div className="absolute -top-20 -left-20 w-40 h-40 bg-water-500/5 rounded-full blur-[60px]" />
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 relative z-10">
             {comparison.dimensions.map((dim, i) => {
               const cVal = comparison.centralized[i];
               const dVal = comparison.distributed[i];
               const maxVal = Math.max(cVal, dVal, 1);
               return (
-                <div key={dim} className="text-center">
+                <div key={dim} className="text-center group">
                   <p className="text-xs font-medium text-white/50 mb-4 uppercase tracking-wider">
                     {dim}
                   </p>
                   <div className="flex items-end justify-center gap-3 h-40">
-                    <div className="flex flex-col items-center gap-1">
+                    <div className="flex flex-col items-center gap-1 transition-transform group-hover:scale-105 duration-300">
                       <span className="text-xs font-bold text-red-400">
                         {cVal}
                       </span>
                       <div
-                        className="w-10 rounded-t-lg bg-gradient-to-t from-red-600 to-red-400 transition-all duration-700 shadow-lg shadow-red-500/10"
+                        className="w-10 rounded-t-lg bg-gradient-to-t from-red-600 to-red-400 transition-all duration-700 shadow-lg shadow-red-500/10 group-hover:shadow-red-500/30"
                         style={{
                           height: `${(cVal / maxVal) * 100}%`,
                           minHeight: "8px",
@@ -651,12 +769,15 @@ function ComparisonSection() {
                         Centralizado
                       </span>
                     </div>
-                    <div className="flex flex-col items-center gap-1">
+                    <div
+                      className="flex flex-col items-center gap-1 transition-transform group-hover:scale-105 duration-300"
+                      style={{ transitionDelay: "0.1s" }}
+                    >
                       <span className="text-xs font-bold text-eco-400">
                         {dVal}
                       </span>
                       <div
-                        className="w-10 rounded-t-lg bg-gradient-to-t from-eco-600 to-eco-400 transition-all duration-700 shadow-lg shadow-eco-500/10"
+                        className="w-10 rounded-t-lg bg-gradient-to-t from-eco-600 to-eco-400 transition-all duration-700 shadow-lg shadow-eco-500/10 group-hover:shadow-eco-500/30"
                         style={{
                           height: `${(dVal / maxVal) * 100}%`,
                           minHeight: "8px",
@@ -720,6 +841,7 @@ function ComparisonSection() {
 }
 
 function GlobalSection() {
+  const sectionRef = useScrollAnimation();
   const cases = [
     {
       title: "California, EE.UU.",
@@ -739,10 +861,31 @@ function GlobalSection() {
       impact: "Alto potencial",
       tag: "tag-green",
     },
+    {
+      title: "Cuenca del Limarí, Chile",
+      desc: "Región semiárida con embalses que no alcanzan a cubrir la demanda. Las micro-represas permitirían capturar escorrentías en quebradas andinas antes de que se pierdan en el océano.",
+      impact: "Alto potencial",
+      tag: "tag-orange",
+    },
+    {
+      title: "Túnez Central, África",
+      desc: "Las precipitaciones erráticas y la desertificación avanzan rápido. Un sistema descentralizado con monitoreo satelital podría revertir la pérdida de suelo fértil.",
+      impact: "Potencial significativo",
+      tag: "tag-green",
+    },
+    {
+      title: "Nordeste de Brasil",
+      desc: "Región del polígono de la sequía con grandes pérdidas por evaporación en embalses abiertos. Micro-represas sombreadas con sensores IoT optimizarían cada gota.",
+      impact: "Alto potencial",
+      tag: "tag-blue",
+    },
   ];
 
   return (
-    <section className="section-dark py-20">
+    <section
+      ref={sectionRef.ref}
+      className={`section-dark py-20 relative overflow-hidden particles-bg ${sectionRef.isVisible ? "aos-visible" : "aos-hidden"}`}
+    >
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-12">
           <span className="inline-block tag-blue mb-4">
@@ -787,6 +930,7 @@ function GlobalSection() {
 }
 
 function AIAssistant() {
+  const sectionRef = useScrollAnimation();
   const [messages, setMessages] = useState<{ role: string; text: string }[]>([
     {
       role: "model",
@@ -835,8 +979,12 @@ function AIAssistant() {
   };
 
   return (
-    <section className="section-alt py-20">
-      <div className="max-w-4xl mx-auto px-6">
+    <section
+      ref={sectionRef.ref}
+      className={`section-alt py-20 relative overflow-hidden grid-overlay ${sectionRef.isVisible ? "aos-visible" : "aos-hidden"}`}
+    >
+      <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-eco-500/3 rounded-full blur-[100px] pointer-events-none" />
+      <div className="max-w-4xl mx-auto px-6 relative z-10">
         <div className="text-center mb-10">
           <h2 className="text-3xl font-bold text-white flex items-center justify-center gap-2">
             Asistente de IA
@@ -981,8 +1129,12 @@ function AIAssistant() {
 }
 
 function ConclusionSection() {
+  const sectionRef = useScrollAnimation();
   return (
-    <section className="section-alt py-20 relative overflow-hidden">
+    <section
+      ref={sectionRef.ref}
+      className={`section-alt py-20 relative overflow-hidden particles-bg ${sectionRef.isVisible ? "aos-visible" : "aos-hidden"}`}
+    >
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-water-500/3 to-eco-500/3 rounded-full blur-[150px] pointer-events-none" />
       <div className="max-w-4xl mx-auto px-6 relative z-10">
         <div className="glass-card p-10 md:p-14 text-center relative">
@@ -1023,11 +1175,17 @@ export default function Paradigmas() {
     <div className="min-h-screen">
       <Navigation />
       <ParadigmaHero />
+      <SectionDivider />
       <ParadigmaI />
+      <SectionDivider />
       <ParadigmaII />
+      <SectionDivider />
       <ComparisonSection />
+      <SectionDivider />
       <GlobalSection />
+      <SectionDivider />
       <AIAssistant />
+      <SectionDivider />
       <ConclusionSection />
       <Footer />
       <ChatWidget />
