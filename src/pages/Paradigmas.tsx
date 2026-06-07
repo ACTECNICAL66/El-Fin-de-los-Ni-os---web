@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import ChatWidget from "@/components/ChatWidget";
-import { DocumentationSection } from "@/components/sections";
 import { trpc } from "@/providers/trpc";
 import {
   Sparkles,
@@ -1030,7 +1029,6 @@ export default function Paradigmas() {
       <GlobalSection />
       <AIAssistant />
       <ConclusionSection />
-      <DocumentationSection />
       <Footer />
       <ChatWidget />
     </div>

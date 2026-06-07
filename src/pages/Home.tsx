@@ -11,7 +11,6 @@ import {
   ResultsSection,
   CTASection,
   ProblemSection,
-  DocumentationSection,
 } from "@/components/sections";
 
 export default function Home() {
@@ -30,7 +29,6 @@ export default function Home() {
       <SatelliteSection />
       <ResultsSection />
       <CTASection />
-      <DocumentationSection />
       <Footer />
       <ChatWidget />
     </div>
