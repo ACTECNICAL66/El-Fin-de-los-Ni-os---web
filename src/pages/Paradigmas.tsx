@@ -1,6 +1,7 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import { DocumentationSection } from "@/components/sections";
 import { trpc } from "@/providers/trpc";
 import {
   Sparkles,
@@ -11,10 +12,13 @@ import {
   Shield,
   DollarSign,
   Users,
-  Send,
   Loader2,
-  ToggleLeft,
-  ToggleRight,
+  BarChart3,
+  TrendingUp,
+  AlertTriangle,
+  CheckCircle2,
+  XCircle,
+  ArrowRight,
 } from "lucide-react";
 
 function ParadigmaHero() {
@@ -50,7 +54,7 @@ function ParadigmaHero() {
         data.candidates?.[0]?.content?.parts?.[0]?.text ||
           "No se pudo generar el resumen."
       );
-    } catch (error) {
+    } catch {
       setSummary("Error al generar el resumen. Intente nuevamente.");
     } finally {
       setLoading(false);
@@ -58,23 +62,31 @@ function ParadigmaHero() {
   };
 
   return (
-    <section className="pt-32 pb-16 section-dark">
-      <div className="max-w-5xl mx-auto px-6 text-center">
-        <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-          Analisis Comparativo de Paradigmas en la Gestion de Recursos Hidricos
+    <section className="pt-32 pb-16 section-dark relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-water-500/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-eco-500/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="max-w-5xl mx-auto px-6 text-center relative z-10">
+        <span className="inline-block tag-blue mb-6">
+          NASA Space Apps Challenge 2025
+        </span>
+        <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
+          Analisis Comparativo de Paradigmas en la{" "}
+          <span className="gradient-text">Gestion de Recursos Hidricos</span>
         </h1>
-        <p className="text-lg text-white/60 max-w-3xl mx-auto mb-8">
+        <p className="text-lg text-white/60 max-w-3xl mx-auto mb-8 leading-relaxed">
           Un estudio de caso en Cordoba, Argentina, que contrasta la ingenieria
           civil del siglo XX con la inteligencia geoespacial del siglo XXI para
           proponer un futuro hidrico sostenible y resiliente.
         </p>
-        <button onClick={generateSummary} className="btn-primary inline-flex">
-          <Sparkles className="w-5 h-5" />
-          Generar Resumen Ejecutivo con IA
-        </button>
+        <div className="flex flex-wrap justify-center gap-4">
+          <button onClick={generateSummary} className="btn-primary">
+            <Sparkles className="w-5 h-5" />
+            Generar Resumen Ejecutivo con IA
+          </button>
+        </div>
 
         {showSummary && (
-          <div className="mt-8 text-left glass border-l-4 border-water-500 rounded-lg p-6 animate-fadeIn">
+          <div className="mt-8 text-left glass border-l-4 border-water-500 rounded-xl p-6 animate-fadeIn shadow-xl">
             {loading ? (
               <div className="flex items-center gap-3 text-white/60">
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -109,7 +121,7 @@ function ParadigmaI() {
     <section className="section-alt py-20">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-12">
-          <span className="inline-block text-sm font-semibold text-water-300 bg-water-500/10 border border-water-500/20 px-4 py-1.5 rounded-full mb-4">
+          <span className="inline-block text-sm font-semibold text-red-400 bg-red-500/10 border border-red-500/20 px-4 py-1.5 rounded-full mb-4">
             PARADIGMA I
           </span>
           <h2 className="text-3xl font-bold text-white">
@@ -122,77 +134,119 @@ function ParadigmaI() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
-          <div className="md:col-span-1">
-            <h4 className="font-bold text-lg mb-4 text-white">
-              Proyectos Considerados
-            </h4>
-            <div className="space-y-2">
-              {projectList.map((project, index) => (
-                <button
-                  key={project.id}
-                  onClick={() => setSelectedProject(index)}
-                  className={`w-full text-left px-4 py-3 rounded-lg transition-all text-sm ${
-                    selectedProject === index
-                      ? "bg-water-500/20 text-water-300 font-semibold border border-water-500/30"
-                      : "hover:bg-white/5 text-white/60"
-                  }`}
-                >
-                  {project.name}
-                </button>
-              ))}
+        <div className="grid lg:grid-cols-3 gap-8 mb-16">
+          <div className="lg:col-span-1">
+            <div className="glass-card p-6">
+              <h4 className="font-bold text-lg mb-4 text-white flex items-center gap-2">
+                <XCircle className="w-5 h-5 text-red-400" />
+                Proyectos Considerados
+              </h4>
+              <div className="space-y-2">
+                {projectList.map((project, index) => (
+                  <button
+                    key={project.id}
+                    onClick={() => setSelectedProject(index)}
+                    className={`w-full text-left px-4 py-3 rounded-xl transition-all text-sm ${
+                      selectedProject === index
+                        ? "bg-red-500/15 text-red-300 font-semibold border border-red-500/30 shadow-lg shadow-red-500/5"
+                        : "hover:bg-white/5 text-white/60"
+                    }`}
+                  >
+                    <span className="flex items-center gap-2">
+                      <span
+                        className={`w-2 h-2 rounded-full ${selectedProject === index ? "bg-red-400" : "bg-white/20"}`}
+                      />
+                      {project.name}
+                    </span>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-          <div className="md:col-span-2 glass-card p-6 min-h-[300px]">
+          <div className="lg:col-span-2 glass-card p-6 md:p-8 min-h-[400px]">
             {selected ? (
-              <div className="animate-fadeIn">
-                <h4 className="text-xl font-bold mb-4 text-white">
-                  {selected.name}
-                </h4>
-                <dl className="space-y-4">
-                  <div>
-                    <dt className="font-semibold text-sm text-white/50">
-                      Ubicacion
-                    </dt>
-                    <dd className="text-white/70 mt-1">{selected.location}</dd>
+              <div className="animate-fadeIn space-y-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center flex-shrink-0">
+                    <XCircle className="w-6 h-6 text-red-400" />
                   </div>
                   <div>
-                    <dt className="font-semibold text-sm text-white/50">
-                      Descripcion
-                    </dt>
-                    <dd className="text-white/70 mt-1">
-                      {selected.description}
-                    </dd>
+                    <h4 className="text-2xl font-bold text-white">
+                      {selected.name}
+                    </h4>
+                    <p className="text-sm text-white/50 mt-1">
+                      {selected.location}
+                    </p>
                   </div>
-                  <div>
-                    <dt className="font-semibold text-sm text-red-400">
-                      Inviabilidad
-                    </dt>
-                    <dd className="text-white/70 mt-1">
-                      {selected.inviabilityReason}
-                    </dd>
+                </div>
+
+                <p className="text-white/70 leading-relaxed">
+                  {selected.description}
+                </p>
+
+                <div className="glass border-l-4 border-red-500 rounded-xl p-5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <AlertTriangle className="w-4 h-4 text-red-400" />
+                    <span className="font-semibold text-sm text-red-400">
+                      Causa de Inviabilidad
+                    </span>
                   </div>
-                  <div className="grid grid-cols-3 gap-4 pt-4">
-                    <div className="bg-red-500/10 rounded-lg p-3 text-center">
-                      <p className="text-xs text-white/50">Costo</p>
-                      <p className="text-lg font-bold text-red-400">
-                        {selected.costIndex}/100
-                      </p>
-                    </div>
-                    <div className="bg-orange-500/10 rounded-lg p-3 text-center">
-                      <p className="text-xs text-white/50">Impacto</p>
-                      <p className="text-lg font-bold text-orange-400">
-                        {selected.impactIndex}/100
-                      </p>
-                    </div>
-                    <div className="bg-purple-500/10 rounded-lg p-3 text-center">
-                      <p className="text-xs text-white/50">Vulnerabilidad</p>
-                      <p className="text-lg font-bold text-purple-400">
-                        {selected.vulnerabilityIndex}/100
-                      </p>
-                    </div>
+                  <p className="text-white/60 text-sm">
+                    {selected.inviabilityReason}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs font-medium text-white/50 uppercase tracking-wider mb-3">
+                    Indices de Inviabilidad
+                  </p>
+                  <div className="grid grid-cols-3 gap-4">
+                    {[
+                      {
+                        label: "Costo",
+                        value: selected.costIndex,
+                        color: "red",
+                      },
+                      {
+                        label: "Impacto Ambiental",
+                        value: selected.impactIndex,
+                        color: "orange",
+                      },
+                      {
+                        label: "Vulnerabilidad",
+                        value: selected.vulnerabilityIndex,
+                        color: "purple",
+                      },
+                    ].map(metric => (
+                      <div key={metric.label} className="text-center">
+                        <div className="relative h-24 flex items-end justify-center mb-2">
+                          <div
+                            className={`w-full max-w-[60px] rounded-t-lg transition-all duration-700 ease-out ${
+                              metric.color === "red"
+                                ? "bg-gradient-to-t from-red-600 to-red-400"
+                                : metric.color === "orange"
+                                  ? "bg-gradient-to-t from-orange-600 to-orange-400"
+                                  : "bg-gradient-to-t from-purple-600 to-purple-400"
+                            }`}
+                            style={{ height: `${metric.value}%` }}
+                          />
+                        </div>
+                        <p
+                          className={`text-lg font-bold ${
+                            metric.color === "red"
+                              ? "text-red-400"
+                              : metric.color === "orange"
+                                ? "text-orange-400"
+                                : "text-purple-400"
+                          }`}
+                        >
+                          {metric.value}/100
+                        </p>
+                        <p className="text-xs text-white/50">{metric.label}</p>
+                      </div>
+                    ))}
                   </div>
-                </dl>
+                </div>
               </div>
             ) : (
               <div className="flex flex-col justify-center items-center h-full text-white/30">
@@ -203,51 +257,66 @@ function ParadigmaI() {
           </div>
         </div>
 
-        <div className="glass-card p-6">
-          <h4 className="text-xl font-bold text-center mb-6 text-white">
-            Analisis Conceptual de Inviabilidad
-          </h4>
-          <p className="text-center text-white/60 mb-6 max-w-2xl mx-auto text-sm">
-            Aunque los valores son conceptuales, esta grafica ilustra por que
-            los megaproyectos son consistentemente descartados.
-          </p>
-          <div className="space-y-4">
-            {projectList.map(project => (
+        <div className="glass-card p-8">
+          <div className="text-center mb-8">
+            <h4 className="text-2xl font-bold text-white flex items-center justify-center gap-2">
+              <BarChart3 className="w-6 h-6 text-red-400" />
+              Analisis Conceptual de Inviabilidad
+            </h4>
+            <p className="text-white/50 mt-2 text-sm max-w-2xl mx-auto">
+              Aunque los valores son conceptuales, esta grafica ilustra por que
+              los megaproyectos son consistentemente descartados.
+            </p>
+          </div>
+          <div className="space-y-6">
+            {projectList.map((project, idx) => (
               <div key={project.id} className="space-y-2">
-                <p className="text-sm font-medium text-white/80">
-                  {project.name}
-                </p>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-medium text-white/80">
+                    <span className="text-water-400 font-mono text-xs mr-2">
+                      {String(idx + 1).padStart(2, "0")}
+                    </span>
+                    {project.name}
+                  </p>
+                  <span className="text-xs text-white/40 font-mono">
+                    {(project.costIndex +
+                      project.impactIndex +
+                      project.vulnerabilityIndex) /
+                      3}
+                    /100
+                  </span>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
                   <div>
-                    <div className="h-4 bg-red-500/20 rounded-full overflow-hidden">
+                    <div className="h-5 bg-white/5 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-red-400 rounded-full transition-all"
+                        className="h-full rounded-full bg-gradient-to-r from-red-500 to-red-400 transition-all duration-700"
                         style={{ width: `${project.costIndex}%` }}
                       />
                     </div>
-                    <span className="text-xs text-white/50">
+                    <span className="text-[11px] text-white/40 mt-1 block">
                       Costo {project.costIndex}
                     </span>
                   </div>
                   <div>
-                    <div className="h-4 bg-orange-500/20 rounded-full overflow-hidden">
+                    <div className="h-5 bg-white/5 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-orange-400 rounded-full transition-all"
+                        className="h-full rounded-full bg-gradient-to-r from-orange-500 to-orange-400 transition-all duration-700"
                         style={{ width: `${project.impactIndex}%` }}
                       />
                     </div>
-                    <span className="text-xs text-white/50">
+                    <span className="text-[11px] text-white/40 mt-1 block">
                       Impacto {project.impactIndex}
                     </span>
                   </div>
                   <div>
-                    <div className="h-4 bg-purple-500/20 rounded-full overflow-hidden">
+                    <div className="h-5 bg-white/5 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-purple-400 rounded-full transition-all"
+                        className="h-full rounded-full bg-gradient-to-r from-purple-500 to-purple-400 transition-all duration-700"
                         style={{ width: `${project.vulnerabilityIndex}%` }}
                       />
                     </div>
-                    <span className="text-xs text-white/50">
+                    <span className="text-[11px] text-white/40 mt-1 block">
                       Vulnerabilidad {project.vulnerabilityIndex}
                     </span>
                   </div>
@@ -317,7 +386,8 @@ function ParadigmaII() {
             PARADIGMA II
           </span>
           <h2 className="text-3xl font-bold text-white">
-            Gestion Distribuida con Inteligencia Geoespacial
+            Gestion Distribuida con{" "}
+            <span className="gradient-text">Inteligencia Geoespacial</span>
           </h2>
           <p className="mt-4 text-white/60 max-w-2xl mx-auto">
             Este modelo propone un sistema descentralizado de micro-represas,
@@ -327,38 +397,59 @@ function ParadigmaII() {
         </div>
 
         <div className="mb-16">
-          <h4 className="text-xl font-bold text-center mb-8 text-white">
+          <h4 className="text-xl font-bold text-center mb-8 text-white flex items-center justify-center gap-2">
+            <CheckCircle2 className="w-5 h-5 text-eco-400" />
             Fundamentos del Modelo
           </h4>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {foundations.map(f => (
-              <div key={f.title} className="glass-card p-6 hover-lift">
-                <f.icon className="w-8 h-8 text-eco-400 mb-3" />
-                <h5 className="font-bold text-lg mb-2 text-eco-400">
-                  {f.title}
-                </h5>
-                <p className="text-sm text-white/60">{f.desc}</p>
+              <div
+                key={f.title}
+                className="glass-card p-6 hover-lift group relative overflow-hidden"
+              >
+                <div className="absolute top-0 right-0 w-32 h-32 bg-eco-500/5 rounded-full blur-[60px] pointer-events-none" />
+                <div className="relative z-10">
+                  <div className="w-12 h-12 rounded-xl bg-eco-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <f.icon className="w-6 h-6 text-eco-400" />
+                  </div>
+                  <h5 className="font-bold text-lg mb-2 text-white">
+                    {f.title}
+                  </h5>
+                  <p className="text-sm text-white/60">{f.desc}</p>
+                </div>
               </div>
             ))}
           </div>
         </div>
 
         <div>
-          <h4 className="text-xl font-bold text-center mb-8 text-white">
+          <h4 className="text-xl font-bold text-center mb-8 text-white flex items-center justify-center gap-2">
+            <TrendingUp className="w-5 h-5 text-water-400" />
             Metodologia: El Ecosistema de Datos de la NASA en Accion
           </h4>
-          <div className="relative pl-8 border-l-2 border-white/10 space-y-10">
+          <div className="max-w-3xl mx-auto relative pl-10 lg:pl-12">
+            <div className="absolute left-[19px] top-2 bottom-2 w-0.5 bg-gradient-to-b from-eco-500 via-water-500 to-eco-500 rounded-full" />
             {stages.map((stage, index) => (
-              <div key={index} className="relative">
-                <div className="absolute -left-[34px] top-1 w-4 h-4 bg-eco-500 rounded-full border-4 border-nasa-dark shadow-sm" />
-                <h5 className="text-lg font-bold text-white">{stage.title}</h5>
-                <p className="text-white/60 mt-2 text-sm">{stage.desc}</p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {stage.tags.map(tag => (
-                    <span key={tag} className="tag-blue">
-                      {tag}
-                    </span>
-                  ))}
+              <div key={index} className="relative pb-12 last:pb-0">
+                <div className="absolute -left-[34px] top-1 w-8 h-8 bg-nasa-dark border-2 border-eco-500 rounded-full flex items-center justify-center shadow-lg shadow-eco-500/20">
+                  <span className="text-xs font-bold text-eco-400">
+                    {index + 1}
+                  </span>
+                </div>
+                <div className="glass-card p-6 ml-4">
+                  <h5 className="text-lg font-bold text-white mb-2">
+                    {stage.title}
+                  </h5>
+                  <p className="text-white/60 text-sm leading-relaxed mb-3">
+                    {stage.desc}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {stage.tags.map(tag => (
+                      <span key={tag} className="tag-blue text-[11px]">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
             ))}
@@ -403,7 +494,7 @@ function ComparisonSection() {
         data.candidates?.[0]?.content?.parts?.[0]?.text ||
           "No se pudo generar el analisis."
       );
-    } catch (error) {
+    } catch {
       setAnalysis("Error al generar el analisis. Intente nuevamente.");
     } finally {
       setLoading(false);
@@ -414,8 +505,12 @@ function ComparisonSection() {
     <section className="section-alt py-20">
       <div className="max-w-5xl mx-auto px-6">
         <div className="text-center mb-12">
+          <span className="inline-block tag-orange mb-4">
+            COMPARACION DIRECTA
+          </span>
           <h2 className="text-3xl font-bold text-white">
-            Comparacion Directa de Paradigmas
+            Centralizado vs{" "}
+            <span className="gradient-text">Distribuido Geoespacial</span>
           </h2>
           <p className="mt-4 text-white/60 max-w-2xl mx-auto">
             Esta visualizacion resume el contraste fundamental entre los dos
@@ -423,56 +518,80 @@ function ComparisonSection() {
           </p>
         </div>
 
-        <div className="glass-card p-8">
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-            {comparison?.dimensions.map((dim, i) => (
-              <div key={dim} className="text-center">
-                <p className="text-xs font-medium text-white/50 mb-3">{dim}</p>
-                <div className="flex items-end justify-center gap-4 h-32">
-                  <div className="flex flex-col items-center">
-                    <span className="text-xs text-red-400 font-bold">
-                      {comparison.centralized[i]}
-                    </span>
-                    <div
-                      className="w-8 bg-red-400 rounded-t-md transition-all"
-                      style={{ height: `${comparison.centralized[i] * 10}px` }}
-                    />
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <span className="text-xs text-eco-400 font-bold">
-                      {comparison.distributed[i]}
-                    </span>
-                    <div
-                      className="w-8 bg-eco-400 rounded-t-md transition-all"
-                      style={{ height: `${comparison.distributed[i] * 10}px` }}
-                    />
-                  </div>
+        <div className="glass-card p-6 md:p-8">
+          {comparison ? (
+            <div>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
+                {comparison.dimensions.map((dim, i) => {
+                  const cVal = comparison.centralized[i];
+                  const dVal = comparison.distributed[i];
+                  const maxVal = Math.max(cVal, dVal, 1);
+                  return (
+                    <div key={dim} className="text-center">
+                      <p className="text-xs font-medium text-white/50 mb-4 uppercase tracking-wider truncate">
+                        {dim}
+                      </p>
+                      <div className="flex items-end justify-center gap-3 h-40">
+                        <div className="flex flex-col items-center gap-1">
+                          <span className="text-xs font-bold text-red-400">
+                            {cVal}
+                          </span>
+                          <div
+                            className="w-10 rounded-t-lg bg-gradient-to-t from-red-600 to-red-400 transition-all duration-700 shadow-lg shadow-red-500/10"
+                            style={{
+                              height: `${(cVal / maxVal) * 100}%`,
+                              minHeight: "8px",
+                            }}
+                          />
+                          <span className="text-[10px] text-white/30 uppercase">
+                            Centralizado
+                          </span>
+                        </div>
+                        <div className="flex flex-col items-center gap-1">
+                          <span className="text-xs font-bold text-eco-400">
+                            {dVal}
+                          </span>
+                          <div
+                            className="w-10 rounded-t-lg bg-gradient-to-t from-eco-600 to-eco-400 transition-all duration-700 shadow-lg shadow-eco-500/10"
+                            style={{
+                              height: `${(dVal / maxVal) * 100}%`,
+                              minHeight: "8px",
+                            }}
+                          />
+                          <span className="text-[10px] text-white/30 uppercase">
+                            Geoespacial
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="flex justify-center gap-8 mt-8 pt-6 border-t border-white/10">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded bg-gradient-to-br from-red-600 to-red-400" />
+                  <span className="text-sm text-white/60">Centralizado</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded bg-gradient-to-br from-eco-600 to-eco-400" />
+                  <span className="text-sm text-white/60">Geoespacial</span>
                 </div>
               </div>
-            ))}
-          </div>
-          <div className="flex justify-center gap-8 mt-6 pt-4 border-t border-white/10">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-red-400 rounded" />
-              <span className="text-sm text-white/60">Centralizado</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 bg-eco-400 rounded" />
-              <span className="text-sm text-white/60">Geoespacial</span>
+          ) : (
+            <div className="flex items-center justify-center h-64">
+              <Loader2 className="w-8 h-8 animate-spin text-water-400" />
             </div>
-          </div>
+          )}
         </div>
 
-        <div className="mt-8 text-center">
-          <button
-            onClick={generateAnalysis}
-            className="btn-primary inline-flex"
-          >
+        <div className="mt-10 text-center">
+          <button onClick={generateAnalysis} className="btn-primary">
             <Sparkles className="w-5 h-5" />
             Analizar Implicaciones a Futuro con IA
           </button>
           {showAnalysis && (
-            <div className="mt-6 text-left glass border-l-4 border-water-500 rounded-lg p-6 animate-fadeIn max-w-3xl mx-auto">
+            <div className="mt-6 text-left glass border-l-4 border-water-500 rounded-xl p-6 animate-fadeIn max-w-3xl mx-auto shadow-xl">
               {loading ? (
                 <div className="flex items-center gap-3 text-white/60">
                   <Loader2 className="w-5 h-5 animate-spin" />
@@ -500,14 +619,20 @@ function GlobalSection() {
     {
       title: "California, EE.UU.",
       desc: "Enfrenta sequias prolongadas y sobreexplotacion de acuiferos. Un sistema de micro-represas podria potenciar la recarga de acuiferos durante los escasos eventos de lluvia intensa.",
+      impact: "Alto potencial",
+      tag: "tag-orange",
     },
     {
       title: "Cuenca Murray-Darling, Australia",
       desc: "Sufre de una alta competencia por el agua entre agricultura y consumo humano. Una gestion distribuida mejoraria la eficiencia y reduciria la evaporacion.",
+      impact: "Potencial significativo",
+      tag: "tag-blue",
     },
     {
       title: "Maharashtra, India",
       desc: "Experimenta monzones irregulares. La implementacion masiva de pequenas estructuras de contencion es una estrategia clave para la seguridad hidrica local.",
+      impact: "Alto potencial",
+      tag: "tag-green",
     },
   ];
 
@@ -515,24 +640,38 @@ function GlobalSection() {
     <section className="section-dark py-20">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-12">
+          <span className="inline-block tag-blue mb-4">
+            APLICABILIDAD GLOBAL
+          </span>
           <h2 className="text-3xl font-bold text-white">
-            Aplicabilidad Global del Modelo Geoespacial
+            Aplicabilidad Global del{" "}
+            <span className="gradient-text">Modelo Geoespacial</span>
           </h2>
           <p className="mt-4 text-white/60 max-w-2xl mx-auto">
             La escasez hidrica es un desafio global. El modelo de gestion
             distribuida, basado en datos satelitales publicos, es una solucion
-            escalable y adaptable.
+            escalable y adaptable a cualquier region semiarida del mundo.
           </p>
         </div>
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-6">
           {cases.map(c => (
             <div
               key={c.title}
-              className="glass-card p-6 text-center hover-lift"
+              className="glass-card p-6 hover-lift group relative overflow-hidden"
             >
-              <Globe className="w-10 h-10 text-water-400 mx-auto mb-4" />
-              <h4 className="font-bold text-lg mb-2 text-white">{c.title}</h4>
-              <p className="text-sm text-white/60">{c.desc}</p>
+              <div className="absolute -top-10 -right-10 w-24 h-24 bg-water-500/5 rounded-full blur-[40px] pointer-events-none group-hover:bg-water-500/10 transition-all" />
+              <div className="relative z-10">
+                <div className="w-12 h-12 rounded-xl bg-water-500/20 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                  <Globe className="w-6 h-6 text-water-400" />
+                </div>
+                <h4 className="font-bold text-lg mb-2 text-white group-hover:text-water-400 transition-colors">
+                  {c.title}
+                </h4>
+                <p className="text-sm text-white/60 leading-relaxed mb-4">
+                  {c.desc}
+                </p>
+                <span className={c.tag}>{c.impact}</span>
+              </div>
             </div>
           ))}
         </div>
@@ -541,216 +680,35 @@ function GlobalSection() {
   );
 }
 
-function AIAssistant() {
-  const [messages, setMessages] = useState<{ role: string; text: string }[]>([
-    {
-      role: "model",
-      text: "Hola! Soy tu asistente para el analisis de datos hidricos. Puedes subir archivos y darme instrucciones para mejorar. En que puedo ayudarte hoy?",
-    },
-  ]);
-  const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [extendedKnowledge, setExtendedKnowledge] = useState(false);
-  const [creatorInstructions, setCreatorInstructions] = useState("");
-  const chatEndRef = useRef<HTMLDivElement>(null);
-  const sessionId = useRef(`session_${Date.now()}`);
-
-  const sendMutation = trpc.chat.sendMessage.useMutation();
-
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  const handleSend = async () => {
-    if (!input.trim()) return;
-    const userMsg = input.trim();
-    setInput("");
-    setMessages(prev => [...prev, { role: "user", text: userMsg }]);
-    setLoading(true);
-
-    try {
-      const result = await sendMutation.mutateAsync({
-        sessionId: sessionId.current,
-        message: userMsg,
-        extendedKnowledge,
-        creatorInstructions: creatorInstructions || undefined,
-      });
-      setMessages(prev => [...prev, { role: "model", text: result.response }]);
-    } catch {
-      setMessages(prev => [
-        ...prev,
-        {
-          role: "model",
-          text: "Lo siento, ocurrio un error. Por favor intenta de nuevo.",
-        },
-      ]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <section className="section-alt py-20">
-      <div className="max-w-4xl mx-auto px-6">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold text-white flex items-center justify-center gap-2">
-            Asistente de IA
-            <span className="relative flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-eco-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-eco-500" />
-            </span>
-          </h2>
-          <p className="mt-4 text-white/60 max-w-2xl mx-auto">
-            Analisis y respuestas inteligentes sobre los datos hidricos.
-          </p>
-          <div className="mt-4 flex flex-wrap justify-center gap-2">
-            {[
-              "QGIS",
-              "ESP32",
-              "Micro-represas",
-              "NASA",
-              "NDVI",
-              "Demografia",
-            ].map(tag => (
-              <span key={tag} className="tag-blue">
-                {tag}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        <div className="glass-card overflow-hidden">
-          <div className="p-6">
-            <div className="glass border-l-4 border-water-500 pl-4 py-2 mb-4 rounded-r">
-              <p className="text-sm text-white/70">
-                Este es un asistente de IA disenado para ayudarte a analizar y
-                comprender los datos hidricos de Cordoba.
-              </p>
-            </div>
-            <div className="h-80 overflow-y-auto glass rounded-lg p-4 mb-4 space-y-4">
-              {messages.map((msg, i) => (
-                <div
-                  key={i}
-                  className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-                >
-                  <div
-                    className={`max-w-md p-3 rounded-lg text-sm ${
-                      msg.role === "user"
-                        ? "bg-water-500/20 text-white"
-                        : "glass-card-light text-white/70"
-                    }`}
-                  >
-                    {msg.text}
-                  </div>
-                </div>
-              ))}
-              {loading && (
-                <div className="flex justify-start">
-                  <div className="glass-card-light p-3 rounded-lg">
-                    <Loader2 className="w-5 h-5 animate-spin text-water-400" />
-                  </div>
-                </div>
-              )}
-              <div ref={chatEndRef} />
-            </div>
-            <div className="flex items-center gap-2">
-              <input
-                type="text"
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                onKeyDown={e => e.key === "Enter" && handleSend()}
-                placeholder="Ej: Cual es la tendencia del embalse San Roque?"
-                className="flex-1 p-3 bg-white/5 border border-white/10 rounded-lg focus:ring-2 focus:ring-water-500 focus:border-transparent text-white placeholder:text-white/30"
-              />
-              <button
-                onClick={handleSend}
-                disabled={loading}
-                className="bg-water-500/20 text-water-400 p-3 rounded-lg hover:bg-water-500/30 transition-colors disabled:opacity-50"
-              >
-                <Send className="w-5 h-5" />
-              </button>
-            </div>
-          </div>
-
-          <div className="border-t border-white/10 p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">
-              Panel del Creador
-            </h3>
-            <div className="glass p-4 rounded-lg mb-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-semibold text-white/80">
-                    Conocimiento Extendido
-                  </p>
-                  <p className="text-xs text-white/50">
-                    Permite a la IA responder temas sobre hidrologia, GIS, etc.
-                  </p>
-                </div>
-                <button
-                  onClick={() => setExtendedKnowledge(!extendedKnowledge)}
-                >
-                  {extendedKnowledge ? (
-                    <ToggleRight className="w-10 h-10 text-eco-500" />
-                  ) : (
-                    <ToggleLeft className="w-10 h-10 text-white/30" />
-                  )}
-                </button>
-              </div>
-            </div>
-            <div className="bg-yellow-500/10 border-l-4 border-yellow-400 p-3 rounded-r-lg mb-4">
-              <p className="text-sm font-bold text-yellow-400">Mejora la IA</p>
-              <p className="text-xs text-yellow-300/70">
-                Usa este panel para darle nuevas instrucciones o contexto a la
-                IA.
-              </p>
-            </div>
-            <textarea
-              value={creatorInstructions}
-              onChange={e => setCreatorInstructions(e.target.value)}
-              placeholder="Ej: A partir de ahora, cuando hablemos de calidad del agua, enfocate en los niveles de pH y turbidez."
-              className="w-full h-24 bg-white/5 border border-white/10 rounded-lg p-3 focus:ring-2 focus:ring-eco-500 focus:border-transparent text-sm text-white placeholder:text-white/30"
-            />
-            <button
-              onClick={() => {
-                setMessages(prev => [
-                  ...prev,
-                  {
-                    role: "model",
-                    text: "Comportamiento de la IA actualizado con tus nuevas instrucciones.",
-                  },
-                ]);
-                setCreatorInstructions("");
-              }}
-              className="mt-3 w-full bg-eco-500/20 text-eco-400 py-2 rounded-lg hover:bg-eco-500/30 transition-colors font-medium"
-            >
-              Actualizar Comportamiento de la IA
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function ConclusionSection() {
   return (
-    <section className="section-dark py-20">
-      <div className="max-w-4xl mx-auto px-6">
-        <div className="glass-card p-10 text-center">
-          <Shield className="w-12 h-12 text-water-400 mx-auto mb-4" />
-          <h2 className="text-3xl font-bold text-white mb-6">
-            Conclusion: Hacia un "Gemelo Digital" para la Gobernanza Hidrica
+    <section className="section-alt py-20 relative overflow-hidden">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-water-500/3 to-eco-500/3 rounded-full blur-[150px] pointer-events-none" />
+      <div className="max-w-4xl mx-auto px-6 relative z-10">
+        <div className="glass-card p-10 md:p-14 text-center relative">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-water-500 via-eco-500 to-water-500 rounded-t-2xl" />
+          <Shield className="w-14 h-14 text-water-400 mx-auto mb-6" />
+          <span className="inline-block tag-green mb-4">CONCLUSION</span>
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 leading-tight">
+            Hacia un &ldquo;Gemelo Digital&rdquo; para la{" "}
+            <span className="gradient-text">Gobernanza Hidrica</span>
           </h2>
-          <p className="text-white/60 leading-relaxed max-w-3xl mx-auto">
+          <p className="text-white/60 leading-relaxed max-w-3xl mx-auto text-lg">
             La propuesta final no es solo construir micro-represas, sino
-            desarrollar un "Gemelo Digital" de la cuenca: un modelo virtual
-            dinamico, alimentado por datos de la NASA en tiempo real. Esta
-            herramienta permite simular escenarios, optimizar la asignacion del
-            recurso y anticipar sequias, representando la transicion de la era
-            del hormigon a la era de la inteligencia geoespacial. Es un modelo
-            de gestion hidrica escalable y exportable para regiones semiaridas
-            del mundo.
+            desarrollar un{" "}
+            <strong className="text-white">"Gemelo Digital"</strong> de la
+            cuenca: un modelo virtual dinamico, alimentado por datos de la NASA
+            en tiempo real. Esta herramienta permite simular escenarios,
+            optimizar la asignacion del recurso y anticipar sequias,
+            representando la transicion de la era del hormigon a la era de la
+            inteligencia geoespacial. Es un modelo de gestion hidrica escalable
+            y exportable para regiones semiaridas del mundo.
           </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <span className="tag-blue">Gemelo Digital</span>
+            <span className="tag-green">NASA Earthdata</span>
+            <span className="tag-orange">Gestion Adaptativa</span>
+          </div>
         </div>
       </div>
     </section>
@@ -770,8 +728,8 @@ export default function Paradigmas() {
       <ParadigmaII />
       <ComparisonSection />
       <GlobalSection />
-      <AIAssistant />
       <ConclusionSection />
+      <DocumentationSection />
       <Footer />
     </div>
   );

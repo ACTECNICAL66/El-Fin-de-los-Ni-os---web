@@ -11,6 +11,7 @@ import {
   DownloadsSection,
   CTASection,
   ProblemSection,
+  DocumentationSection,
 } from "@/components/sections";
 
 export default function Home() {
@@ -30,6 +31,7 @@ export default function Home() {
       <ResultsSection />
       <DownloadsSection />
       <CTASection />
+      <DocumentationSection />
       <Footer />
     </div>
   );
