@@ -261,6 +261,7 @@ function ParadigmaHero() {
 }
 
 function ParadigmaI() {
+  const sectionRef = useScrollAnimation();
   const { data: trpcProjects } = trpc.paradigms.listProjects.useQuery({
     paradigm: "centralized",
   });
