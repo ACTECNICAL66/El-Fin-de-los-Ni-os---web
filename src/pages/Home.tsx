@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import ChatWidget from "@/components/ChatWidget";
 import {
   HeroSection,
   AboutSection,
@@ -8,7 +9,6 @@ import {
   ClimateSection,
   SatelliteSection,
   ResultsSection,
-  DownloadsSection,
   CTASection,
   ProblemSection,
   DocumentationSection,
@@ -29,10 +29,10 @@ export default function Home() {
       <ClimateSection />
       <SatelliteSection />
       <ResultsSection />
-      <DownloadsSection />
       <CTASection />
       <DocumentationSection />
       <Footer />
+      <ChatWidget />
     </div>
   );
 }

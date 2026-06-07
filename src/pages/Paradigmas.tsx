@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import ChatWidget from "@/components/ChatWidget";
 import { DocumentationSection } from "@/components/sections";
 import { trpc } from "@/providers/trpc";
 import {
@@ -12,14 +13,71 @@ import {
   Shield,
   DollarSign,
   Users,
+  Send,
   Loader2,
+  ToggleLeft,
+  ToggleRight,
   BarChart3,
   TrendingUp,
   AlertTriangle,
   CheckCircle2,
   XCircle,
-  ArrowRight,
 } from "lucide-react";
+
+const FALLBACK_PROJECTS = [
+  {
+    id: "1",
+    name: "Aprovechamiento Múltiple del Río Paraná",
+    number: 1,
+    location: "Límite provincial Santa Fe – Corrientes",
+    description:
+      "Megaproyecto de infraestructura hidroeléctrica y de regulación de caudales sobre el Río Paraná. Incluye una presa principal de 3.5 km de longitud, un embalse de 120 km² y una central hidroeléctrica de 3.200 MW. El costo estimado supera los 8.000 millones de dólares.",
+    inviabilityReason:
+      "Costo excesivo (9/10), impacto ambiental devastador sobre el ecosistema del Paraná (9/10), desplazamiento de comunidades enteras, alta vulnerabilidad a eventos climáticos extremos (8/10) y conflictos interestatales por la distribución del agua.",
+    costIndex: 92,
+    impactIndex: 88,
+    vulnerabilityIndex: 82,
+  },
+  {
+    id: "2",
+    name: "Trasvase del Río San Francisco",
+    number: 2,
+    location: "Córdoba – Santiago del Estero",
+    description:
+      "Proyecto de trasvase interprovincial para derivar agua del Río San Francisco hacia el norte de Córdoba y Santiago del Estero. Incluye 180 km de canales, 12 túneles y 5 estaciones de bombeo con un costo estimado de 3.500 millones de dólares.",
+    inviabilityReason:
+      "Conflicto interprovincial no resuelto (7/10), impacto ecológico severo sobre el río donante (8/10), costos de operación y mantenimiento prohibitivos (8/10), y dependencia de infraestructura única y centralizada vulnerable a sabotajes o desastres.",
+    costIndex: 85,
+    impactIndex: 82,
+    vulnerabilityIndex: 78,
+  },
+  {
+    id: "3",
+    name: "Presa de Embalse Único en el Río Primero",
+    number: 3,
+    location: "Cuenca del Río Primero, Córdoba",
+    description:
+      "Proyecto de una gran presa de 80 m de altura sobre el Río Primero para crear un embalse de regulación plurianual de 450 hm³. Incluye obras de defensa contra inundaciones para la ciudad de Córdoba y un sistema de riego para 80.000 hectáreas.",
+    inviabilityReason:
+      "Inundación de 15.000 hectáreas de tierras productivas (8/10), alto costo de construcción en un período de restricción fiscal (7/10), sedimentación acelerada del embalse (8/10), y poca flexibilidad para adaptarse a distintos escenarios climáticos ENSO.",
+    costIndex: 78,
+    impactIndex: 75,
+    vulnerabilityIndex: 72,
+  },
+];
+
+const FALLBACK_COMPARISON = {
+  dimensions: [
+    "Costo",
+    "Impacto Ambiental",
+    "Vulnerabilidad Climática",
+    "Tiempo de Implementación",
+    "Escalabilidad",
+    "Resiliencia Comunitaria",
+  ],
+  centralized: [9, 9, 8, 7, 3, 2],
+  distributed: [3, 2, 9, 4, 9, 9],
+};
 
 function ParadigmaHero() {
   const [summary, setSummary] = useState("");
@@ -70,13 +128,13 @@ function ParadigmaHero() {
           NASA Space Apps Challenge 2025
         </span>
         <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
-          Analisis Comparativo de Paradigmas en la{" "}
-          <span className="gradient-text">Gestion de Recursos Hidricos</span>
+          Análisis Comparativo de Paradigmas en la{" "}
+          <span className="gradient-text">Gestión de Recursos Hídricos</span>
         </h1>
         <p className="text-lg text-white/60 max-w-3xl mx-auto mb-8 leading-relaxed">
-          Un estudio de caso en Cordoba, Argentina, que contrasta la ingenieria
+          Un estudio de caso en Córdoba, Argentina, que contrasta la ingeniería
           civil del siglo XX con la inteligencia geoespacial del siglo XXI para
-          proponer un futuro hidrico sostenible y resiliente.
+          proponer un futuro hídrico sostenible y resiliente.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <button onClick={generateSummary} className="btn-primary">
@@ -109,13 +167,35 @@ function ParadigmaHero() {
 }
 
 function ParadigmaI() {
-  const { data: projects } = trpc.paradigms.listProjects.useQuery({
+  const { data: trpcProjects } = trpc.paradigms.listProjects.useQuery({
     paradigm: "centralized",
   });
-  const [selectedProject, setSelectedProject] = useState<number>(0);
+  const [selectedProject, setSelectedProject] = useState(0);
 
-  const projectList = projects ?? [];
+  const projectList = (trpcProjects ??
+    FALLBACK_PROJECTS) as typeof FALLBACK_PROJECTS;
   const selected = projectList[selectedProject];
+
+  const metrics = [
+    {
+      label: "Costo",
+      value: selected?.costIndex ?? 0,
+      color: "red",
+      desc: "Inversión económica necesaria para su construcción y operación",
+    },
+    {
+      label: "Impacto Ambiental",
+      value: selected?.impactIndex ?? 0,
+      color: "orange",
+      desc: "Daño potencial sobre ecosistemas, biodiversidad y recursos naturales",
+    },
+    {
+      label: "Vulnerabilidad",
+      value: selected?.vulnerabilityIndex ?? 0,
+      color: "purple",
+      desc: "Exposición a fallos por eventos climáticos extremos o sabotaje",
+    },
+  ];
 
   return (
     <section className="section-alt py-20">
@@ -125,12 +205,20 @@ function ParadigmaI() {
             PARADIGMA I
           </span>
           <h2 className="text-3xl font-bold text-white">
-            Infraestructura Hidrica Centralizada del Siglo XX
+            Infraestructura Hídrica Centralizada del Siglo XX
           </h2>
           <p className="mt-4 text-white/60 max-w-2xl mx-auto">
-            Este enfoque se basa en proyectos de gran escala, masivos y
-            centralizados. A continuacion, se exploran las propuestas historicas
-            y las razones de su inviabilidad.
+            Este enfoque tradicional se basa en{" "}
+            <strong className="text-white">
+              megaproyectos de gran escala y centralizados
+            </strong>
+            : grandes presas, canales masivos y trasvases interprovinciales. Si
+            bien fueron el modelo dominante del siglo XX, en Córdoba han
+            demostrado ser{" "}
+            <strong className="text-red-400">
+              inviables por su costo, impacto ambiental y vulnerabilidad
+            </strong>{" "}
+            ante el ENSO.
           </p>
         </div>
 
@@ -139,8 +227,11 @@ function ParadigmaI() {
             <div className="glass-card p-6">
               <h4 className="font-bold text-lg mb-4 text-white flex items-center gap-2">
                 <XCircle className="w-5 h-5 text-red-400" />
-                Proyectos Considerados
+                Proyectos Evaluados
               </h4>
+              <p className="text-xs text-white/40 mb-4">
+                Seleccioná un proyecto para ver su análisis detallado
+              </p>
               <div className="space-y-2">
                 {projectList.map((project, index) => (
                   <button
@@ -163,7 +254,7 @@ function ParadigmaI() {
               </div>
             </div>
           </div>
-          <div className="lg:col-span-2 glass-card p-6 md:p-8 min-h-[400px]">
+          <div className="lg:col-span-2 glass-card p-6 md:p-8 min-h-[450px]">
             {selected ? (
               <div className="animate-fadeIn space-y-6">
                 <div className="flex items-start gap-4">
@@ -180,7 +271,7 @@ function ParadigmaI() {
                   </div>
                 </div>
 
-                <p className="text-white/70 leading-relaxed">
+                <p className="text-white/70 leading-relaxed text-sm">
                   {selected.description}
                 </p>
 
@@ -188,40 +279,24 @@ function ParadigmaI() {
                   <div className="flex items-center gap-2 mb-2">
                     <AlertTriangle className="w-4 h-4 text-red-400" />
                     <span className="font-semibold text-sm text-red-400">
-                      Causa de Inviabilidad
+                      ¿Por qué es inviable?
                     </span>
                   </div>
-                  <p className="text-white/60 text-sm">
+                  <p className="text-white/60 text-sm leading-relaxed">
                     {selected.inviabilityReason}
                   </p>
                 </div>
 
                 <div>
-                  <p className="text-xs font-medium text-white/50 uppercase tracking-wider mb-3">
-                    Indices de Inviabilidad
+                  <p className="text-xs font-medium text-white/50 uppercase tracking-wider mb-4">
+                    Índices de Inviabilidad (mayor = peor)
                   </p>
                   <div className="grid grid-cols-3 gap-4">
-                    {[
-                      {
-                        label: "Costo",
-                        value: selected.costIndex,
-                        color: "red",
-                      },
-                      {
-                        label: "Impacto Ambiental",
-                        value: selected.impactIndex,
-                        color: "orange",
-                      },
-                      {
-                        label: "Vulnerabilidad",
-                        value: selected.vulnerabilityIndex,
-                        color: "purple",
-                      },
-                    ].map(metric => (
-                      <div key={metric.label} className="text-center">
-                        <div className="relative h-24 flex items-end justify-center mb-2">
+                    {metrics.map(metric => (
+                      <div key={metric.label} className="text-center group">
+                        <div className="relative h-28 flex items-end justify-center mb-2">
                           <div
-                            className={`w-full max-w-[60px] rounded-t-lg transition-all duration-700 ease-out ${
+                            className={`w-full max-w-[60px] rounded-t-lg transition-all duration-700 ease-out group-hover:scale-105 ${
                               metric.color === "red"
                                 ? "bg-gradient-to-t from-red-600 to-red-400"
                                 : metric.color === "orange"
@@ -246,12 +321,16 @@ function ParadigmaI() {
                       </div>
                     ))}
                   </div>
+                  <p className="text-[10px] text-white/30 text-center mt-3">
+                    Cada índice representa una escala conceptual de 0 (mínimo) a
+                    100 (máximo)
+                  </p>
                 </div>
               </div>
             ) : (
               <div className="flex flex-col justify-center items-center h-full text-white/30">
                 <ChevronRight className="w-12 h-12 mb-3 rotate-180" />
-                <p>Seleccione un proyecto de la lista para ver los detalles.</p>
+                <p>Seleccioná un proyecto de la lista para ver sus detalles.</p>
               </div>
             )}
           </div>
@@ -261,11 +340,15 @@ function ParadigmaI() {
           <div className="text-center mb-8">
             <h4 className="text-2xl font-bold text-white flex items-center justify-center gap-2">
               <BarChart3 className="w-6 h-6 text-red-400" />
-              Analisis Conceptual de Inviabilidad
+              Comparación de Inviabilidad entre Proyectos
             </h4>
-            <p className="text-white/50 mt-2 text-sm max-w-2xl mx-auto">
-              Aunque los valores son conceptuales, esta grafica ilustra por que
-              los megaproyectos son consistentemente descartados.
+            <p className="text-white/50 mt-2 text-sm max-w-3xl mx-auto">
+              Los gráficos de barras muestran por qué estos megaproyectos fueron
+              consistentemente descartados en Córdoba:{" "}
+              <strong className="text-white">
+                altos costos, gran impacto ambiental y alta vulnerabilidad
+              </strong>{" "}
+              a eventos climáticos extremos como El Niño y La Niña.
             </p>
           </div>
           <div className="space-y-6">
@@ -279,10 +362,13 @@ function ParadigmaI() {
                     {project.name}
                   </p>
                   <span className="text-xs text-white/40 font-mono">
-                    {(project.costIndex +
-                      project.impactIndex +
-                      project.vulnerabilityIndex) /
-                      3}
+                    Promedio:{" "}
+                    {Math.round(
+                      (project.costIndex +
+                        project.impactIndex +
+                        project.vulnerabilityIndex) /
+                        3
+                    )}
                     /100
                   </span>
                 </div>
@@ -295,7 +381,7 @@ function ParadigmaI() {
                       />
                     </div>
                     <span className="text-[11px] text-white/40 mt-1 block">
-                      Costo {project.costIndex}
+                      Costo: {project.costIndex}/100
                     </span>
                   </div>
                   <div>
@@ -306,7 +392,7 @@ function ParadigmaI() {
                       />
                     </div>
                     <span className="text-[11px] text-white/40 mt-1 block">
-                      Impacto {project.impactIndex}
+                      Impacto: {project.impactIndex}/100
                     </span>
                   </div>
                   <div>
@@ -317,7 +403,7 @@ function ParadigmaI() {
                       />
                     </div>
                     <span className="text-[11px] text-white/40 mt-1 block">
-                      Vulnerabilidad {project.vulnerabilityIndex}
+                      Vulnerabilidad: {project.vulnerabilityIndex}/100
                     </span>
                   </div>
                 </div>
@@ -333,47 +419,47 @@ function ParadigmaI() {
 function ParadigmaII() {
   const foundations = [
     {
-      title: "Resiliencia Climatica",
-      desc: "Captura lluvias erraticas y localizadas, creando un sistema robusto y menos vulnerable que un unico gran embalse.",
+      title: "Resiliencia Climática",
+      desc: "Captura lluvias erráticas y localizadas, creando un sistema robusto y menos vulnerable que un único gran embalse.",
       icon: CloudSunRain,
     },
     {
-      title: "Restauracion Ecologica",
-      desc: "Recarga acuiferos, reduce la erosion y restaura la humedad del suelo, combatiendo la desertificacion.",
+      title: "Restauración Ecológica",
+      desc: "Recarga acuíferos, reduce la erosión y restaura la humedad del suelo, combatiendo la desertificación.",
       icon: Leaf,
     },
     {
-      title: "Viabilidad Economica",
-      desc: "Implementacion modular y escalable con costos de mantenimiento fraccionados y considerablemente inferiores.",
+      title: "Viabilidad Económica",
+      desc: "Implementación modular y escalable con costos de mantenimiento fraccionados y considerablemente inferiores.",
       icon: DollarSign,
     },
     {
       title: "Gobernanza Local",
-      desc: "Fomenta un modelo adaptativo y policentrico, empoderando a las comunidades en la gestion del recurso.",
+      desc: "Fomenta un modelo adaptativo y policéntrico, empoderando a las comunidades en la gestión del recurso.",
       icon: Users,
     },
   ];
 
   const stages = [
     {
-      title: "Etapa I: Caracterizacion y Seleccion de Emplazamientos",
-      desc: "Se utilizan datos satelitales para encontrar miles de sitios optimos para micro-represas, maximizando la eficiencia.",
+      title: "Etapa I: Caracterización y Selección de Emplazamientos",
+      desc: "Se utilizan datos satelitales para encontrar miles de sitios óptimos para micro-represas, maximizando la eficiencia.",
       tags: [
         "DEM (SRTM, ALOS PALSAR)",
-        "Imagenes Multiespectrales (Landsat, Sentinel)",
+        "Imágenes Multiespectrales (Landsat, Sentinel)",
       ],
     },
     {
       title: "Etapa II: Monitoreo y Modelado Predictivo",
-      desc: "La gestion deja de ser reactiva y se vuelve proactiva, anticipando el ingreso de agua al sistema con datos casi en tiempo real.",
-      tags: ["Precipitacion (GPM)", "Humedad del Suelo (SMAP)"],
+      desc: "La gestión deja de ser reactiva y se vuelve proactiva, anticipando el ingreso de agua al sistema con datos casi en tiempo real.",
+      tags: ["Precipitación (GPM)", "Humedad del Suelo (SMAP)"],
     },
     {
-      title: "Etapa III: Medicion de Impacto y Gestion a Largo Plazo",
-      desc: "Se cuantifica el exito del sistema midiendo la mejora en la salud del ecosistema y la recarga real de los acuiferos.",
+      title: "Etapa III: Medición de Impacto y Gestión a Largo Plazo",
+      desc: "Se cuantifica el éxito del sistema midiendo la mejora en la salud del ecosistema y la recarga real de los acuíferos.",
       tags: [
-        "Indices de Vegetacion (MODIS - NDVI)",
-        "Datos Gravimetricos (GRACE/GRACE-FO)",
+        "Índices de Vegetación (MODIS - NDVI)",
+        "Datos Gravimétricos (GRACE/GRACE-FO)",
       ],
     },
   ];
@@ -386,20 +472,25 @@ function ParadigmaII() {
             PARADIGMA II
           </span>
           <h2 className="text-3xl font-bold text-white">
-            Gestion Distribuida con{" "}
+            Gestión Distribuida con{" "}
             <span className="gradient-text">Inteligencia Geoespacial</span>
           </h2>
           <p className="mt-4 text-white/60 max-w-2xl mx-auto">
             Este modelo propone un sistema descentralizado de micro-represas,
-            planificado y gestionado con datos de observacion de la Tierra,
-            principalmente de la NASA.
+            planificado y gestionado con datos de observación de la Tierra de la
+            NASA. A diferencia del paradigma centralizado, es{" "}
+            <strong className="text-white">
+              modular, escalable, de bajo impacto y adaptativo a la variabilidad
+              climática del ENSO
+            </strong>
+            .
           </p>
         </div>
 
         <div className="mb-16">
           <h4 className="text-xl font-bold text-center mb-8 text-white flex items-center justify-center gap-2">
             <CheckCircle2 className="w-5 h-5 text-eco-400" />
-            Fundamentos del Modelo
+            Los 4 Pilares del Modelo Distribuido
           </h4>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {foundations.map(f => (
@@ -415,7 +506,9 @@ function ParadigmaII() {
                   <h5 className="font-bold text-lg mb-2 text-white">
                     {f.title}
                   </h5>
-                  <p className="text-sm text-white/60">{f.desc}</p>
+                  <p className="text-sm text-white/60 leading-relaxed">
+                    {f.desc}
+                  </p>
                 </div>
               </div>
             ))}
@@ -425,8 +518,12 @@ function ParadigmaII() {
         <div>
           <h4 className="text-xl font-bold text-center mb-8 text-white flex items-center justify-center gap-2">
             <TrendingUp className="w-5 h-5 text-water-400" />
-            Metodologia: El Ecosistema de Datos de la NASA en Accion
+            Metodología: El Ecosistema de Datos de la NASA en Acción
           </h4>
+          <p className="text-center text-white/50 text-sm mb-10 max-w-2xl mx-auto">
+            El modelo se implementa en 3 etapas progresivas, utilizando datos
+            satelitales públicos de la NASA para cada fase:
+          </p>
           <div className="max-w-3xl mx-auto relative pl-10 lg:pl-12">
             <div className="absolute left-[19px] top-2 bottom-2 w-0.5 bg-gradient-to-b from-eco-500 via-water-500 to-eco-500 rounded-full" />
             {stages.map((stage, index) => (
@@ -461,10 +558,13 @@ function ParadigmaII() {
 }
 
 function ComparisonSection() {
-  const { data: comparison } = trpc.paradigms.getComparison.useQuery();
+  const { data: trpcComparison } = trpc.paradigms.getComparison.useQuery();
   const [analysis, setAnalysis] = useState("");
   const [loading, setLoading] = useState(false);
   const [showAnalysis, setShowAnalysis] = useState(false);
+
+  const comparison = (trpcComparison ??
+    FALLBACK_COMPARISON) as typeof FALLBACK_COMPARISON;
 
   const generateAnalysis = async () => {
     setLoading(true);
@@ -506,83 +606,89 @@ function ComparisonSection() {
       <div className="max-w-5xl mx-auto px-6">
         <div className="text-center mb-12">
           <span className="inline-block tag-orange mb-4">
-            COMPARACION DIRECTA
+            COMPARACIÓN DIRECTA
           </span>
           <h2 className="text-3xl font-bold text-white">
             Centralizado vs{" "}
             <span className="gradient-text">Distribuido Geoespacial</span>
           </h2>
           <p className="mt-4 text-white/60 max-w-2xl mx-auto">
-            Esta visualizacion resume el contraste fundamental entre los dos
-            enfoques a traves de metricas clave.
+            Esta comparación contrasta ambas aproximaciones en 6 dimensiones
+            clave.
+            <strong className="text-white">
+              {" "}
+              Las barras más altas indican peor desempeño
+            </strong>{" "}
+            en centralizado (rojo) y
+            <strong className="text-white"> mejor desempeño</strong> en
+            distribuido (verde).
           </p>
         </div>
 
         <div className="glass-card p-6 md:p-8">
-          {comparison ? (
-            <div>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
-                {comparison.dimensions.map((dim, i) => {
-                  const cVal = comparison.centralized[i];
-                  const dVal = comparison.distributed[i];
-                  const maxVal = Math.max(cVal, dVal, 1);
-                  return (
-                    <div key={dim} className="text-center">
-                      <p className="text-xs font-medium text-white/50 mb-4 uppercase tracking-wider truncate">
-                        {dim}
-                      </p>
-                      <div className="flex items-end justify-center gap-3 h-40">
-                        <div className="flex flex-col items-center gap-1">
-                          <span className="text-xs font-bold text-red-400">
-                            {cVal}
-                          </span>
-                          <div
-                            className="w-10 rounded-t-lg bg-gradient-to-t from-red-600 to-red-400 transition-all duration-700 shadow-lg shadow-red-500/10"
-                            style={{
-                              height: `${(cVal / maxVal) * 100}%`,
-                              minHeight: "8px",
-                            }}
-                          />
-                          <span className="text-[10px] text-white/30 uppercase">
-                            Centralizado
-                          </span>
-                        </div>
-                        <div className="flex flex-col items-center gap-1">
-                          <span className="text-xs font-bold text-eco-400">
-                            {dVal}
-                          </span>
-                          <div
-                            className="w-10 rounded-t-lg bg-gradient-to-t from-eco-600 to-eco-400 transition-all duration-700 shadow-lg shadow-eco-500/10"
-                            style={{
-                              height: `${(dVal / maxVal) * 100}%`,
-                              minHeight: "8px",
-                            }}
-                          />
-                          <span className="text-[10px] text-white/30 uppercase">
-                            Geoespacial
-                          </span>
-                        </div>
-                      </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
+            {comparison.dimensions.map((dim, i) => {
+              const cVal = comparison.centralized[i];
+              const dVal = comparison.distributed[i];
+              const maxVal = Math.max(cVal, dVal, 1);
+              return (
+                <div key={dim} className="text-center">
+                  <p className="text-xs font-medium text-white/50 mb-4 uppercase tracking-wider">
+                    {dim}
+                  </p>
+                  <div className="flex items-end justify-center gap-3 h-40">
+                    <div className="flex flex-col items-center gap-1">
+                      <span className="text-xs font-bold text-red-400">
+                        {cVal}
+                      </span>
+                      <div
+                        className="w-10 rounded-t-lg bg-gradient-to-t from-red-600 to-red-400 transition-all duration-700 shadow-lg shadow-red-500/10"
+                        style={{
+                          height: `${(cVal / maxVal) * 100}%`,
+                          minHeight: "8px",
+                        }}
+                      />
+                      <span className="text-[10px] text-white/30 uppercase leading-tight text-center">
+                        Centralizado
+                      </span>
                     </div>
-                  );
-                })}
-              </div>
-              <div className="flex justify-center gap-8 mt-8 pt-6 border-t border-white/10">
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded bg-gradient-to-br from-red-600 to-red-400" />
-                  <span className="text-sm text-white/60">Centralizado</span>
+                    <div className="flex flex-col items-center gap-1">
+                      <span className="text-xs font-bold text-eco-400">
+                        {dVal}
+                      </span>
+                      <div
+                        className="w-10 rounded-t-lg bg-gradient-to-t from-eco-600 to-eco-400 transition-all duration-700 shadow-lg shadow-eco-500/10"
+                        style={{
+                          height: `${(dVal / maxVal) * 100}%`,
+                          minHeight: "8px",
+                        }}
+                      />
+                      <span className="text-[10px] text-white/30 uppercase leading-tight text-center">
+                        Geoespacial
+                      </span>
+                    </div>
+                  </div>
+                  <p className="text-[10px] text-white/30 mt-2">
+                    Centralizado {cVal}/10 vs Distribuido {dVal}/10
+                  </p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 rounded bg-gradient-to-br from-eco-600 to-eco-400" />
-                  <span className="text-sm text-white/60">Geoespacial</span>
-                </div>
-              </div>
+              );
+            })}
+          </div>
+          <div className="flex justify-center gap-8 mt-8 pt-6 border-t border-white/10">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded bg-gradient-to-br from-red-600 to-red-400" />
+              <span className="text-sm text-white/60">
+                Centralizado (peor desempeño)
+              </span>
             </div>
-          ) : (
-            <div className="flex items-center justify-center h-64">
-              <Loader2 className="w-8 h-8 animate-spin text-water-400" />
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded bg-gradient-to-br from-eco-600 to-eco-400" />
+              <span className="text-sm text-white/60">
+                Distribuido Geoespacial (mejor desempeño)
+              </span>
             </div>
-          )}
+          </div>
         </div>
 
         <div className="mt-10 text-center">
@@ -595,7 +701,7 @@ function ComparisonSection() {
               {loading ? (
                 <div className="flex items-center gap-3 text-white/60">
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Generando analisis...
+                  Generando análisis...
                 </div>
               ) : (
                 <div className="prose prose-invert max-w-none">
@@ -618,19 +724,19 @@ function GlobalSection() {
   const cases = [
     {
       title: "California, EE.UU.",
-      desc: "Enfrenta sequias prolongadas y sobreexplotacion de acuiferos. Un sistema de micro-represas podria potenciar la recarga de acuiferos durante los escasos eventos de lluvia intensa.",
+      desc: "Enfrenta sequías prolongadas y sobreexplotación de acuíferos. Un sistema de micro-represas podría potenciar la recarga de acuíferos durante los escasos eventos de lluvia intensa.",
       impact: "Alto potencial",
       tag: "tag-orange",
     },
     {
       title: "Cuenca Murray-Darling, Australia",
-      desc: "Sufre de una alta competencia por el agua entre agricultura y consumo humano. Una gestion distribuida mejoraria la eficiencia y reduciria la evaporacion.",
+      desc: "Sufre de una alta competencia por el agua entre agricultura y consumo humano. Una gestión distribuida mejoraría la eficiencia y reduciría la evaporación.",
       impact: "Potencial significativo",
       tag: "tag-blue",
     },
     {
       title: "Maharashtra, India",
-      desc: "Experimenta monzones irregulares. La implementacion masiva de pequenas estructuras de contencion es una estrategia clave para la seguridad hidrica local.",
+      desc: "Experimenta monzones irregulares. La implementación masiva de pequeñas estructuras de contención es una estrategia clave para la seguridad hídrica local.",
       impact: "Alto potencial",
       tag: "tag-green",
     },
@@ -648,9 +754,10 @@ function GlobalSection() {
             <span className="gradient-text">Modelo Geoespacial</span>
           </h2>
           <p className="mt-4 text-white/60 max-w-2xl mx-auto">
-            La escasez hidrica es un desafio global. El modelo de gestion
-            distribuida, basado en datos satelitales publicos, es una solucion
-            escalable y adaptable a cualquier region semiarida del mundo.
+            La escasez hídrica no es exclusiva de Córdoba. El modelo de gestión
+            distribuida, basado en datos satelitales públicos de la NASA, es una
+            solución escalable y adaptable a cualquier región semiárida del
+            mundo.
           </p>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
@@ -680,6 +787,200 @@ function GlobalSection() {
   );
 }
 
+function AIAssistant() {
+  const [messages, setMessages] = useState<{ role: string; text: string }[]>([
+    {
+      role: "model",
+      text: "Hola! Soy tu asistente para el análisis de datos hídricos. Puedes subir archivos y darme instrucciones para mejorar. ¿En qué puedo ayudarte hoy?",
+    },
+  ]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [extendedKnowledge, setExtendedKnowledge] = useState(false);
+  const [creatorInstructions, setCreatorInstructions] = useState("");
+  const chatEndRef = useRef<HTMLDivElement>(null);
+  const sessionId = useRef(`session_${Date.now()}`);
+
+  const sendMutation = trpc.chat.sendMessage.useMutation();
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const handleSend = async () => {
+    if (!input.trim()) return;
+    const userMsg = input.trim();
+    setInput("");
+    setMessages(prev => [...prev, { role: "user", text: userMsg }]);
+    setLoading(true);
+
+    try {
+      const result = await sendMutation.mutateAsync({
+        sessionId: sessionId.current,
+        message: userMsg,
+        extendedKnowledge,
+        creatorInstructions: creatorInstructions || undefined,
+      });
+      setMessages(prev => [...prev, { role: "model", text: result.response }]);
+    } catch {
+      setMessages(prev => [
+        ...prev,
+        {
+          role: "model",
+          text: "Lo siento, ocurrió un error. El backend podría no estar disponible en este momento. Por favor intentá de nuevo más tarde o consultá la documentación del proyecto.",
+        },
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <section className="section-alt py-20">
+      <div className="max-w-4xl mx-auto px-6">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-bold text-white flex items-center justify-center gap-2">
+            Asistente de IA
+            <span className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-eco-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-eco-500" />
+            </span>
+          </h2>
+          <p className="mt-4 text-white/60 max-w-2xl mx-auto">
+            Consultá los datos hídricos de Córdoba con inteligencia artificial.
+            El asistente puede responder preguntas sobre cuencas, calidad de
+            agua, tendencias climáticas y más.
+          </p>
+          <div className="mt-4 flex flex-wrap justify-center gap-2">
+            {[
+              "QGIS",
+              "ESP32",
+              "Micro-represas",
+              "NASA",
+              "NDVI",
+              "Demografía",
+            ].map(tag => (
+              <span key={tag} className="tag-blue">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="glass-card overflow-hidden">
+          <div className="p-6">
+            <div className="glass border-l-4 border-water-500 pl-4 py-2 mb-4 rounded-r">
+              <p className="text-sm text-white/70">
+                Este asistente se conecta al backend del proyecto para responder
+                con datos reales. Si el backend no está disponible, el mensaje
+                de error te lo indicará.
+              </p>
+            </div>
+            <div className="h-80 overflow-y-auto glass rounded-lg p-4 mb-4 space-y-4">
+              {messages.map((msg, i) => (
+                <div
+                  key={i}
+                  className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                >
+                  <div
+                    className={`max-w-md p-3 rounded-lg text-sm ${
+                      msg.role === "user"
+                        ? "bg-water-500/20 text-white"
+                        : "glass-card-light text-white/70"
+                    }`}
+                  >
+                    {msg.text}
+                  </div>
+                </div>
+              ))}
+              {loading && (
+                <div className="flex justify-start">
+                  <div className="glass-card-light p-3 rounded-lg">
+                    <Loader2 className="w-5 h-5 animate-spin text-water-400" />
+                  </div>
+                </div>
+              )}
+              <div ref={chatEndRef} />
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={e => e.key === "Enter" && handleSend()}
+                placeholder="Ej: ¿Cuál es la tendencia del embalse San Roque?"
+                className="flex-1 p-3 bg-white/5 border border-white/10 rounded-lg focus:ring-2 focus:ring-water-500 focus:border-transparent text-white placeholder:text-white/30"
+              />
+              <button
+                onClick={handleSend}
+                disabled={loading}
+                className="bg-water-500/20 text-water-400 p-3 rounded-lg hover:bg-water-500/30 transition-colors disabled:opacity-50"
+              >
+                <Send className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+
+          <div className="border-t border-white/10 p-6">
+            <h3 className="text-lg font-semibold text-white mb-4">
+              Panel del Creador
+            </h3>
+            <div className="glass p-4 rounded-lg mb-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-semibold text-white/80">
+                    Conocimiento Extendido
+                  </p>
+                  <p className="text-xs text-white/50">
+                    Permite a la IA responder temas sobre hidrología, GIS, etc.
+                  </p>
+                </div>
+                <button
+                  onClick={() => setExtendedKnowledge(!extendedKnowledge)}
+                >
+                  {extendedKnowledge ? (
+                    <ToggleRight className="w-10 h-10 text-eco-500" />
+                  ) : (
+                    <ToggleLeft className="w-10 h-10 text-white/30" />
+                  )}
+                </button>
+              </div>
+            </div>
+            <div className="bg-yellow-500/10 border-l-4 border-yellow-400 p-3 rounded-r-lg mb-4">
+              <p className="text-sm font-bold text-yellow-400">Mejora la IA</p>
+              <p className="text-xs text-yellow-300/70">
+                Usá este panel para darle nuevas instrucciones o contexto a la
+                IA.
+              </p>
+            </div>
+            <textarea
+              value={creatorInstructions}
+              onChange={e => setCreatorInstructions(e.target.value)}
+              placeholder="Ej: A partir de ahora, cuando hablemos de calidad del agua, enfocate en los niveles de pH y turbidez."
+              className="w-full h-24 bg-white/5 border border-white/10 rounded-lg p-3 focus:ring-2 focus:ring-eco-500 focus:border-transparent text-sm text-white placeholder:text-white/30"
+            />
+            <button
+              onClick={() => {
+                setMessages(prev => [
+                  ...prev,
+                  {
+                    role: "model",
+                    text: "Comportamiento de la IA actualizado con tus nuevas instrucciones.",
+                  },
+                ]);
+                setCreatorInstructions("");
+              }}
+              className="mt-3 w-full bg-eco-500/20 text-eco-400 py-2 rounded-lg hover:bg-eco-500/30 transition-colors font-medium"
+            >
+              Actualizar Comportamiento de la IA
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function ConclusionSection() {
   return (
     <section className="section-alt py-20 relative overflow-hidden">
@@ -688,26 +989,25 @@ function ConclusionSection() {
         <div className="glass-card p-10 md:p-14 text-center relative">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-water-500 via-eco-500 to-water-500 rounded-t-2xl" />
           <Shield className="w-14 h-14 text-water-400 mx-auto mb-6" />
-          <span className="inline-block tag-green mb-4">CONCLUSION</span>
+          <span className="inline-block tag-green mb-4">CONCLUSIÓN</span>
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 leading-tight">
             Hacia un &ldquo;Gemelo Digital&rdquo; para la{" "}
-            <span className="gradient-text">Gobernanza Hidrica</span>
+            <span className="gradient-text">Gobernanza Hídrica</span>
           </h2>
           <p className="text-white/60 leading-relaxed max-w-3xl mx-auto text-lg">
             La propuesta final no es solo construir micro-represas, sino
             desarrollar un{" "}
             <strong className="text-white">"Gemelo Digital"</strong> de la
-            cuenca: un modelo virtual dinamico, alimentado por datos de la NASA
+            cuenca: un modelo virtual dinámico, alimentado por datos de la NASA
             en tiempo real. Esta herramienta permite simular escenarios,
-            optimizar la asignacion del recurso y anticipar sequias,
-            representando la transicion de la era del hormigon a la era de la
-            inteligencia geoespacial. Es un modelo de gestion hidrica escalable
-            y exportable para regiones semiaridas del mundo.
+            optimizar la asignación del recurso y anticipar sequías,
+            representando la transición de la era del hormigón a la era de la
+            inteligencia geoespacial.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <span className="tag-blue">Gemelo Digital</span>
             <span className="tag-green">NASA Earthdata</span>
-            <span className="tag-orange">Gestion Adaptativa</span>
+            <span className="tag-orange">Gestión Adaptativa</span>
           </div>
         </div>
       </div>
@@ -728,9 +1028,11 @@ export default function Paradigmas() {
       <ParadigmaII />
       <ComparisonSection />
       <GlobalSection />
+      <AIAssistant />
       <ConclusionSection />
       <DocumentationSection />
       <Footer />
+      <ChatWidget />
     </div>
   );
 }
