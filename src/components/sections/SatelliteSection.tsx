@@ -1,7 +1,40 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Satellite, Leaf, Droplet, BarChart3 } from "lucide-react";
 import { SectionHeading } from "./shared";
-import { trpc } from "@/providers/trpc";
+
+function predictNDVI(
+  precipitation: number,
+  temperature: number,
+  phenomenon: "normal" | "nino" | "nina"
+) {
+  const baseNdvi = 0.45;
+  const precipFactor = (precipitation - 100) * 0.001;
+  const tempFactor = (25 - temperature) * 0.003;
+  const elNinoShift =
+    phenomenon === "nino" ? 0.08 : phenomenon === "nina" ? -0.12 : 0;
+  let ndvi = baseNdvi + precipFactor + tempFactor + elNinoShift;
+  ndvi = Math.max(0.05, Math.min(0.85, ndvi));
+
+  let status: string, recommendation: string, color: string;
+  if (ndvi > 0.6) {
+    status = "Vegetaci\u00f3n densa y saludable";
+    recommendation =
+      "Condiciones favorables. Mantener monitoreo de rutina con im\u00e1genes Sentinel-2.";
+    color = "text-green-400";
+  } else if (ndvi > 0.35) {
+    status = "Vegetaci\u00f3n moderada";
+    recommendation =
+      "Monitorear tendencia semanal. Si persiste la tendencia descendente, considerar acciones de riego suplementario.";
+    color = "text-yellow-400";
+  } else {
+    status = "Vegetaci\u00f3n escasa / estr\u00e9s h\u00eddrico severo";
+    recommendation =
+      "Activar protocolo de emergencia h\u00eddrica. Implementar restricci\u00f3n de uso no esencial y priorizar micro-represas para consumo humano.";
+    color = "text-red-400";
+  }
+
+  return { ndvi: Math.round(ndvi * 100) / 100, status, recommendation, color };
+}
 
 export default function SatelliteSection() {
   const [phenomenon, setPhenomenon] = useState<"normal" | "nino" | "nina">(
@@ -9,9 +42,10 @@ export default function SatelliteSection() {
   );
   const [precipitation, setPrecipitation] = useState(100);
   const [temperature, setTemperature] = useState(25);
-  const { data: prediction } = trpc.satellite.predictNDVI.useQuery(
-    { precipitation, temperature, phenomenon },
-    { enabled: true }
+
+  const prediction = useMemo(
+    () => predictNDVI(precipitation, temperature, phenomenon),
+    [precipitation, temperature, phenomenon]
   );
 
   return (

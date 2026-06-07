@@ -1,8 +1,17 @@
+import { asset } from "@/lib/utils";
 import { StatCard } from "./shared";
 
 export default function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-hero-pattern">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <div className="absolute inset-0">
+        <img
+          src={asset("/hero-bg.jpg")}
+          alt=""
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-nasa-dark/80 via-nasa-dark/60 to-nasa-dark/90" />
+      </div>
       <div className="absolute inset-0 particles-bg" />
       <div className="absolute inset-0 grid-overlay" />
       <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-water-500/10 rounded-full blur-[120px] pointer-events-none" />
