@@ -1,4 +1,4 @@
-import { useState, type ElementType } from "react";
+import { type ElementType } from "react";
 import {
   AlertTriangle,
   Users,
@@ -7,8 +7,6 @@ import {
   Shield,
   Search,
   Droplets,
-  ToggleLeft,
-  ToggleRight,
 } from "lucide-react";
 import { SectionHeading } from "./shared";
 
@@ -77,11 +75,6 @@ const problemData: ProblemItem[] = [
 ];
 
 export default function ProblemSection() {
-  const [expandedIndex, setExpandedIndex] = useState<number | null>(0);
-  const [showAll, setShowAll] = useState(false);
-
-  const visibleItems = showAll ? problemData : problemData.slice(0, 3);
-
   return (
     <section className="bg-white py-20" id="analisis-problema">
       <div className="max-w-7xl mx-auto px-6">
@@ -95,68 +88,48 @@ export default function ProblemSection() {
           construir resiliencia hidrica.
         </p>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {visibleItems.map((item, index) => {
-            const globalIndex = showAll ? index : index;
-            const isExpanded = expandedIndex === globalIndex;
+        <div className="space-y-6 mb-10">
+          {problemData.map((item, index) => {
             const Icon = item.icon;
+            const isLeft = index % 2 === 0;
 
             return (
               <div
                 key={item.question}
-                className={`bg-white rounded-xl border-2 transition-all duration-300 cursor-pointer ${
-                  isExpanded
-                    ? "border-[#0B3D91] shadow-lg -translate-y-1"
-                    : "border-slate-200 shadow-sm hover:border-slate-300 hover:shadow-md"
+                className={`flex flex-col md:flex-row gap-6 p-6 rounded-xl border-2 border-slate-200 hover:border-slate-300 transition-all shadow-sm ${
+                  item.actionable ? "bg-green-50/30" : "bg-white"
                 }`}
-                onClick={() =>
-                  setExpandedIndex(isExpanded ? null : globalIndex)
-                }
               >
-                <div className="p-6">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        item.actionable ? "bg-green-100" : "bg-blue-100"
-                      }`}
-                    >
-                      <Icon
-                        className={`w-5 h-5 ${item.actionable ? "text-green-600" : "text-[#0B3D91]"}`}
-                      />
-                    </div>
-                    <h3 className="font-bold text-slate-800 text-lg">
-                      {item.question}
-                    </h3>
-                  </div>
-
+                <div className="flex md:flex-col items-center md:items-start gap-3 md:gap-2 md:min-w-[200px]">
                   <div
-                    className={`overflow-hidden transition-all duration-300 ${
-                      isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                    className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${
+                      item.actionable ? "bg-green-100" : "bg-blue-100"
                     }`}
                   >
-                    <p className="text-slate-600 text-sm leading-relaxed mt-2">
-                      {item.answer}
-                    </p>
-
-                    {item.actionable && item.actionDescription && (
-                      <div className="mt-4 bg-green-50 border-l-4 border-green-500 rounded-r-lg p-4">
-                        <div className="flex items-center gap-2 mb-1">
-                          <Shield className="w-4 h-4 text-green-600" />
-                          <span className="font-semibold text-sm text-green-800">
-                            Acciones posibles:
-                          </span>
-                        </div>
-                        <p className="text-green-700 text-sm">
-                          {item.actionDescription}
-                        </p>
-                      </div>
-                    )}
+                    <Icon
+                      className={`w-6 h-6 ${item.actionable ? "text-green-600" : "text-[#0B3D91]"}`}
+                    />
                   </div>
-
-                  {!isExpanded && (
-                    <p className="text-slate-400 text-xs mt-1">
-                      Click para ver detalle
-                    </p>
+                  <h3 className="font-bold text-slate-800 text-lg md:text-center md:w-full">
+                    {item.question}
+                  </h3>
+                </div>
+                <div className="flex-1 border-t md:border-t-0 md:border-l border-slate-200 pt-4 md:pt-0 md:pl-6">
+                  <p className="text-slate-600 text-sm leading-relaxed">
+                    {item.answer}
+                  </p>
+                  {item.actionable && item.actionDescription && (
+                    <div className="mt-4 bg-green-50 border-l-4 border-green-500 rounded-r-lg p-4">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Shield className="w-4 h-4 text-green-600" />
+                        <span className="font-semibold text-sm text-green-800">
+                          Acciones posibles:
+                        </span>
+                      </div>
+                      <p className="text-green-700 text-sm">
+                        {item.actionDescription}
+                      </p>
+                    </div>
                   )}
                 </div>
               </div>
@@ -164,25 +137,7 @@ export default function ProblemSection() {
           })}
         </div>
 
-        <div className="text-center">
-          <button
-            onClick={() => setShowAll(!showAll)}
-            className="inline-flex items-center gap-2 bg-[#0B3D91] text-white font-semibold px-6 py-3 rounded-full hover:bg-[#082567] transition-all shadow-md"
-          >
-            {showAll ? (
-              <>
-                <ToggleLeft className="w-5 h-5" /> Mostrar menos
-              </>
-            ) : (
-              <>
-                <ToggleRight className="w-5 h-5" /> Ver analisis completo (
-                {problemData.length} preguntas)
-              </>
-            )}
-          </button>
-        </div>
-
-        <div className="mt-10 bg-gradient-to-br from-[#F5F7FA] to-white rounded-2xl p-8 border border-slate-200">
+        <div className="bg-gradient-to-br from-[#F5F7FA] to-white rounded-2xl p-8 border border-slate-200">
           <h3 className="text-xl font-bold text-slate-800 mb-4 text-center">
             Resumen del Analisis
           </h3>
