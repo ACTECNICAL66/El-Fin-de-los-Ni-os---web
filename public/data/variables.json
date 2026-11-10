@@ -1,0 +1,18 @@
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "nombre": "precipitacion",
+      "unidad": "mm",
+      "descripcion": "Precipitación acumulada mensual"
+    },
+    {
+      "id": 2,
+      "nombre": "temperatura",
+      "unidad": "C",
+      "descripcion": "Temperatura media mensual"
+    }
+  ],
+  "count": 2
+}

@@ -59,32 +59,77 @@ export default function DetectiveMode({
   const [selectedCuencaId, setSelectedCuencaId] = useState(initialCuencaId);
   const [selectedVariable, setSelectedVariable] = useState(initialVariable);
 
+  function parseCSV(text: string): any[] {
+    const lines = text.trim().split("\n");
+    const headers = lines[0].split(",").map((h) => h.trim());
+    return lines.slice(1).map((line) => {
+      const values = line.split(",");
+      const obj: any = {};
+      headers.forEach((h, i) => {
+        obj[h] = values[i]?.trim() || "";
+      });
+      return obj;
+    });
+  }
+
   useEffect(() => {
     const cargarDatos = async () => {
       try {
         setLoading(true);
-        const [resCuencas, resVariables] = await Promise.all([
-          fetch("/api/cuencas"),
-          fetch("/api/variables"),
+        setError(null);
+
+        const [resCuencas, resVariables, resTrends] = await Promise.all([
+          fetch("/data/cuencas.geojson"),
+          fetch("/data/variables.json"),
+          fetch("/data/trend_results.csv"),
         ]);
 
-        if (!resCuencas.ok || !resVariables.ok) {
+        if (!resCuencas.ok || !resVariables.ok || !resTrends.ok) {
           throw new Error("Error al cargar datos");
         }
 
-        const dataCuencas = await resCuencas.json();
+        const geojson = await resCuencas.json();
         const dataVariables = await resVariables.json();
+        const trendsText = await resTrends.text();
 
-        setCuencas(dataCuencas.data || []);
+        // Extraer cuencas desde GeoJSON (mismo formato que la API)
+        const cuencasData = geojson.features.map((f: any) => ({
+          id: f.properties.id,
+          nombre: f.properties.nombre,
+          codigo: f.properties.codigo,
+          descripcion: f.properties.descripcion,
+          area_km2: f.properties.area_km2,
+          centroide: [
+            (f.geometry.coordinates[0][0][0] + f.geometry.coordinates[0][2][0]) / 2,
+            (f.geometry.coordinates[0][0][1] + f.geometry.coordinates[0][2][1]) / 2,
+          ],
+        }));
+
+        setCuencas(cuencasData);
         setVariables(dataVariables.data || []);
 
-        const resTendencias = await fetch(
-          `/api/trends?cuenca=${selectedCuencaId}&variable=${selectedVariable}`
+        // Resolver la cuenca seleccionada por su ID para obtener el código
+        const cuencaSel = cuencasData.find((c) => c.id.toString() === selectedCuencaId);
+        const cuencaCodigo = cuencaSel?.codigo ?? selectedCuencaId;
+
+        // Parsear CSV de tendencias (mismo formato que la API /api/trends)
+        const allTrends = parseCSV(trendsText);
+        allTrends.forEach((row: any) => {
+          row.sen_slope = parseFloat(row.sen_slope);
+          row.sen_slope_por_decada = parseFloat(row.sen_slope_por_decada);
+          row.mann_kendall_tau = row.mann_kendall_tau ? parseFloat(row.mann_kendall_tau) : null;
+          row.mann_kendall_p_valor = row.mann_kendall_p_valor ? parseFloat(row.mann_kendall_p_valor) : null;
+          row.n_puntos = parseInt(row.n_puntos);
+          row.periodo_inicio = parseInt(row.periodo_inicio);
+          row.periodo_fin = parseInt(row.periodo_fin);
+        });
+
+        const filtradas = allTrends.filter(
+          (row: any) =>
+            row.codigo === cuencaCodigo &&
+            row.variable === selectedVariable
         );
-        if (resTendencias.ok) {
-          const data = await resTendencias.json();
-          setTendencias(data.data || []);
-        }
+        setTendencias(filtradas);
       } catch (err: any) {
         setError(err.message || "Error al cargar datos");
       } finally {
