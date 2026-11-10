@@ -78,10 +78,11 @@ export default function DetectiveMode({
         setLoading(true);
         setError(null);
 
+        const baseUrl = import.meta.env.BASE_URL || "/";
         const [resCuencas, resVariables, resTrends] = await Promise.all([
-          fetch("/data/cuencas.geojson"),
-          fetch("/data/variables.json"),
-          fetch("/data/trend_results.csv"),
+          fetch(`${baseUrl}data/cuencas.geojson`),
+          fetch(`${baseUrl}data/variables.json`),
+          fetch(`${baseUrl}data/trend_results.csv`),
         ]);
 
         if (!resCuencas.ok || !resVariables.ok || !resTrends.ok) {
