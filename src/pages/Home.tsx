@@ -11,6 +11,7 @@ import {
   ResultsSection,
   CTASection,
   ProblemSection,
+  DetectiveMode,
 } from "@/components/sections";
 
 export default function Home() {
@@ -28,6 +29,7 @@ export default function Home() {
       <ClimateSection />
       <SatelliteSection />
       <ResultsSection />
+      <DetectiveMode />
       <CTASection />
       <Footer />
       <ChatWidget />

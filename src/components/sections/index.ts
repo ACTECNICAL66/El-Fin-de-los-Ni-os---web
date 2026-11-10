@@ -8,3 +8,4 @@ export { default as DownloadsSection } from "./DownloadsSection";
 export { default as CTASection } from "./CTASection";
 export { default as ProblemSection } from "./ProblemSection";
 export { default as DocumentationSection } from "./DocumentationSection";
+export { default as DetectiveMode } from "./DetectiveMode";

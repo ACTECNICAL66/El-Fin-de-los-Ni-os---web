@@ -1,0 +1,152 @@
+{
+  "type": "FeatureCollection",
+  "name": "cuencas_cordoba",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 1,
+        "nombre": "Cuenca Norte-Oeste",
+        "codigo": "CN-O",
+        "descripcion": "Cuenca del noroeste de Córdoba, región de mayor precipitación histórica",
+        "area_km2": 2850.5
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-64.8, -31.2],
+          [-64.3, -31.2],
+          [-64.3, -30.7],
+          [-64.8, -30.7],
+          [-64.8, -31.2]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 2,
+        "nombre": "Cuenca Norte",
+        "codigo": "CN",
+        "descripcion": "Cuenca del norte de Córdoba, zona de transición climática",
+        "area_km2": 3120.3
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-64.3, -31.2],
+          [-63.8, -31.2],
+          [-63.8, -30.7],
+          [-64.3, -30.7],
+          [-64.3, -31.2]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 3,
+        "nombre": "Cuenca Centro",
+        "codigo": "CC",
+        "descripcion": "Cuenca central de Córdoba, incluye el área metropolitana",
+        "area_km2": 4200.7
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-64.3, -31.7],
+          [-63.8, -31.7],
+          [-63.8, -31.2],
+          [-64.3, -31.2],
+          [-64.3, -31.7]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 4,
+        "nombre": "Cuenca Centro-Sur",
+        "codigo": "CC-S",
+        "descripcion": "Cuenca centro-sur, zona agrícola intensiva",
+        "area_km2": 3950.2
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-64.3, -32.2],
+          [-63.8, -32.2],
+          [-63.8, -31.7],
+          [-64.3, -31.7],
+          [-64.3, -32.2]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 5,
+        "nombre": "Cuenca Sur",
+        "codigo": "CS",
+        "descripcion": "Cuenca del sur de Córdoba, región de secano",
+        "area_km2": 3400.1
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-64.3, -32.7],
+          [-63.8, -32.7],
+          [-63.8, -32.2],
+          [-64.3, -32.2],
+          [-64.3, -32.7]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 6,
+        "nombre": "Cuenca Este",
+        "codigo": "CE",
+        "descripcion": "Cuenca oriental de Córdoba, zona de transición",
+        "area_km2": 2980.4
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-63.8, -31.7],
+          [-63.3, -31.7],
+          [-63.3, -31.2],
+          [-63.8, -31.2],
+          [-63.8, -31.7]
+        ]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": 7,
+        "nombre": "Cuenca Oeste",
+        "codigo": "CO",
+        "descripcion": "Cuenca occidental, zona de influence de sierras",
+        "area_km2": 2670.8
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-65.3, -31.7],
+          [-64.8, -31.7],
+          [-64.8, -31.2],
+          [-65.3, -31.2],
+          [-65.3, -31.7]
+        ]]
+      }
+    }
+  ]
+}

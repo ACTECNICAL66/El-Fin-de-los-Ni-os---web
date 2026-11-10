@@ -38,6 +38,11 @@ export default function Navigation() {
       href: "/documentacion",
       active: location.pathname === "/documentacion",
     },
+    {
+      label: "Detective Mode",
+      href: "/detective-mode",
+      active: location.pathname === "/detective-mode",
+    },
   ];
 
   return (
