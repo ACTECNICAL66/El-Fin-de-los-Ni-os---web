@@ -4,15 +4,75 @@
     {
       "id": 1,
       "nombre": "precipitacion",
+      "etiqueta": "Precipitación",
       "unidad": "mm",
-      "descripcion": "Precipitación acumulada mensual"
+      "parametro": "PRECTOTCORR",
+      "disponible": true,
+      "descripcion": "Lluvia acumulada en el año, estimada con NASA POWER"
     },
     {
       "id": 2,
       "nombre": "temperatura",
-      "unidad": "C",
-      "descripcion": "Temperatura media mensual"
+      "etiqueta": "Temperatura media",
+      "unidad": "°C",
+      "parametro": "T2M",
+      "disponible": true,
+      "descripcion": "Temperatura media del aire a dos metros"
+    },
+    {
+      "id": 3,
+      "nombre": "temperatura_maxima",
+      "etiqueta": "Temperatura máxima",
+      "unidad": "°C",
+      "parametro": "T2M_MAX",
+      "disponible": true,
+      "descripcion": "Promedio mensual de las temperaturas máximas diarias"
+    },
+    {
+      "id": 4,
+      "nombre": "viento",
+      "etiqueta": "Velocidad del viento",
+      "unidad": "m/s",
+      "parametro": "WS2M",
+      "disponible": true,
+      "descripcion": "Velocidad media del viento a dos metros"
+    },
+    {
+      "id": 5,
+      "nombre": "humedad_suelo",
+      "etiqueta": "Humedad del suelo",
+      "unidad": "fracción",
+      "parametro": "GWETROOT",
+      "disponible": true,
+      "descripcion": "Humedad de la zona de raíces estimada por el modelo"
+    },
+    {
+      "id": 6,
+      "nombre": "radiacion_solar",
+      "etiqueta": "Radiación solar",
+      "unidad": "kWh/m²/día",
+      "parametro": "ALLSKY_SFC_SW_DWN",
+      "disponible": true,
+      "descripcion": "Radiación solar media diaria que llega a la superficie"
+    },
+    {
+      "id": 7,
+      "nombre": "ndvi",
+      "etiqueta": "NDVI (MODIS Terra)",
+      "unidad": "índice",
+      "parametro": null,
+      "disponible": false,
+      "descripcion": "Índice de vigor vegetal; falta integrar AppEEARS"
+    },
+    {
+      "id": 8,
+      "nombre": "gpm_imerge",
+      "etiqueta": "Precipitación GPM IMERG",
+      "unidad": "mm",
+      "parametro": null,
+      "disponible": false,
+      "descripcion": "Lluvia cada 30 minutos; falta integrar el servicio GPM"
     }
   ],
-  "count": 2
+  "count": 8
 }

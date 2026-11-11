@@ -3,13 +3,13 @@
 ## Objetivos del Desafío
 
 - **Objetivo 3:** Implementar análisis de tendencias climáticas con significancia estadística
-- **Objetivo 4:** Visualizar propuestas de adaptación al cambio climático
+- **Objetivos 3 y 4:** visualizar una serie histórica y probar su tendencia con datos observados.
 
 ## Prerrequisitos
 
 1. Node.js 20+ instalado
 2. npm o yarn
-3. Conector MySQL/mariaDB (opcional, los datos se cargan desde archivos JSON)
+3. Conexión a internet para consultar NASA POWER; la interfaz es estática y no requiere MySQL.
 
 ## Inicio Rápido
 
@@ -30,13 +30,12 @@ Abrir `http://localhost:3000` en el navegador.
   - Norte-Oeste, Norte, Centro, Centro-Sur, Sur, Este, Oeste
 
 ### 2. Seleccionar Variable
-- Elegir entre:
-  - **Precipitación** (mm)
-  - **Temperatura** (°C)
+- Elegir una variable habilitada. Precipitación, temperaturas, viento, humedad del suelo y radiación consultan NASA POWER.
+- NDVI y GPM aparecen en el catálogo como futuras integraciones y permanecen deshabilitadas.
 
 ### 3. Ver el Gráfico
-- Se muestra el gráfico de tendencia 2000-2025
-- La línea se colorea según la dirección de la pendiente
+- Se muestran únicamente años con 12 meses válidos entre 2000 y 2025.
+- El gráfico usa los valores anuales obtenidos en esa consulta, no una curva simulada.
 
 ### 4. Anexo de la Veredicto
 - **Sen Slope**: Pendiente anual en unidades por década
@@ -54,38 +53,28 @@ Abrir `http://localhost:3000` en el navegador.
 - **Temperatura**: Disminución anual → enfriamiento
 
 ### Significancia Estadística
-- **p < 0.05**: La tendencia es real (no debido al azar)
-- **p ≥ 0.05**: La tendencia no es estadísticamente confiable
+- **p < 0.05**: evidencia estadística de una tendencia bajo los supuestos del test; no prueba causalidad.
+- La implementación web usa aproximación normal y no corrige autocorrelación temporal.
 
-## Resultados Clave para la Presentación
+## Resultados para presentar
 
-| Cuenca | Variable | Trend | p-valor | Interpretación |
-|--------|----------|-------|---------|----------------|
-| Norte-Oeste | Precipitación | ↓ -112.08 mm/decada | 0.0082 | ✓ Seco y significativo |
-| Centro | Precipitación | ↓ -80.83 mm/decada | 0.0707 | ↓ Casi significativo |
-| Norte-Oeste | Temperatura | ↑ +0.35 °C/decada | 0.0015 | ✓ Calentamiento significativo |
-| Centro | Temperatura | ↑ +0.35 °C/decada | 0.0021 | ✓ Calentamiento significativo |
+No uses los p-valores de los CSV de ejemplo anteriores como hallazgos. Ejecuta la consulta para la cuenca y variable que vas a presentar; guarda la respuesta fuente y anota fecha de consulta, parámetro NASA POWER, coordenadas y período para poder reproducirla.
 
 ## Arquitectura Técnica
 
-### Backend (Hono + TypeScript)
-- **api/boot.ts**: Punto de entrada del servidor
-- **api/routes/**: API REST para datos
-- **db/schema.ts**: Esquema Drizzle ORM (MySQL)
+### Frontend estático (GitHub Pages)
+- **src/components/sections/DetectiveMode.tsx**: consulta, estadística y gráfico.
+- **src/pages/DetectiveModePage.tsx**: ruta y límite de error visible.
+- **public/data/cuencas.geojson**: polígonos usados para elegir puntos representativos.
+- **public/data/variables.json**: variables habilitadas y pendientes de integración.
 
-### Frontend (React + Vite)
-- **src/components/DetectiveMode.tsx**: Componente principal
-- **src/pages/DetectiveModePage.tsx**: Página de la función
-- **public/data/cuencas.geojson**: Datos geoespaciales
-- **public/data/trend_results.csv**: Resultados de tendencias
-
-### Estructura de la API
+### Análisis reproducible offline
+Descarga primero observaciones anuales de NASA POWER para las cuencas del GeoJSON; después calcula pendiente, IC 95 % aproximado y Mann–Kendall:
+```bash
+python scripts/descargar_nasa_power.py --geojson public/data/cuencas.geojson --output data/nasa_power_anual.csv
+python scripts/analisis_tendencias.py --input data/nasa_power_anual.csv --output public/data/trend_results.csv
 ```
-/api/cuencas          -> Lista de cuencas
-/api/cuencas/:id       -> Datos de una cuenca
-/api/variables         -> Lista de variables
-/api/trends?cuenca=... -> Tendencias filtradas
-```
+El CSV registra parámetro, coordenadas y fuente. El script estadístico requiere una observación anual por fila en columnas `cuenca,codigo,variable,unidad,anio,valor`; no fabrica resultados si falta el archivo de datos.
 
 ## Recursos Adicionales
 
@@ -95,5 +84,5 @@ Abrir `http://localhost:3000` en el navegador.
 
 ---
 
-*Documento preparado para la presentación del Desafío NASA Space Apps 2026*  
+*Documento preparado para la presentación del Desafío NASA Space Apps 2026*
 *El Fin de los Niños - Córdoba, Argentina*

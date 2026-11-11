@@ -34,8 +34,11 @@ interface Cuenca {
 interface Variable {
   id: number;
   nombre: string;
+  etiqueta: string;
   unidad: string;
   descripcion: string;
+  parametro: string | null;
+  disponible: boolean;
 }
 
 interface Tendencia {
@@ -47,6 +50,8 @@ interface Tendencia {
   periodo_fin: number;
   sen_slope: number;
   sen_slope_por_decada: number;
+  ic95_inferior: number;
+  ic95_superior: number;
   mann_kendall_tau: number;
   mann_kendall_p_valor: number;
   significancia: string;
@@ -55,12 +60,16 @@ interface Tendencia {
 
 type Serie = { years: number[]; values: number[]; trend: Tendencia };
 
-function senSlope(values: number[]) {
+function getSenSlopes(values: number[], years: number[]) {
   const slopes: number[] = [];
   for (let i = 0; i < values.length; i++)
     for (let j = i + 1; j < values.length; j++)
-      slopes.push((values[j] - values[i]) / (j - i));
-  slopes.sort((a, b) => a - b);
+      slopes.push((values[j] - values[i]) / (years[j] - years[i]));
+  return slopes.sort((a, b) => a - b);
+}
+
+function senSlope(values: number[], years: number[]) {
+  const slopes = getSenSlopes(values, years);
   const mid = Math.floor(slopes.length / 2);
   return slopes.length % 2 ? slopes[mid] : (slopes[mid - 1] + slopes[mid]) / 2;
 }
@@ -70,7 +79,13 @@ function mannKendall(values: number[]) {
   let s = 0;
   for (let i = 0; i < n; i++)
     for (let j = i + 1; j < n; j++) s += Math.sign(values[j] - values[i]);
-  const variance = (n * (n - 1) * (2 * n + 5)) / 18;
+  const ties = new Map<number, number>();
+  values.forEach((value) => ties.set(value, (ties.get(value) ?? 0) + 1));
+  const tieCorrection = [...ties.values()].reduce(
+    (sum, count) => sum + (count > 1 ? count * (count - 1) * (2 * count + 5) : 0),
+    0,
+  );
+  const variance = (n * (n - 1) * (2 * n + 5) - tieCorrection) / 18;
   const z = s > 0 ? (s - 1) / Math.sqrt(variance) : s < 0 ? (s + 1) / Math.sqrt(variance) : 0;
   // Two-tailed normal approximation.
   const t = 1 / (1 + 0.2316419 * Math.abs(z));
@@ -146,7 +161,11 @@ export default function DetectiveMode({
 
         const basin = cuencasData.find((c: Cuenca) => c.codigo === cuencaCodigo);
         if (!basin) throw new Error("No se encontró la cuenca elegida.");
-        const parameter = selectedVariable === "precipitacion" ? "PRECTOTCORR" : "T2M";
+        const variable = (dataVariables.data as Variable[]).find((v) => v.nombre === selectedVariable);
+        if (!variable?.disponible || !variable.parametro) {
+          throw new Error("Esta variable está en el catálogo, pero su fuente todavía no está conectada.");
+        }
+        const parameter = variable.parametro;
         const url = new URL("https://power.larc.nasa.gov/api/temporal/monthly/point");
         url.search = new URLSearchParams({ parameters: parameter, community: "AG", longitude: String(basin.centroide[0]), latitude: String(basin.centroide[1]), format: "JSON", start: "2000", end: "2025" }).toString();
         const response = await fetch(url, { signal: controller.signal });
@@ -154,7 +173,7 @@ export default function DetectiveMode({
         const payload = await response.json();
         const parameterData = payload?.properties?.parameter?.[parameter];
         if (!parameterData) throw new Error("NASA POWER no devolvió datos para esta variable y ubicación.");
-        const annual = new Map<number, number[]>();
+        const annual = new Map<number, { value: number; days: number }[]>();
         for (const [date, raw] of Object.entries(parameterData)) {
           if (date.endsWith("13")) continue;
           const value = Number(raw);
@@ -163,16 +182,25 @@ export default function DetectiveMode({
           const month = Number(date.slice(4, 6));
           if (year < 2000 || year > 2025 || month < 1 || month > 12) continue;
           const entries = annual.get(year) ?? [];
-          // POWER reports precipitation as mm/day; convert monthly means to totals.
-          entries.push(selectedVariable === "precipitacion" ? value * new Date(Date.UTC(year, month, 0)).getUTCDate() : value);
+          const days = new Date(Date.UTC(year, month, 0)).getUTCDate();
+          entries.push({ value, days });
           annual.set(year, entries);
         }
         const years = [...annual.keys()].sort((a, b) => a - b).filter(y => annual.get(y)?.length === 12);
-        const values = years.map(y => selectedVariable === "precipitacion" ? annual.get(y)!.reduce((a, b) => a + b, 0) : annual.get(y)!.reduce((a, b) => a + b, 0) / 12);
+        const values = years.map((year) => {
+          const months = annual.get(year)!;
+          return selectedVariable === "precipitacion"
+            ? months.reduce((sum, month) => sum + month.value * month.days, 0)
+            : months.reduce((sum, month) => sum + month.value * month.days, 0) / months.reduce((sum, month) => sum + month.days, 0);
+        });
         if (years.length < 20) throw new Error(`NASA POWER devolvió solo ${years.length} años completos; se necesitan al menos 20.`);
-        const slope = senSlope(values);
+        const slope = senSlope(values, years);
+        const slopes = getSenSlopes(values, years);
+        const radius = 1.96 * Math.sqrt(years.length * (years.length - 1) * (2 * years.length + 5) / 18) / 2;
+        const ciLow = slopes[Math.max(0, Math.floor(slopes.length / 2 - radius))] * 10;
+        const ciHigh = slopes[Math.min(slopes.length - 1, Math.ceil(slopes.length / 2 + radius))] * 10;
         const mk = mannKendall(values);
-        const trend: Tendencia = { cuenca: basin.nombre, codigo: basin.codigo, variable: selectedVariable, unidad: selectedVariable === "precipitacion" ? "mm" : "°C", periodo_inicio: years[0], periodo_fin: years[years.length - 1], sen_slope: slope, sen_slope_por_decada: slope * 10, mann_kendall_tau: mk.tau, mann_kendall_p_valor: mk.p, significancia: mk.p < 0.05 ? "significativa" : "no_significativa", n_puntos: years.length };
+        const trend: Tendencia = { cuenca: basin.nombre, codigo: basin.codigo, variable: selectedVariable, unidad: variable.unidad, periodo_inicio: years[0], periodo_fin: years[years.length - 1], sen_slope: slope, sen_slope_por_decada: slope * 10, ic95_inferior: ciLow, ic95_superior: ciHigh, mann_kendall_tau: mk.tau, mann_kendall_p_valor: mk.p, significancia: mk.p < 0.05 ? "significativa" : "no_significativa", n_puntos: years.length };
         setTendencias([trend]);
         setSerie({ years, values, trend });
       } catch (err: any) {
@@ -210,6 +238,10 @@ export default function DetectiveMode({
 
     if (!serie) return null;
 
+    const intercepts = serie.values.map((value, index) => value - trend.sen_slope * (serie.years[index] - serie.years[0])).sort((a, b) => a - b);
+    const medianIntercept = intercepts[Math.floor(intercepts.length / 2)];
+    const trendLine = serie.years.map((year) => medianIntercept + trend.sen_slope * (year - serie.years[0]));
+
     return {
       labels: serie.years,
       datasets: [
@@ -223,6 +255,15 @@ export default function DetectiveMode({
           tension: 0.15,
           pointRadius: 3,
           pointBackgroundColor: trend.sen_slope_por_decada >= 0 ? "#F59E0B" : "#3B82F6",
+        },
+        {
+          label: "Pendiente de Sen",
+          data: trendLine,
+          borderColor: "#f8fafc",
+          borderDash: [6, 4],
+          borderWidth: 2,
+          pointRadius: 0,
+          fill: false,
         },
       ],
     };
@@ -317,8 +358,8 @@ export default function DetectiveMode({
               </SelectTrigger>
               <SelectContent>
                 {variables.map((v) => (
-                  <SelectItem key={v.nombre} value={v.nombre}>
-                    <strong>{v.nombre}</strong> ({v.unidad})
+                    <SelectItem key={v.nombre} value={v.nombre} disabled={!v.disponible}>
+                    <strong>{v.etiqueta}</strong> ({v.disponible ? v.unidad : "en integración"})
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -361,6 +402,9 @@ export default function DetectiveMode({
                 >
                   {tendencias[0]?.mann_kendall_p_valor.toFixed(4)}
                 </p>
+              </div>
+              <div className="col-span-2 text-xs text-white/50">
+                IC 95 % aproximado: [{tendencias[0]?.ic95_inferior.toFixed(2)}, {tendencias[0]?.ic95_superior.toFixed(2)}] {variableSeleccionada!.unidad}/década
               </div>
             </div>
             <div className="mt-3 flex items-center gap-2">

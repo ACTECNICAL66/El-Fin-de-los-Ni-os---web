@@ -3,27 +3,32 @@
 ## Conceptos Clave
 
 ### ENSO (El Niño / Niña / Oscilación del Sur)
-Phenomeno climático que aumenta la temperatura de la superficie del océano Pacífico tropical, afectando el régimen de precipitaciones en Córdoba, Argentina.
+Fenómeno climático acoplado del océano Pacífico tropical y la atmósfera que puede afectar la precipitación en Córdoba.
 
 ### NASA POWER
-**Powering Agriculture: Research and Applications** - Plataforma de la NASA que proporciona datos climatológicos satellitales de alta resolución.
+NASA Prediction Of Worldwide Energy Resources. Proporciona series meteorológicas y de radiación derivadas de observaciones y modelos; no debe describirse simplemente como una medición satelital de alta resolución.
 
 ### Sen's Slope (Pendiente de Sen)
 Estimador robusto de la tendencia lineal en series de tiempo, calculado como la mediana de todas las pendientes pairwise.
 
-### Mann-Kendall Test
-Prueba estadística no paramétrica para detectar tendencias en series de tiempo. Retorna un coeficiente τ y un p-valor.
+### Mann-Kendall Tes
+Prueba estadística no paramétrica para detectar una tendencia monotónica. La aproximación usada en este prototipo no corrige la autocorrelación temporal.
 
 ### p-valor
-Probabilidad de obtener resultados al menos tan extremos como los observados, bajo la hipótesis nula de no tendencia.  
-**Significancia:** p < 0.05 indica evidencia de tendencia real.
+Probabilidad de obtener resultados al menos tan extremos como los observados, bajo la hipótesis nula de no tendencia.
+**Significancia:** p < 0.05 aporta evidencia contra la hipótesis nula de ausencia de tendencia bajo los supuestos del test; no prueba causalidad ni que la tendencia sea “real” en cualquier modelo.
 
 ## Variables Climáticas
 
 | Variable | Unidad | Descripción |
 |----------|--------|-------------|
-| Precipitación | mm | Acumulación mensual de agua |
-| Temperatura | °C | Temperatura media mensual |
+| Precipitación | mm/año | Total anual estimado desde medias mensuales de NASA POWER |
+| Temperatura | °C | Media anual de valores mensuales |
+| Temperatura máxima | °C | Media anual de máximos mensuales |
+| Viento | m/s | Media anual de velocidad a 2 m |
+| Humedad del suelo | fracción | Humedad modelada en zona de raíces |
+| Radiación solar | kWh/m²/día | Media anual diaria en superficie |
+| NDVI / GPM IMERG | — | En catálogo; integración pendiente |
 
 ## Cuencas Analizadas
 
@@ -37,23 +42,18 @@ Probabilidad de obtener resultados al menos tan extremos como los observados, ba
 | CE | Este | 2980.4 |
 | CO | Oeste | 2670.8 |
 
-## Resultados Clave (2000-2025)
+## Resultados
 
-| Cuenca | Variable | Sen Slope | p-valor | Significancia |
-|--------|----------|-----------|---------|---------------|
-| Norte-Oeste | Precipitación | -112.08 mm/decada | 0.0082 | ✓ Significativa |
-| Centro | Precipitación | -80.83 mm/decada | 0.0707 | ✗ No significativa |
-| Norte-Oeste | Temperatura | +0.35 °C/decada | 0.0015 | ✓ Significativa |
-| Centro | Temperatura | +0.35 °C/decada | 0.0021 | ✓ Significativa |
+No se incluyen cifras aquí porque los valores de versiones anteriores del CSV se generaron con series sintéticas. Los resultados deben obtenerse de una consulta NASA POWER o de un CSV anual de observaciones documentadas antes de presentarse como hallazgos.
 
 ## Términos Técnicos
 
 - **Tendencia significativa**: Cambio estadísticamente relevante (p < 0.05)
 - **Sen slope**: Pendiente de la tendencia (variación anual)
 - **τ (tau de Kendall)**: Coeficiente de correlación de rangos
-- **Nk (Nk)**: Número de puntos de datos
+- **n**: Número de observaciones anuales válidas
 
 ---
 
-*Documento actualizado: Octubre 2026*  
+*Documento actualizado: Octubre 2026*
 *Proyecto "El Fin de los Niños" - NASA Space Apps 2026*

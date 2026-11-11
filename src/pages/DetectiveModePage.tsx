@@ -1,6 +1,37 @@
 import { SectionHeading } from "@/components/sections/shared";
 import DetectiveMode from "@/components/sections/DetectiveMode";
 import { Globe } from "lucide-react";
+import { Component, type ErrorInfo, type ReactNode } from "react";
+
+class DetectiveErrorBoundary extends Component<
+  { children: ReactNode },
+  { error: Error | null }
+> {
+  state = { error: null as Error | null };
+
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error("Error al mostrar Detective Mode", error, info.componentStack);
+  }
+
+  render() {
+    if (this.state.error) {
+      return (
+        <div role="alert" className="glass-card p-6 text-red-200">
+          <h2 className="font-semibold text-lg mb-2">No se pudo mostrar el análisis</h2>
+          <p className="text-sm">{this.state.error.message}</p>
+          <button className="btn-secondary mt-4" onClick={() => this.setState({ error: null })}>
+            Reintentar
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 export default function DetectiveModePage() {
   return (
@@ -21,7 +52,9 @@ export default function DetectiveModePage() {
       </section>
 
       <div className="max-w-4xl mx-auto px-6 pb-16">
-        <DetectiveMode />
+        <DetectiveErrorBoundary>
+          <DetectiveMode />
+        </DetectiveErrorBoundary>
       </div>
     </div>
   );
