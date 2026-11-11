@@ -34,12 +34,20 @@ jobs:
         run: npm ci
       - name: Build project
         run: npx vite build --base=/El-Fin-de-los-Ni-os---web/
+      - name: Verify Pages output
+        run: |
+          test -s ./dist/public/index.html
+          test -s ./dist/public/404.html
+          test -s ./dist/public/data/cuencas.geojson
+          test -s ./dist/public/data/variables.json
+          test -s ./dist/public/data/trend_results.csv
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: "./dist/public"
+          name: github-pages
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
