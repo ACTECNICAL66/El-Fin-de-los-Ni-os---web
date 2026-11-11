@@ -87,6 +87,11 @@ export default function DetectiveMode({
 
   useEffect(() => {
     const controller = new AbortController();
+    let timedOut = false;
+    const timeout = window.setTimeout(() => {
+      timedOut = true;
+      controller.abort();
+    }, 15000);
     const cargarDatos = async () => {
       try {
         setLoading(true);
@@ -159,9 +164,12 @@ export default function DetectiveMode({
         setTendencias([trend]);
         setSerie({ years, values, trend });
       } catch (err: any) {
-        if (err.name !== "AbortError") setError(err.message || "No se pudieron cargar los datos climáticos.");
+        if (timedOut) setError("NASA POWER tardó más de 15 segundos en responder. Recarga la página o vuelve a intentar.");
+        else if (err.name !== "AbortError") setError(err.message || "No se pudieron cargar los datos climáticos.");
       } finally {
+        window.clearTimeout(timeout);
         if (!controller.signal.aborted) setLoading(false);
+        else if (timedOut) setLoading(false);
       }
     };
 
@@ -213,15 +221,15 @@ export default function DetectiveMode({
 
   if (loading) {
     return (
-      <Card className="glass-card border-dashed">
+      <Card className="!bg-transparent !text-white glass-card border-dashed">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Globe className="w-5 h-5 text-water-400" />
             Detective Mode
           </CardTitle>
         </CardHeader>
-        <CardContent className="text-center py-8 text-white/50">
-          Cargando datos climáticos...
+        <CardContent className="text-center py-8 text-white/70">
+          Consultando NASA POWER para la cuenca elegida. Esto puede tardar unos segundos.
         </CardContent>
       </Card>
     );
@@ -229,7 +237,7 @@ export default function DetectiveMode({
 
   if (error) {
     return (
-      <Card className="glass-card bg-red-500/5 border-red-500/20">
+      <Card className="!bg-red-950/40 !text-white glass-card border-red-500/20">
         <CardHeader>
           <CardTitle className="text-red-400 flex items-center gap-2">
             <AlertTriangle className="w-5 h-5" />
@@ -244,7 +252,7 @@ export default function DetectiveMode({
   }
 
   return (
-    <Card className="glass-card border-t-4 border-water-500">
+    <Card className="!bg-transparent !text-white glass-card border-t-4 border-water-500">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Activity className="w-5 h-5 text-water-400" />
