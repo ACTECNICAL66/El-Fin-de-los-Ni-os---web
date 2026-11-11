@@ -1,6 +1,16 @@
 import { useState, useEffect } from "react";
 import { Line } from "react-chartjs-2";
 import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -9,6 +19,8 @@ import {
 } from "@/components/ui/select";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Activity, MapPin, Globe, AlertTriangle } from "lucide-react";
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Filler, Tooltip, Legend);
 
 interface Cuenca {
   id: number;
