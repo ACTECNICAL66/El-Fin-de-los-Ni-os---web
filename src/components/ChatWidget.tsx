@@ -10,21 +10,21 @@ const SUGGESTIONS = [
 
 const FAQ: Record<string, string> = {
   "qué es el fenómeno enso":
-    "El Niño-Oscilación del Sur (ENSO) es un fenómeno climático natural que ocurre en el Océano Pacífico tropical y tiene dos fases opuestas: El Niño (calentamiento) y La Niña (enfriamiento). Este fenómeno altera los patrones de precipitación a nivel global, afectando directamente a regiones como Córdoba, Argentina.",
+    "El Niño-Oscilación del Sur (ENSO) es un patrón climático acoplado del Pacífico tropical. Sus fases cálida (El Niño) y fría (La Niña) pueden influir en la lluvia y temperatura regionales. La magnitud y hasta el signo de esos efectos varían por región y evento; el análisis de este sitio no demuestra por sí solo una relación causal con ENSO.",
   "cómo afecta el niño a córdoba":
-    "Durante El Niño, Córdoba experimenta condiciones más húmedas con aumento de precipitaciones del 20-40%, lo que incrementa el riesgo de inundaciones, crecidas repentinas y sedimentación de embalses. Sin embargo, también favorece la recarga de acuíferos.",
+    "El Niño puede modificar la probabilidad de lluvia en Córdoba, pero el efecto no es idéntico todos los años. El Detective Mode muestra tendencias históricas de NASA POWER; para atribuir cambios a ENSO se necesita comparar con un índice ENSO y evaluar otros factores.",
   "cómo afecta la niña a córdoba":
-    "Durante La Niña, Córdoba suele enfrentar condiciones más secas con reducción de lluvias de hasta el 30%, causando disminución de caudales, estrés hídrico en agricultura, mayor riesgo de incendios y menor recarga de acuíferos.",
+    "La Niña puede modificar la probabilidad de lluvia y temperatura en Córdoba, con efectos que varían entre eventos. La serie del sitio no estima por separado el efecto de La Niña ni permite atribuirle una tendencia observada.",
   "qué son las micro-represas":
-    "Las micro-represas son pequeñas estructuras de contención de agua distribuidas estratégicamente en cuencas hidrográficas. A diferencia de los megaproyectos centralizados, son modulares, de bajo costo, menor impacto ambiental y permiten una gestión adaptativa y local del recurso hídrico.",
+    "Las micro-represas son pequeñas estructuras de retención propuestas para almacenar o ralentizar agua en una cuenca. Su ubicación, costo y efectos ambientales deben evaluarse con estudios de terreno e hidrológicos antes de proponer su construcción.",
   "cuántas cuencas se analizaron":
-    "Se identificaron y analizaron 7 cuencas hidrográficas principales en la región de Córdoba, utilizando datos topográficos y climáticos de NASA procesados con QGIS para determinar la ubicación óptima de micro-represas.",
+    "El visor incluye siete cuencas de Córdoba. El Detective Mode compara seis variables NASA POWER por un punto de grilla representativo en cada cuenca; no calcula un promedio espacial del polígono ni determina ubicaciones óptimas de obras.",
   "qué datos de la nasa usaron":
-    "El proyecto utiliza datos de temperatura superficial del mar (TSM), Índice de Oscilación del Sur (SOI), precipitación TRMM/GPM, modelos climáticos, imágenes satelitales multiespectrales y Modelos Digitales de Elevación (MDE).",
+    "El análisis conectado usa series NASA POWER de precipitación, temperatura media y máxima, viento, humedad de la zona radicular y radiación solar, archivadas entre 2000 y 2025 para siete puntos. MODIS NDVI y GPM IMERG aparecen como futuras integraciones y aún no forman parte de los resultados.",
   "qué es el ndvi":
-    "El NDVI (Índice de Vegetación de Diferencia Normalizada) es un indicador satelital que mide la salud y densidad de la vegetación. Valores >0.6 indican vegetación densa, 0.3-0.6 vegetación moderada y <0.3 suelo desnudo o vegetación escasa.",
+    "El NDVI (Índice de Vegetación de Diferencia Normalizada) se calcula con reflectancias roja e infrarroja cercana y se usa como indicador de verdor. Su interpretación depende del sensor, cobertura, estación y procesamiento. En este proyecto la serie MODIS aún no está integrada.",
   "qué tecnología usan":
-    "El proyecto integra C++, ESP32, Google Earth, QGIS, Python, JavaScript, NASA WorldWind, sensores IoT, API REST, Arduino IDE y Global Mapper para el monitoreo y análisis.",
+    "La web está construida con React/TypeScript y publica series procesadas con scripts Python en GitHub Pages. El proyecto también plantea explorar herramientas geoespaciales y sensores; esas propuestas no significan que ya exista una red IoT en producción.",
 };
 
 function findAnswer(input: string): string | null {

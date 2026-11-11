@@ -41,6 +41,16 @@ interface Variable {
   disponible: boolean;
 }
 
+interface ObservacionAnual {
+  codigo: string;
+  variable: string;
+  anio: number;
+  valor: number;
+  latitud: number;
+  longitud: number;
+  fechaDescarga: string;
+}
+
 interface Tendencia {
   cuenca: string;
   codigo: string;
@@ -50,6 +60,7 @@ interface Tendencia {
   periodo_fin: number;
   sen_slope: number;
   sen_slope_por_decada: number;
+  regresion_lineal_por_decada: number;
   ic95_inferior: number;
   ic95_superior: number;
   mann_kendall_tau: number;
@@ -58,7 +69,7 @@ interface Tendencia {
   n_puntos: number;
 }
 
-type Serie = { years: number[]; values: number[]; trend: Tendencia };
+type Serie = { years: number[]; values: number[]; trend: Tendencia; latitud: number; longitud: number; fechaDescarga: string };
 
 function getSenSlopes(values: number[], years: number[]) {
   const slopes: number[] = [];
@@ -86,12 +97,32 @@ function mannKendall(values: number[]) {
     0,
   );
   const variance = (n * (n - 1) * (2 * n + 5) - tieCorrection) / 18;
+  if (variance <= 0 || s === 0) return { tau: s / (n * (n - 1) / 2), p: 1 };
   const z = s > 0 ? (s - 1) / Math.sqrt(variance) : s < 0 ? (s + 1) / Math.sqrt(variance) : 0;
   // Two-tailed normal approximation.
   const t = 1 / (1 + 0.2316419 * Math.abs(z));
   const density = Math.exp((-z * z) / 2) / Math.sqrt(2 * Math.PI);
   const tail = density * (0.319381530 * t - 0.356563782 * t ** 2 + 1.781477937 * t ** 3 - 1.821255978 * t ** 4 + 1.330274429 * t ** 5);
   return { tau: s / (n * (n - 1) / 2), p: Math.min(1, 2 * tail) };
+}
+
+function mannKendallVariance(values: number[]) {
+  const n = values.length;
+  const counts = new Map<number, number>();
+  values.forEach((value) => counts.set(value, (counts.get(value) ?? 0) + 1));
+  const tieCorrection = [...counts.values()].reduce(
+    (sum, count) => sum + (count > 1 ? count * (count - 1) * (2 * count + 5) : 0),
+    0,
+  );
+  return (n * (n - 1) * (2 * n + 5) - tieCorrection) / 18;
+}
+
+function regressionSlope(values: number[], years: number[]) {
+  const meanYear = years.reduce((sum, year) => sum + year, 0) / years.length;
+  const meanValue = values.reduce((sum, value) => sum + value, 0) / values.length;
+  const numerator = years.reduce((sum, year, i) => sum + (year - meanYear) * (values[i] - meanValue), 0);
+  const denominator = years.reduce((sum, year) => sum + (year - meanYear) ** 2, 0);
+  return denominator ? numerator / denominator : 0;
 }
 
 interface DetectiveModeProps {
@@ -114,31 +145,28 @@ export default function DetectiveMode({
 
   useEffect(() => {
     const controller = new AbortController();
-    let timedOut = false;
-    const timeout = window.setTimeout(() => {
-      timedOut = true;
-      controller.abort();
-    }, 15000);
     const cargarDatos = async () => {
       try {
         setLoading(true);
         setError(null);
 
         const baseUrl = import.meta.env.BASE_URL || "/";
-        const [resCuencas, resVariables] = await Promise.all([
-          fetch(`${baseUrl}data/cuencas.geojson`),
-          fetch(`${baseUrl}data/variables.json`),
+        const [resCuencas, resVariables, resSeries] = await Promise.all([
+          fetch(`${baseUrl}data/cuencas.geojson`, { signal: controller.signal }),
+          fetch(`${baseUrl}data/variables.json`, { signal: controller.signal }),
+          fetch(`${baseUrl}data/nasa_power_anual.csv`, { signal: controller.signal }),
         ]);
 
-        if (!resCuencas.ok || !resVariables.ok) {
+        if (!resCuencas.ok || !resVariables.ok || !resSeries.ok) {
           throw new Error("Error al cargar datos");
         }
 
         const geojson = await resCuencas.json();
         const dataVariables = await resVariables.json();
+        const csv = await resSeries.text();
 
         // Extraer cuencas desde GeoJSON (mismo formato que la API)
-        const cuencasData = geojson.features.map((f: any) => ({
+        const cuencasData: Cuenca[] = geojson.features.map((f: any): Cuenca => ({
           id: f.properties.id,
           nombre: f.properties.nombre,
           codigo: f.properties.codigo,
@@ -165,51 +193,49 @@ export default function DetectiveMode({
         if (!variable?.disponible || !variable.parametro) {
           throw new Error("Esta variable está en el catálogo, pero su fuente todavía no está conectada.");
         }
-        const parameter = variable.parametro;
-        const url = new URL("https://power.larc.nasa.gov/api/temporal/monthly/point");
-        url.search = new URLSearchParams({ parameters: parameter, community: "AG", longitude: String(basin.centroide[0]), latitude: String(basin.centroide[1]), format: "JSON", start: "2000", end: "2025" }).toString();
-        const response = await fetch(url, { signal: controller.signal });
-        if (!response.ok) throw new Error(`NASA POWER respondió ${response.status}. Intenta nuevamente.`);
-        const payload = await response.json();
-        const parameterData = payload?.properties?.parameter?.[parameter];
-        if (!parameterData) throw new Error("NASA POWER no devolvió datos para esta variable y ubicación.");
-        const annual = new Map<number, { value: number; days: number }[]>();
-        for (const [date, raw] of Object.entries(parameterData)) {
-          if (date.endsWith("13")) continue;
-          const value = Number(raw);
-          if (!Number.isFinite(value) || value <= -900) continue;
-          const year = Number(date.slice(0, 4));
-          const month = Number(date.slice(4, 6));
-          if (year < 2000 || year > 2025 || month < 1 || month > 12) continue;
-          const entries = annual.get(year) ?? [];
-          const days = new Date(Date.UTC(year, month, 0)).getUTCDate();
-          entries.push({ value, days });
-          annual.set(year, entries);
+        const lines = csv.trim().split(/\r?\n/);
+        const headers = lines[0].split(",");
+        const codeIndex = headers.indexOf("codigo");
+        const variableIndex = headers.indexOf("variable");
+        const yearIndex = headers.indexOf("anio");
+        const valueIndex = headers.indexOf("valor");
+        const latitudeIndex = headers.indexOf("latitud");
+        const longitudeIndex = headers.indexOf("longitud");
+        const retrievedIndex = headers.indexOf("fecha_descarga");
+        if ([codeIndex, variableIndex, yearIndex, valueIndex, latitudeIndex, longitudeIndex, retrievedIndex].some((index) => index < 0)) {
+          throw new Error("El archivo histórico no tiene las columnas esperadas.");
         }
-        const years = [...annual.keys()].sort((a, b) => a - b).filter(y => annual.get(y)?.length === 12);
-        const values = years.map((year) => {
-          const months = annual.get(year)!;
-          return selectedVariable === "precipitacion"
-            ? months.reduce((sum, month) => sum + month.value * month.days, 0)
-            : months.reduce((sum, month) => sum + month.value * month.days, 0) / months.reduce((sum, month) => sum + month.days, 0);
-        });
+        const observations: ObservacionAnual[] = lines.slice(1).map((line) => {
+          const fields = line.split(",");
+          return {
+            codigo: fields[codeIndex],
+            variable: fields[variableIndex],
+            anio: Number(fields[yearIndex]),
+            valor: Number(fields[valueIndex]),
+            latitud: Number(fields[latitudeIndex]),
+            longitud: Number(fields[longitudeIndex]),
+            fechaDescarga: fields[retrievedIndex],
+          };
+        }).filter((row) => row.codigo === basin.codigo && row.variable === selectedVariable && Number.isFinite(row.valor));
+        const years = observations.map((row) => row.anio).sort((a, b) => a - b);
+        const valuesByYear = new Map(observations.map((row) => [row.anio, row.valor]));
+        if (new Set(years).size !== years.length) throw new Error("El archivo contiene años duplicados para la serie elegida.");
+        const values = years.map((year) => valuesByYear.get(year)!);
         if (years.length < 20) throw new Error(`NASA POWER devolvió solo ${years.length} años completos; se necesitan al menos 20.`);
         const slope = senSlope(values, years);
         const slopes = getSenSlopes(values, years);
-        const radius = 1.96 * Math.sqrt(years.length * (years.length - 1) * (2 * years.length + 5) / 18) / 2;
+        const radius = 1.96 * Math.sqrt(mannKendallVariance(values)) / 2;
         const ciLow = slopes[Math.max(0, Math.floor(slopes.length / 2 - radius))] * 10;
         const ciHigh = slopes[Math.min(slopes.length - 1, Math.ceil(slopes.length / 2 + radius))] * 10;
         const mk = mannKendall(values);
-        const trend: Tendencia = { cuenca: basin.nombre, codigo: basin.codigo, variable: selectedVariable, unidad: variable.unidad, periodo_inicio: years[0], periodo_fin: years[years.length - 1], sen_slope: slope, sen_slope_por_decada: slope * 10, ic95_inferior: ciLow, ic95_superior: ciHigh, mann_kendall_tau: mk.tau, mann_kendall_p_valor: mk.p, significancia: mk.p < 0.05 ? "significativa" : "no_significativa", n_puntos: years.length };
+        const trend: Tendencia = { cuenca: basin.nombre, codigo: basin.codigo, variable: selectedVariable, unidad: variable.unidad, periodo_inicio: years[0], periodo_fin: years[years.length - 1], regresion_lineal_por_decada: regressionSlope(values, years) * 10, sen_slope: slope, sen_slope_por_decada: slope * 10, ic95_inferior: ciLow, ic95_superior: ciHigh, mann_kendall_tau: mk.tau, mann_kendall_p_valor: mk.p, significancia: mk.p < 0.05 ? "significativa" : "no_significativa", n_puntos: years.length };
         setTendencias([trend]);
-        setSerie({ years, values, trend });
+        const first = observations[0];
+        setSerie({ years, values, trend, latitud: first.latitud, longitud: first.longitud, fechaDescarga: first.fechaDescarga });
       } catch (err: any) {
-        if (timedOut) setError("NASA POWER tardó más de 15 segundos en responder. Recarga la página o vuelve a intentar.");
-        else if (err.name !== "AbortError") setError(err.message || "No se pudieron cargar los datos climáticos.");
+        if (err.name !== "AbortError") setError(err.message || "No se pudieron cargar los datos climáticos.");
       } finally {
-        window.clearTimeout(timeout);
         if (!controller.signal.aborted) setLoading(false);
-        else if (timedOut) setLoading(false);
       }
     };
 
@@ -241,12 +267,14 @@ export default function DetectiveMode({
     const intercepts = serie.values.map((value, index) => value - trend.sen_slope * (serie.years[index] - serie.years[0])).sort((a, b) => a - b);
     const medianIntercept = intercepts[Math.floor(intercepts.length / 2)];
     const trendLine = serie.years.map((year) => medianIntercept + trend.sen_slope * (year - serie.years[0]));
+    const regressionIntercept = serie.values.reduce((sum, value, index) => sum + value - trend.regresion_lineal_por_decada / 10 * (serie.years[index] - serie.years[0]), 0) / serie.values.length;
+    const regressionLine = serie.years.map((year) => regressionIntercept + trend.regresion_lineal_por_decada / 10 * (year - serie.years[0]));
 
     return {
       labels: serie.years,
       datasets: [
         {
-          label: `${cuencaSeleccionada.nombre} - ${variableSeleccionada!.nombre}`,
+          label: `${cuencaSeleccionada.nombre} - ${variableSeleccionada!.etiqueta}`,
           data: serie.values,
           borderColor:
             trend.sen_slope_por_decada >= 0 ? "#F59E0B" : "#3B82F6",
@@ -261,6 +289,15 @@ export default function DetectiveMode({
           data: trendLine,
           borderColor: "#f8fafc",
           borderDash: [6, 4],
+          borderWidth: 2,
+          pointRadius: 0,
+          fill: false,
+        },
+        {
+          label: "Regresión lineal",
+          data: regressionLine,
+          borderColor: "#34d399",
+          borderDash: [3, 5],
           borderWidth: 2,
           pointRadius: 0,
           fill: false,
@@ -282,7 +319,7 @@ export default function DetectiveMode({
           </CardTitle>
         </CardHeader>
         <CardContent className="text-center py-8 text-white/70">
-          Consultando NASA POWER para la cuenca elegida. Esto puede tardar unos segundos.
+          Cargando la serie anual NASA POWER archivada para la cuenca elegida.
         </CardContent>
       </Card>
     );
@@ -406,6 +443,9 @@ export default function DetectiveMode({
               <div className="col-span-2 text-xs text-white/50">
                 IC 95 % aproximado: [{tendencias[0]?.ic95_inferior.toFixed(2)}, {tendencias[0]?.ic95_superior.toFixed(2)}] {variableSeleccionada!.unidad}/década
               </div>
+              <div className="col-span-2 text-xs text-emerald-300/80">
+                Pendiente por regresión lineal: {tendencias[0]?.regresion_lineal_por_decada.toFixed(2)} {variableSeleccionada!.unidad}/década
+              </div>
             </div>
             <div className="mt-3 flex items-center gap-2">
               <span
@@ -430,7 +470,7 @@ export default function DetectiveMode({
 
         <div className="mt-4 text-center text-xs text-white/30">
           <MapPin className="w-3.5 h-3.5 inline mr-1" />
-          Fuente: NASA POWER, punto representativo de la cuenca. Precipitación anual calculada a partir de medias mensuales (mm/día). Mann–Kendall usa aproximación normal; no corrige autocorrelación temporal.
+          NASA POWER · punto representativo ({serie?.latitud.toFixed(3)}, {serie?.longitud.toFixed(3)}) · descarga {serie?.fechaDescarga}. La serie viene archivada con el proyecto. Mann–Kendall usa aproximación normal y no corrige autocorrelación temporal.
         </div>
       </CardContent>
     </Card>

@@ -40,6 +40,7 @@ jobs:
           test -s ./dist/public/404.html
           test -s ./dist/public/data/cuencas.geojson
           test -s ./dist/public/data/variables.json
+          test -s ./dist/public/data/nasa_power_anual.csv
           test -s ./dist/public/data/trend_results.csv
       - name: Setup Pages
         uses: actions/configure-pages@v4

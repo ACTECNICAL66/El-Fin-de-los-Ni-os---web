@@ -4,6 +4,7 @@
 import argparse
 import calendar
 import csv
+from datetime import date
 import json
 import time
 from pathlib import Path
@@ -69,6 +70,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--geojson", type=Path, default=Path("public/data/cuencas.geojson"))
     parser.add_argument("--output", type=Path, default=Path("data/nasa_power_anual.csv"))
+    parser.add_argument("--public-output", type=Path, default=Path("public/data/nasa_power_anual.csv"))
     parser.add_argument("--start", type=int, default=2000)
     parser.add_argument("--end", type=int, default=2025)
     args = parser.parse_args()
@@ -86,19 +88,21 @@ def main():
                     "valor": round(value, 5), "parametro": parameter,
                     "latitud": round(lat, 6), "longitud": round(lon, 6),
                     "fuente": "NASA POWER Monthly API",
+                    "fecha_descarga": date.today().isoformat(),
                 })
         print(f"{props['codigo']}: descargadas series disponibles de {args.start}-{args.end}")
         if index + 1 < len(basins):
             time.sleep(0.5)
     if not rows:
         parser.error("NASA POWER no devolvió años completos; no se publicó un CSV vacío.")
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    with args.output.open("w", encoding="utf-8", newline="") as stream:
-        fields = ["cuenca", "codigo", "variable", "unidad", "anio", "valor", "parametro", "latitud", "longitud", "fuente"]
-        writer = csv.DictWriter(stream, fieldnames=fields)
-        writer.writeheader()
-        writer.writerows(rows)
-    print(f"{len(rows)} observaciones anuales guardadas en {args.output}")
+    fields = ["cuenca", "codigo", "variable", "unidad", "anio", "valor", "parametro", "latitud", "longitud", "fuente", "fecha_descarga"]
+    for output_path in {args.output, args.public_output}:
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        with output_path.open("w", encoding="utf-8", newline="") as stream:
+            writer = csv.DictWriter(stream, fieldnames=fields)
+            writer.writeheader()
+            writer.writerows(rows)
+        print(f"{len(rows)} observaciones anuales guardadas en {output_path}")
 
 
 if __name__ == "__main__":

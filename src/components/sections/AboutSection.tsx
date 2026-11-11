@@ -3,19 +3,12 @@ import { SectionHeading, InfoCard } from "./shared";
 
 export default function AboutSection() {
   const techStack = [
-    "C++",
-    "ESP32",
-    "Google Earth",
-    "QGIS",
+    "React",
+    "TypeScript",
+    "Vite",
+    "Chart.js",
     "Python",
-    "JavaScript",
-    "NASA WorldWind",
-    "Sensores IoT",
-    "API REST",
-    "GitHub",
-    "Arduino IDE",
-    "Global Mapper",
-    "Proteus",
+    "GitHub Pages",
   ];
 
   return (
@@ -29,18 +22,14 @@ export default function AboutSection() {
           Cordoba ante los fenomenos de El Nino y La Nina.
         </p>
         <p className="text-white/70 leading-relaxed mb-8 max-w-4xl">
-          El proyecto integra datos climaticos de la NASA con tecnologias de
-          vanguardia como <strong className="text-white">C++</strong> para
-          programacion de sistemas embebidos,{" "}
-          <strong className="text-white">ESP32</strong> para monitoreo en tiempo
-          real, <strong className="text-white">Google Earth</strong> para
-          visualizacion geoespacial, y{" "}
-          <strong className="text-white">QGIS</strong> para analisis topografico
-          y delimitacion de cuencas hidrograficas.
+          La aplicación web ofrece un explorador de tendencias construido con
+          React y TypeScript. La propuesta de gestión hídrica incluye líneas de
+          trabajo con sensores y análisis geoespacial que requieren validación e
+          implementación adicional.
         </p>
 
         <div className="grid md:grid-cols-3 gap-6 mb-10">
-          <InfoCard icon={Target} title="Objetivos Principales">
+          <InfoCard icon={Target} title="Objetivos de trabajo">
             <ul className="space-y-2">
               <li className="flex items-start gap-2">
                 <ChevronRight className="w-4 h-4 mt-0.5 text-water-400 flex-shrink-0" />
@@ -56,11 +45,11 @@ export default function AboutSection() {
               </li>
               <li className="flex items-start gap-2">
                 <ChevronRight className="w-4 h-4 mt-0.5 text-water-400 flex-shrink-0" />
-                Crear modelo predictivo para eventos extremos
+                Explorar métodos de alerta para eventos extremos
               </li>
               <li className="flex items-start gap-2">
                 <ChevronRight className="w-4 h-4 mt-0.5 text-water-400 flex-shrink-0" />
-                Implementar sistema de monitoreo con sensores ESP32
+                Evaluar un futuro sistema de monitoreo con sensores ESP32
               </li>
               <li className="flex items-start gap-2">
                 <ChevronRight className="w-4 h-4 mt-0.5 text-water-400 flex-shrink-0" />
@@ -69,36 +58,32 @@ export default function AboutSection() {
             </ul>
           </InfoCard>
 
-          <InfoCard icon={Satellite} title="Datos NASA Utilizados">
+          <InfoCard icon={Satellite} title="Fuentes de datos y estado">
             <ul className="space-y-2">
               <li className="flex items-start gap-2">
                 <ChevronRight className="w-4 h-4 mt-0.5 text-eco-400 flex-shrink-0" />
-                Datos de temperatura superficial del mar (TSM)
+                NASA POWER: precipitación, temperatura, viento, humedad del suelo y radiación solar
               </li>
               <li className="flex items-start gap-2">
                 <ChevronRight className="w-4 h-4 mt-0.5 text-eco-400 flex-shrink-0" />
-                Indice de Oscilacion del Sur (SOI)
+                Series anuales 2000–2025 para siete puntos de cuenca
               </li>
               <li className="flex items-start gap-2">
                 <ChevronRight className="w-4 h-4 mt-0.5 text-eco-400 flex-shrink-0" />
-                Datos de precipitacion TRMM y GPM
+                MODIS NDVI: integración pendiente
               </li>
               <li className="flex items-start gap-2">
                 <ChevronRight className="w-4 h-4 mt-0.5 text-eco-400 flex-shrink-0" />
-                Modelos climaticos para proyecciones
+                GPM IMERG: integración pendiente
               </li>
               <li className="flex items-start gap-2">
                 <ChevronRight className="w-4 h-4 mt-0.5 text-eco-400 flex-shrink-0" />
-                Imagenes satelitales multiespectrales
-              </li>
-              <li className="flex items-start gap-2">
-                <ChevronRight className="w-4 h-4 mt-0.5 text-eco-400 flex-shrink-0" />
-                Modelos Digitales de Elevacion (MDE)
+                Cada punto representa una celda de grilla, no un promedio de cuenca
               </li>
             </ul>
           </InfoCard>
 
-          <InfoCard icon={Globe} title="Impacto Regional">
+          <InfoCard icon={Globe} title="Impacto buscado">
             <ul className="space-y-2">
               <li className="flex items-start gap-2">
                 <ChevronRight className="w-4 h-4 mt-0.5 text-water-400 flex-shrink-0" />

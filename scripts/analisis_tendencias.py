@@ -60,11 +60,20 @@ def analyze(values, years):
     tau, p_value = mann_kendall(values)
     # Approximate 95% Sen interval; ties/autocorrelation are not adjusted here.
     n = len(values)
-    variance = n * (n - 1) * (2 * n + 5) / 18
+    counts = {}
+    for value in values:
+        counts[value] = counts.get(value, 0) + 1
+    tie_adjustment = sum(c * (c - 1) * (2 * c + 5) for c in counts.values() if c > 1)
+    variance = (n * (n - 1) * (2 * n + 5) - tie_adjustment) / 18
     radius = 1.96 * math.sqrt(variance) / 2
     low = max(0, int(math.floor(len(slopes) / 2 - radius)))
     high = min(len(slopes) - 1, int(math.ceil(len(slopes) / 2 + radius)))
+    mean_year = sum(years) / n
+    mean_value = sum(values) / n
+    regression_slope = sum((year - mean_year) * (value - mean_value)
+                           for year, value in zip(years, values)) / sum((year - mean_year) ** 2 for year in years)
     return {
+        "regresion_lineal_por_decada": regression_slope * 10,
         "sen_slope": slope,
         "sen_slope_por_decada": slope * 10,
         "sen_slope_ic95_inf": slopes[low] * 10,
@@ -115,7 +124,7 @@ def main():
         result = analyze([observations[y] for y in years], years)
         rows.append({"cuenca": basin, "codigo": code, "variable": variable, "unidad": unit, **result})
 
-    fields = ["cuenca", "codigo", "variable", "unidad", "periodo_inicio", "periodo_fin", "sen_slope", "sen_slope_por_decada", "sen_slope_ic95_inf", "sen_slope_ic95_sup", "mann_kendall_tau", "mann_kendall_p_valor", "significancia", "n_puntos"]
+    fields = ["cuenca", "codigo", "variable", "unidad", "periodo_inicio", "periodo_fin", "regresion_lineal_por_decada", "sen_slope", "sen_slope_por_decada", "sen_slope_ic95_inf", "sen_slope_ic95_sup", "mann_kendall_tau", "mann_kendall_p_valor", "significancia", "n_puntos"]
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("w", encoding="utf-8", newline="") as stream:
         writer = csv.DictWriter(stream, fieldnames=fields)

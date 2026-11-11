@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import ChatWidget from "@/components/ChatWidget";
+import DetectiveErrorBoundary from "@/components/sections/DetectiveErrorBoundary";
 import {
   HeroSection,
   AboutSection,
@@ -29,7 +30,9 @@ export default function Home() {
       <ClimateSection />
       <SatelliteSection />
       <ResultsSection />
-      <DetectiveMode />
+      <DetectiveErrorBoundary>
+        <DetectiveMode />
+      </DetectiveErrorBoundary>
       <CTASection />
       <Footer />
       <ChatWidget />
