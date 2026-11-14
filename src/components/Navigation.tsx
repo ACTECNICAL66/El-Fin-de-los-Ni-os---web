@@ -8,6 +8,7 @@ import {
   ExternalLink,
   BookOpen,
   Github,
+  Plane,
 } from "lucide-react";
 
 export default function Navigation() {
@@ -42,6 +43,11 @@ export default function Navigation() {
       label: "Detective Mode",
       href: "/detective-mode",
       active: location.pathname === "/detective-mode",
+    },
+    {
+      label: "DRONE",
+      href: "/drone",
+      active: location.pathname === "/drone",
     },
   ];
 
@@ -94,6 +100,7 @@ export default function Navigation() {
                   {link.label === "Documentación" && (
                     <BookOpen className="w-4 h-4" />
                   )}
+                  {link.label === "DRONE" && <Plane className="w-4 h-4" />}
                   {link.label}
                 </span>
                 {link.active && (
@@ -145,6 +152,7 @@ export default function Navigation() {
                     {link.label === "Documentación" && (
                       <BookOpen className="w-4 h-4" />
                     )}
+                    {link.label === "DRONE" && <Plane className="w-4 h-4" />}
                     {link.label}
                   </span>
                 </Link>

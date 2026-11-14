@@ -6,12 +6,14 @@ import Admin from "./pages/Admin";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import DetectiveModePage from "./pages/DetectiveModePage";
+import DronePage from "./pages/DronePage";
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/detective-mode" element={<DetectiveModePage />} />
+      <Route path="/drone" element={<DronePage />} />
       <Route path="/paradigmas" element={<Paradigmas />} />
       <Route path="/documentacion" element={<Documentacion />} />
       <Route path="/admin" element={<Admin />} />
