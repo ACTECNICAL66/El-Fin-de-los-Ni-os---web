@@ -49,10 +49,10 @@ export default function DocumentationSection() {
   const downloads = [
     {
       title: "Informe del Proyecto",
-      desc: "Documento completo en formato PDF.",
+      desc: "Documento completo del proyecto en Google Docs.",
       icon: FileText,
       color: "bg-red-500",
-      url: "https://docs.google.com/document/d/1pRI56umFZt0hpH3QrQ-g5AjqlIIeBPex7Y5YnKCGZpc/edit?usp=sharing",
+      url: "https://docs.google.com/document/d/11dXRoOLjMCFvs1rITCMewpi3_DfsOlHDD8drtrgiccY/edit?usp=sharing",
     },
     {
       title: "Código del Prototipo",
