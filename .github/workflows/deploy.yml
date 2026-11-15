@@ -66,14 +66,10 @@ jobs:
           test -s ./dist/public/simulacion-2d/vendor/chart.umd.min.js
           test -s ./dist/public/panel/PaneldeControlV3.html
           test -s ./dist/public/drone/index.html
-      - name: Usar GitHub Actions como fuente de Pages
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          echo '{"build_type":"workflow"}' | gh api --method PUT \
-            -H 'Accept: application/vnd.github+json' \
-            repos/${{ github.repository }}/pages --input - \
-            --jq '.build_type'
+      # IMPORTANTE: en Settings → Pages → Build and deployment, "Source" debe
+      # estar en "GitHub Actions". Si queda en "Deploy from a branch / main /",
+      # GitHub sirve el index.html de desarrollo con /src/main.tsx y la app no
+      # arranca, aunque este workflow termine OK.
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
