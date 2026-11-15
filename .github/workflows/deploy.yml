@@ -66,8 +66,16 @@ jobs:
           test -s ./dist/public/simulacion-2d/vendor/chart.umd.min.js
           test -s ./dist/public/panel/PaneldeControlV3.html
           test -s ./dist/public/drone/index.html
+      - name: Usar GitHub Actions como fuente de Pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo '{"build_type":"workflow"}' | gh api --method PUT \
+            -H 'Accept: application/vnd.github+json' \
+            repos/${{ github.repository }}/pages --input - \
+            --jq '.build_type'
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:
