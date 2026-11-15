@@ -506,3 +506,66 @@ geometría exacta.
 No hay navegador/Chromium/Playwright: la comprobación final del iframe en el
 navegador queda para la preview. La forma real, en cambio, se verificó
 rasterizando los vectores generados y comparándola con la captura aportada.
+
+---
+
+## 10. Diagnóstico: por qué la URL pública no cargaba la app
+
+**No era falta de push.** El PR #2 se fusionó en `main` (`c3bffb1`) y el workflow
+de Pages terminó en `success`; el PR #3 fusionó después el intento de corrección
+(`371956b`). El problema es la **configuración de GitHub Pages**:
+
+```json
+{
+  "build_type": "legacy",
+  "source": {"branch": "main", "path": "/"},
+  "status": "built"
+}
+```
+
+Eso significa que Pages sirve los archivos crudos de `main`, no el artefacto
+`dist/public` que produce el workflow. Pruebas directas sobre la URL pública:
+
+- `/README.md` devuelve el Markdown del repo.
+- `/package.json` y `/public/data/enso_atribucion.json` también se sirven desde
+  el árbol crudo.
+- `/src/main.tsx` devuelve TypeScript sin compilar.
+- `/assets/index-B1y5Qol6.js` no existe y cae en la página «Unicorn» de GitHub.
+- El `index.html` de la raíz contiene `<script type="module" src="/src/main.tsx">`;
+  el navegador no puede ejecutarlo como bundle de producción, por eso queda en
+  blanco.
+
+Además, durante la revisión `fetch_page` recibió **HTTP 500 / «We're having a
+really bad day»** en la raíz y en varios subpaths de `github.io`, mientras
+`githubstatus.com` informaba «All Systems Operational». Ese 500 puede ser
+transitorio del CDN de Pages, pero incluso sin él la configuración `legacy`
+impide que arranque la app React.
+
+### Intentos de corrección automática
+
+1. `PUT /repos/.../pages` con `{"build_type":"workflow"}` desde esta sesión:
+   **403 Resource not accessible by integration**.
+2. PR #3: paso dentro del workflow con el `GITHUB_TOKEN` de Actions para hacer
+   el mismo cambio, más `configure-pages@v5`. El run en `main`
+   (`43674948489`) falló en ese paso por el mismo permiso; los pasos de build y
+   verificación pasaron.
+3. El entorno `github-pages` tiene `deployment_branch_policy` con `main` y
+   `arena/42cadc12...`; por eso un `workflow_dispatch` desde
+   `arena/b86943ec...` (`43674800570`) ni siquiera arrancó los steps.
+4. Se intentó agregar la rama nueva a esa política por API: **403** también.
+5. Se dejó el workflow limpio, sin el paso que falla, con un comentario y una
+   sección en `README.md` que indican la configuración requerida.
+
+### Acción necesaria
+
+En GitHub, con una cuenta con permisos de administración del repo:
+
+1. **Settings → Pages → Build and deployment**.
+2. Cambiar **Source** de `Deploy from a branch` a **`GitHub Actions`**.
+3. Ejecutar **Actions → Deploy to GitHub Pages → Run workflow** sobre `main`.
+4. Abrir la URL con un parámetro de cache-bust, por ejemplo
+   `https://actecnical66.github.io/El-Fin-de-los-Ni-os---web/?v=20261115`.
+
+El `dist/public/index.html` generado por Vite ya quedó verificado por el
+workflow (30 `test -s`); una vez que Pages use el artefacto de Actions, ese es
+el archivo que se sirve y la app debería cargar.

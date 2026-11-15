@@ -85,6 +85,19 @@ public/drone/index.html    Visor 3D del concepto de dron (bundle estático)
 frontend/                  Copia legacy de una versión anterior; la app desplegada es la de src/
 ```
 
+## Publicación en GitHub Pages
+
+El workflow `.github/workflows/deploy.yml` genera `dist/public` y lo publica con
+`actions/deploy-pages`. Para que eso funcione, en el repositorio debe estar
+configurado:
+
+**Settings → Pages → Build and deployment → Source: `GitHub Actions`**
+
+No debe quedar en **“Deploy from a branch / main /”**: en ese modo GitHub Pages
+sirve el `index.html` de desarrollo, que apunta a `/src/main.tsx`, y el
+navegador muestra una página en blanco. El archivo generado por Vite es
+`dist/public/index.html`, no el `index.html` de la raíz del repo.
+
 ## Enlaces
 
 - [Informe completo (Google Docs)](https://docs.google.com/document/d/11dXRoOLjMCFvs1rITCMewpi3_DfsOlHDD8drtrgiccY/edit?usp=sharing)
