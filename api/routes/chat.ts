@@ -11,9 +11,26 @@ import { Hono } from "hono";
  * lugar de fallar en silencio.
  */
 
-const MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
-const ENDPOINT = (key: string, model: string) =>
-  `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`;
+/**
+ * Modelo por defecto.
+ *
+ * gemini-2.5-flash quedo deprecado el 2026-11-02 y desde el 2026-12-01 las
+ * llamadas se redirigen solas, asi que no conviene fijarlo.
+ */
+const MODEL = process.env.GEMINI_MODEL || "gemini-3.8-flash";
+
+/**
+ * Endpoint nativo de Gemini.
+ *
+ * La clave va en el header x-goog-api-key, NO en el query ?key=.
+ *   1. Una clave en la URL termina en logs de servidores y proxies.
+ *   2. Las claves AQ. (Auth keys, el formato que emite AI Studio desde 2026)
+ *      pueden devolver 401 ACCESS_TOKEN_TYPE_UNSUPPORTED por query param.
+ *      El header es la forma documentada y la que aceptan las dos familias
+ *      de clave, AIza y AQ.
+ */
+const ENDPOINT = (model: string) =>
+  `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
 
 /**
  * Contexto del proyecto. Es la unica fuente de verdad que se le pasa al
@@ -101,9 +118,12 @@ chatRoute.post("/", async (c) => {
   }));
 
   try {
-    const res = await fetch(ENDPOINT(key, MODEL), {
+    const res = await fetch(ENDPOINT(MODEL), {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": key,
+      },
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: CONTEXTO }] },
         contents: recortados,
