@@ -1,0 +1,1732 @@
+<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Demo · El Fin de los Niños · datos reales</title>
+<style>
+:root{--o:#FF6B35;--i:#F4F7FB;--b:#9FC0E8;--m:#93A4B8;--g:#7EE8CF;--w:#FFB694;--l:rgba(255,255,255,.10)}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#0E151D;color:var(--i);
+ font-family:system-ui,"Segoe UI",sans-serif;font-size:14px}
+#app{display:grid;grid-template-rows:auto auto 1fr;height:100vh}
+header{display:flex;align-items:center;gap:16px;padding:11px 20px;border-bottom:1px solid var(--l);
+ background:linear-gradient(90deg,rgba(37,61,96,.35),transparent);flex-wrap:wrap}
+header b{font-size:16px;letter-spacing:.04em}
+.tag{font-size:10.5px;padding:3px 8px;border-radius:99px;border:1px solid var(--g);color:var(--g);letter-spacing:.1em}
+.tag.o{border-color:var(--o);color:var(--o)}
+header .sp{flex:1}
+header .fuente{font-size:10.5px;color:var(--m);text-align:right;line-height:1.35}
+nav{display:flex;gap:3px;padding:7px 20px;border-bottom:1px solid var(--l);
+ background:rgba(255,255,255,.02);flex-wrap:wrap}
+nav button{background:none;border:1px solid transparent;color:var(--m);padding:7px 14px;
+ border-radius:8px;font-size:12.5px;cursor:pointer;font-family:inherit}
+nav button:hover{color:var(--i)}
+nav button.on{background:rgba(255,107,53,.14);border-color:rgba(255,107,53,.5);color:var(--o)}
+main{overflow:auto;padding:18px 20px 40px}
+.panel{display:none}.panel.on{display:block}
+h2{margin:0 0 5px;font-size:18px;font-weight:600}h2 b{color:var(--b)}
+.sub{color:var(--m);font-size:12.5px;margin:0 0 16px;line-height:1.5;max-width:1000px}
+.grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;align-items:start}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card{background:rgba(255,255,255,.035);border:1px solid var(--l);border-radius:12px;padding:15px}
+.card h3{margin:0 0 9px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--o)}
+label{display:block;font-size:10.5px;color:var(--m);letter-spacing:.08em;margin:0 0 4px;text-transform:uppercase}
+select{width:100%;background:#16222F;color:var(--i);border:1px solid var(--l);border-radius:7px;
+ padding:7px;margin:0 0 11px;font-family:inherit;font-size:12.5px}
+input[type=range]{width:100%;accent-color:#FF6B35;margin:2px 0 8px}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:0 11px}
+svg{display:block;width:100%;height:auto}
+.mapa{background:radial-gradient(600px 400px at 60% 40%,rgba(37,61,96,.45),transparent 75%),#0E151D;
+ border:1px solid var(--l);border-radius:10px;cursor:grab;touch-action:none}
+.mapa:active{cursor:grabbing}
+.punto{cursor:pointer}
+.punto:hover circle.hit{fill:rgba(255,107,53,.4)}
+.punto.sel circle.dot{fill:#fff;stroke-width:3.5}
+.kv{display:flex;justify-content:space-between;gap:10px;padding:6px 0;
+ border-bottom:1px solid var(--l);font-size:12.5px}
+.kv:last-child{border:0}.kv span:first-child{color:var(--m)}
+.kv b{font-variant-numeric:tabular-nums;text-align:right}
+.badge{display:inline-block;font-size:10.5px;padding:3px 8px;border-radius:99px;margin:2px 4px 2px 0}
+.badge.si{background:rgba(126,232,207,.15);color:var(--g)}
+.badge.no{background:rgba(255,180,148,.13);color:var(--w)}
+.badge.gris{background:rgba(255,255,255,.07);color:var(--m)}
+.nota{font-size:11px;color:var(--m);line-height:1.5;margin-top:11px;padding-top:9px;
+ border-top:1px solid var(--l)}
+.warn{color:var(--w);font-size:11.5px;line-height:1.5;background:rgba(255,107,53,.08);
+ border-left:3px solid var(--o);padding:9px 11px;border-radius:0 8px 8px 0;margin:11px 0}
+.big{font-size:29px;font-weight:700;color:var(--b);font-variant-numeric:tabular-nums;line-height:1.1}
+.big small{display:block;font-size:10.5px;font-weight:400;color:var(--m);letter-spacing:.08em;margin-top:4px}
+table{width:100%;border-collapse:collapse;font-size:11.5px;font-variant-numeric:tabular-nums}
+th{text-align:left;color:var(--m);font-weight:500;font-size:10.5px;letter-spacing:.07em;
+ text-transform:uppercase;padding:6px 5px;border-bottom:1px solid var(--l);position:sticky;top:0;
+ background:#101820}
+td{padding:5px;border-bottom:1px solid rgba(255,255,255,.05)}
+tr:hover td{background:rgba(255,255,255,.03)}
+.vacio{border:1px dashed rgba(255,255,255,.22);border-radius:10px;padding:28px 22px;
+ text-align:center;color:var(--m);font-size:12.5px;line-height:1.6}
+.vacio b{color:var(--w);display:block;font-size:14px;margin-bottom:8px}
+input[type=file]{font-size:11.5px;color:var(--m);margin:11px 0;max-width:100%}
+.btn{background:rgba(255,107,53,.16);border:1px solid rgba(255,107,53,.55);color:var(--o);
+ padding:8px 13px;border-radius:8px;font-family:inherit;font-size:12px;cursor:pointer;margin:3px 5px 3px 0}
+.btn:hover{background:rgba(255,107,53,.28)}
+.hf{position:fixed;right:12px;bottom:10px;font-size:10.5px;color:var(--m);z-index:9;
+ background:rgba(14,21,29,.85);padding:3px 8px;border-radius:6px}
+@media(max-width:880px){.grid,.grid2{grid-template-columns:1fr}
+ header .fuente{text-align:left}}
+.vtabs{display:flex;gap:8px;margin:0 0 10px}
+.vtabs button{background:#16202C;color:#9BB0C6;border:1px solid #253244;border-radius:7px;
+ padding:7px 13px;font-size:12.5px;cursor:pointer;font-family:inherit}
+.vtabs button.on{background:#FF6B35;color:#0E151D;border-color:#FF6B35;font-weight:700}
+</style></head><body>
+<div id="app">
+<header><b>EL FIN DE LOS NIÑOS</b><span class="tag">DATOS REALES</span>
+ <span class="tag o">SIN CDN · OFFLINE</span><span class="sp"></span>
+ <div class="fuente">NASA POWER 2000–2025 · NOAA CPC ONI · Observatorio Córdoba<br>
+ Cuenca 1 real (GPKG) · NDVI: sin dato, no simulado</div></header>
+<nav>
+ <button data-p="mapa" class="on">Mapa interactivo</button>
+ <button data-p="det">Detector de tendencias</button>
+ <button data-p="est">Validación con estación</button>
+ <button data-p="enso">ENSO y escenarios</button>
+ <button data-p="esc">Escenarios → cuenca</button>
+ <button data-p="ndvi">NDVI (recurrencia)</button>
+</nav>
+<main>
+
+<section class="panel on" id="p-mapa">
+ <h2>Mapa real · <b>los factores que sí tenemos</b></h2>
+ <p class="sub">Cada capa sale de un archivo del proyecto: las 536 bandas de elevación del
+ <code>.gpkg</code> de curvas, las 293 líneas de drenaje con orden de Strahler, los KML de
+ áreas quemadas y las seis tablas <code>.xlsx</code> de los diques. Elegí una capa.</p>
+ <div class="grid">
+  <div class="card"><h3>Visor de factores · Cuenca 1</h3>
+   <div class="vtabs" id="capas">
+    <button class="vt on" data-v="relieve">Relieve</button>
+    <button class="vt" data-v="pendiente">Pendiente</button>
+    <button class="vt" data-v="orientacion">Orientación</button>
+    <button class="vt" data-v="rios">Drenaje</button>
+    <button class="vt" data-v="fuego">Incendios</button>
+    <button class="vt" data-v="llenado">Llenado</button>
+    <button class="vt" data-v="diques">Diques</button>
+   </div>
+   <svg id="mapa" class="mapa" viewBox="0 0 620 672"></svg>
+   <div id="lControl" style="display:none;margin-top:10px">
+    <label>Cota simulada: <span id="lCotaV">1000</span> m</label>
+    <input type="range" id="lCota" min="780" max="1300" step="20" value="1000">
+    <div class="nota" id="lInfo">—</div>
+    <img id="lGif" src="terreno/llenado.gif" alt="Animación del llenado real de la Cuenca 1"
+      style="width:60%;margin-top:10px;border-radius:8px;border:1px solid rgba(255,255,255,.12)">
+    <div class="nota">Animación: el agua sube de 780 a 1300 m. Cada cuadro es el DEM real
+    de 12,6 m recortado por el límite del GPKG.</div></div>
+   <div id="mapaLeyenda"></div></div>
+  <div class="card"><h3>Datos de la capa</h3>
+   <div id="mapaSel"></div></div>
+ </div>
+</section>
+
+<section class="panel" id="p-det">
+ <h2>Detector · <b>qué, dónde, cuánto, significativo</b></h2>
+ <p class="sub">Las preguntas del desafío con las cinco correcciones publicadas. Cambiá cuenca,
+ variable y ventana: los p y q salen de <code>robustez_estadistica.json</code>, calculados
+ por los scripts del repo.</p>
+ <div class="grid">
+  <div class="card"><h3>Controles</h3>
+   <div class="controls">
+    <div><label>Cuenca</label><select id="dCuenca"></select></div>
+    <div><label>Variable</label><select id="dVar"></select></div></div>
+   <label>Ventana: <span id="dAnio">2000 – 2025</span></label>
+   <input type="range" id="dInicio" min="2000" max="2015" value="2000">
+   <label>Hasta</label><input type="range" id="dFin" min="2010" max="2025" value="2025">
+   <h3 style="margin-top:16px">Serie observada</h3>
+   <svg id="dSerie" viewBox="0 0 460 210"></svg>
+   <div class="nota" id="dSerieNota"></div></div>
+  <div class="card"><h3>Resultado publicado · ventana completa</h3>
+   <div id="dStats"></div>
+   <h3 style="margin-top:16px">Corrección por pruebas múltiples</h3>
+   <div class="grid2">
+    <div class="big" id="dNom"></div><div class="big" id="dBh"></div></div>
+   <div style="height:10px"></div>
+   <div class="big" id="dBonf"></div>
+   <div class="warn">Probabilidad de al menos un falso positivo sin corregir: <b>0,884</b>.
+   Ninguna tendencia de precipitación sobrevive las correcciones; ese resultado negativo
+   es el hallazgo, no un error.</div>
+   <div class="nota">r₁ mediana 0,215 · máximo 0,467 · 30 de 42 series con autocorrelación
+   positiva. n efectivo calculado, no asumido.</div></div>
+ </div>
+ <div class="card" style="margin-top:16px"><h3>Las 42 series publicadas</h3>
+  <div style="max-height:280px;overflow:auto"><table id="dTabla"></table></div></div>
+</section>
+
+<section class="panel" id="p-est">
+ <h2>Validación · <b>instrumento real contra reanálisis</b></h2>
+ <p class="sub">24 años en común, 2000–2023: precipitación anual del Observatorio Córdoba
+ (Canziani, Lakkis &amp; Yuchechen 2025, Zenodo 15013403) contra el punto de grilla CC
+ de NASA POWER.</p>
+ <div class="grid">
+  <div class="card"><h3>Dispersión · 24 años</h3>
+   <svg id="eScatter" viewBox="0 0 460 340"></svg>
+   <div class="nota">Cada punto es un año real. La recta es mínimos cuadrados calculada
+   en el navegador, no una imagen.</div></div>
+  <div class="card"><h3>Métricas publicadas</h3>
+   <div id="eStats"></div>
+   <div class="warn">Contraste <b>punto–grilla, descriptivo</b>: no prueba significancia de la
+   diferencia ni reemplaza calibración instrumental. Comparten signo de Sen, pero la pendiente
+   local (−59,56 mm/década) es la mitad que la del reanálisis (−125,13).</div>
+   <div class="nota">Esto es lo que distingue al proyecto: validación contra un instrumento,
+   no contra otro modelo.</div></div>
+ </div>
+</section>
+
+<section class="panel" id="p-enso">
+ <h2>ENSO · <b>atribución con ONI / Niño 3.4</b></h2>
+ <p class="sub">Serie ONI real de NOAA CPC (extracto 1998 – ASO 2026) y el resultado del
+ contraste mensual contra el Observatorio Córdoba. Atribución estadística, no
+ causalidad mecanicista.</p>
+ <div class="grid">
+  <div class="card"><h3>Serie ONI observada</h3>
+   <svg id="oSerie" viewBox="0 0 620 260"></svg>
+   <div class="nota" id="oNota"></div></div>
+  <div class="card"><h3>Resultado publicado</h3>
+   <div id="oStats"></div>
+   <div class="warn">504 pruebas · 9.999 permutaciones · 4 ventanas · 3 retardos.
+   Con corrección global, <b>0 resultados sobreviven q &lt; 0,05</b>; el contraste mensual
+   primario sí es significativo (p = 0,0277). Se publican ambos.</div></div>
+ </div>
+</section>
+
+<section class="panel" id="p-esc">
+ <h2>Escenarios → consecuencia física · <b>ilustración, no pronóstico</b></h2>
+ <p class="sub">Bandas P10–P90 condicionadas a la fase ONI (históricas) y su lectura sobre la
+ curva cota–volumen–área de Cuenca 1. Los caudales del visor son presets de diseño:
+ <b>no son pronóstico ni atribución</b>.</p>
+ <div class="grid">
+  <div class="card"><h3>Fase ONI</h3>
+   <div class="controls">
+    <div><label>Fase</label><select id="sFase"></select></div>
+    <div><label>Horizonte</label><select id="sHor">
+     <option value="3">3 meses</option><option value="6">6 meses</option></select></div></div>
+   <div id="sBandas"></div>
+   <div class="big" id="sMed" style="margin-top:12px"></div>
+   <div class="nota" id="sNota"></div></div>
+  <div class="card"><h3>Curva EVA · cota → volumen</h3>
+   <label>Cota: <span id="sCota">900 m</span></label>
+   <input type="range" id="sSlider" min="0" max="22" value="4">
+   <svg id="sEva" viewBox="0 0 420 200"></svg>
+   <div class="nota"><b>Corrección publicada:</b> la columna <code>surface_area_m2</code>
+   del JSON original es la <b>suma acumulada de rebanadas</b>, no un área. A cota 1300 m
+   daba 10,03 km², más que la cuenca entera. Acá se usa el <b>área real del polígono</b>
+   de cada escenario: 8,53 km² a cota 1300 m, que coincide con la cuenca del GPKG.
+   El volumen no cambia.</div>
+   <div id="sEvaVal"></div>
+   <div class="warn">La banda de lluvia <b>no se convierte</b> automáticamente en nivel de
+   embalse: se muestra la curva EVA para dimensionar la consecuencia. Escenario condicional
+   histórico, no operativo.</div></div>
+ </div>
+</section>
+
+<section class="panel" id="p-ndvi">
+ <h2>NDVI con recurrencia anual · <b>sin dato, no simulado</b></h2>
+ <p class="sub">Revisé todo el repositorio del proyecto: <b>no hay ningún archivo de NDVI</b>.
+ Ni MOD13Q1, ni un CSV, ni una capa en los <code>.gpkg</code>, ni una columna en las
+ <code>.xlsx</code>. Por eso esta capa no se dibuja: se declara el vacío y se deja el
+ cargador listo para cuando el dato exista.</p>
+ <div class="grid">
+  <div class="card"><h3>Mapa NDVI por año</h3>
+   <svg id="nMapa" class="mapa" viewBox="0 0 620 672"></svg>
+   <div id="nSliderWrap" style="display:none;margin-top:10px">
+    <label>Año: <span id="nAnio">—</span></label>
+    <input type="range" id="nAnioR" min="2000" max="2025" value="2000">
+    <button class="btn" id="nPlay">▶ Recorrer 2000 → 2025</button></div></div>
+  <div class="card">
+   <div id="nVacio" class="vacio"><b>SIN DATO · NO SIMULADO</b>
+    <code>variables.json</code> declara NDVI (MODIS Terra) como <code>disponible: false</code>.
+    Inventar un mapa destruiría la validez, que hoy es la mayor fortaleza del proyecto.<br><br>
+    Producto: <b>MOD13Q1 v061</b> · factor 0,0001 · rango −2000…10000 · fill −3000 ·
+    <code>DetailedQA</code> para nubes, sombra y nieve.</div>
+   <div id="nDatos" style="display:none"></div>
+   <h3 style="margin-top:16px">Lo que sí hay, para no confundir</h3>
+   <div class="kv"><span>Curvas de nivel</span><b>536 bandas de 1 m</b></div>
+   <div class="kv"><span>Drenaje</span><b>293 segmentos, Strahler 1–4</b></div>
+   <div class="kv"><span>Incendios</span><b>2023 sí · 2024–2025 no</b></div>
+   <div class="kv"><span>Diques con curva</span><b>6 tablas XLSX</b></div>
+   <div class="nota">Ninguno de estos cuatro es vegetación. El NDVI mide verdor y no se puede
+   deducir de la topografía, del drenaje ni del fuego.</div>
+   <h3 style="margin-top:16px">Incorporar el dato real</h3>
+   <input type="file" id="nFile" accept=".csv,.txt">
+   <button class="btn" id="nPlantilla">Descargar plantilla CSV</button>
+   <div class="nota">Formato <code>codigo,anio,ndvi</code>. Al cargarlo se calculan Sen,
+   Mann–Kendall y q de BH con la misma lógica de <code>robustez_estadistica.py</code>.</div>
+  </div>
+ </div>
+</section>
+
+</main></div>
+<div class="hf" id="hf">demo local · sin servidor</div>
+<script>
+var D = {
+  "cuencas": [
+    {
+      "c": "CN-O",
+      "n": "Cuenca Norte-Oeste",
+      "x": -64.6,
+      "y": -31.0,
+      "a": 2850.5
+    },
+    {
+      "c": "CN",
+      "n": "Cuenca Norte",
+      "x": -64.1,
+      "y": -31.0,
+      "a": 3120.3
+    },
+    {
+      "c": "CC",
+      "n": "Cuenca Centro",
+      "x": -64.1,
+      "y": -31.5,
+      "a": 4200.7
+    },
+    {
+      "c": "CC-S",
+      "n": "Cuenca Centro-Sur",
+      "x": -64.1,
+      "y": -32.0,
+      "a": 3950.2
+    },
+    {
+      "c": "CS",
+      "n": "Cuenca Sur",
+      "x": -64.1,
+      "y": -32.5,
+      "a": 3400.1
+    },
+    {
+      "c": "CE",
+      "n": "Cuenca Este",
+      "x": -63.6,
+      "y": -31.5,
+      "a": 2980.4
+    },
+    {
+      "c": "CO",
+      "n": "Cuenca Oeste",
+      "x": -65.1,
+      "y": -31.5,
+      "a": 2670.8
+    }
+  ],
+  "vars": [
+    ["precipitacion","mm/año"],
+    ["temperatura","°C"],
+    ["temperatura_maxima","°C"],
+    ["viento","m/s"],
+    ["humedad_suelo","fracción"],
+    ["radiacion_solar","kWh/m²/día"]
+  ],
+  "series": {
+    "precipitacion": [
+      10703,11104,9376,8558,7693,8229,8888,7262,7086,5654,7574,6340,7526,7416,9298,9620,9088,6884,,
+      6580,8022,6027,7445,5327,5507,7215,8824,10250,11460,9552,8646,7421,9069,9526,7197,6987,5593,,
+      7180,6758,7671,7256,9587,10197,9163,7198,6386,8808,6156,7350,5173,5764,7895,8761,9564,11253,,
+      9193,8050,8222,9518,10308,6916,7186,5670,6976,6934,7668,7827,9808,10284,9481,7705,6264,9119,,
+      5517,7348,5025,5781,7956,8079,8959,10708,8776,7580,9272,9367,10302,7001,7530,6014,6785,7187,,
+      7961,7958,9539,9977,9540,7838,6522,9185,5255,7488,4855,6366,8484,7612,8977,10249,8546,7582,,
+      10452,8810,9845,7628,7807,7159,7210,7460,9105,8098,9080,10051,9487,7959,6804,9255,5421,7997,,
+      4832,7967,9613,6868,9564,11253,9193,8050,8222,9518,10308,6916,7186,5670,6976,6934,7668,7827,,
+      9808,10284,9481,7705,6264,9119,5517,7348,5025,5781,7956,8079,9467,8681,7680,6216,8958,6536,,
+      7152,7039,7573,4586,7312,5662,5992,6536,7433,9586,9714,7025,7308,8010,5806,7375,5232,5743,,
+      7363,8598
+    ],
+    "temperatura": [
+      140,148,150,152,152,144,155,143,152,156,143,149,155,152,150,151,146,159,157,152,157,152,152,,
+      166,155,155,175,181,184,185,188,177,190,176,190,194,180,184,190,187,184,186,179,193,193,185,,
+      190,188,188,202,189,190,169,175,177,179,178,169,181,169,181,185,172,176,182,179,176,179,172,,
+      185,186,178,183,181,180,194,182,184,166,170,173,175,173,165,177,164,177,181,169,172,178,175,,
+      173,174,168,180,182,173,180,177,177,189,178,181,160,166,169,170,167,160,171,158,171,175,163,,
+      167,172,169,169,168,163,175,177,168,174,172,172,181,171,177,169,175,177,179,178,169,181,169,,
+      181,185,172,176,182,179,176,179,172,185,186,178,183,181,180,194,182,184,137,146,147,151,147,,
+      142,153,138,145,151,139,144,151,147,147,148,141,152,149,147,153,146,146,160,153,151
+    ],
+    "temperatura_maxima": [
+      279,291,304,302,305,297,309,297,300,317,300,302,310,308,296,295,284,311,318,315,319,302,307,,
+      328,316,294,315,327,342,341,343,327,344,332,343,359,341,336,350,346,332,327,318,353,353,346,,
+      356,341,345,363,347,333,311,323,338,338,333,320,338,325,338,354,337,328,345,340,325,323,315,,
+      346,347,339,352,337,339,358,343,332,307,313,331,332,323,312,331,317,329,346,328,323,338,334,,
+      319,313,308,337,339,328,344,329,335,350,340,327,304,313,329,328,317,314,326,314,327,338,325,,
+      322,332,332,317,311,306,334,335,326,336,326,332,342,336,326,311,323,338,338,333,320,338,325,,
+      338,354,337,328,345,340,325,323,315,346,347,339,352,337,339,358,343,332,269,282,289,288,286,,
+      281,291,278,282,296,278,282,288,291,281,278,270,288,293,293,298,286,289,306,297,279
+    ],
+    "viento": [
+      13,13,13,13,13,13,13,13,12,13,12,13,13,13,13,12,13,13,13,13,13,13,13,13,13,13,16,16,17,16,17,,
+      16,16,17,16,17,16,16,17,17,17,16,16,18,17,17,17,17,17,17,17,17,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,,
+      4,4,5,5,5,5,5,5,5,5,5,12,12,12,12,12,11,12,12,11,12,12,12,12,12,12,11,12,12,12,12,12,12,12,12,,
+      12,12,3,3,3,4,3,3,3,3,4,3,3,3,3,4,4,3,3,3,4,3,3,3,3,3,3,4,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,4,4,5,,
+      5,5,5,5,5,5,5,5,23,24,24,23,24,23,24,23,21,23,23,23,24,23,24,23,23,24,23,23,24,23,23,24,24,24
+    ],
+    "humedad_suelo": [
+      6,6,5,6,5,5,5,5,5,5,5,5,5,5,6,6,6,5,5,5,5,5,5,5,5,6,5,6,5,5,5,5,5,5,5,4,5,5,5,5,5,5,5,5,5,5,5,,
+      5,4,4,5,5,6,6,6,6,5,6,5,6,5,5,5,5,5,5,6,6,6,5,5,6,5,5,5,5,5,5,5,6,5,5,5,5,5,5,5,4,5,5,5,5,5,5,,
+      5,5,5,5,4,5,4,5,5,5,5,5,5,5,5,5,5,5,5,4,5,4,5,5,5,5,5,5,4,5,4,5,4,5,5,5,6,6,6,6,5,6,5,6,5,5,5,,
+      5,5,5,6,6,6,5,5,6,5,5,5,5,5,5,7,6,6,6,6,6,6,6,6,5,6,6,6,6,6,7,7,6,6,6,6,6,5,6,6,6
+    ],
+    "radiacion_solar": [
+      179,176,180,187,186,182,185,181,187,191,187,187,189,192,180,171,176,183,179,178,189,186,191,,
+      182,179,183,179,176,180,187,186,182,185,181,187,191,187,187,189,192,180,171,176,183,179,178,,
+      189,186,191,182,179,183,177,174,180,186,185,181,185,179,185,188,184,186,185,189,179,168,174,,
+      183,179,178,189,187,192,179,177,182,177,174,180,186,185,181,185,179,185,188,184,186,185,189,,
+      179,168,174,183,179,178,189,187,192,179,177,182,176,172,177,186,183,182,185,179,184,187,183,,
+      187,182,189,180,167,174,183,180,179,190,187,193,177,177,181,176,172,178,184,187,179,183,177,,
+      186,188,185,187,186,188,178,174,173,182,180,178,188,190,193,179,176,184,188,184,189,199,197,,
+      193,197,193,200,201,198,197,198,204,190,181,185,194,189,190,202,197,201,191,192,192
+    ]
+  },
+  "stats": {
+    "CC|humedad_suelo": [-0.023,0.01947,0.07984,0.07655,1,0,0,"nominal"],
+    "CC|precipitacion": [-97.095,0.04728,0.05852,0.08635,1,0,0,"nominal"],
+    "CC|radiacion_solar": [0.047,0.82555,0.98137,0.84568,0,0,0,"sin_evidencia"],
+    "CC|temperatura": [0.462,0.00272,0.00272,0.02857,1,1,0,"robusta"],
+    "CC|temperatura_maxima": [0.686,0.03435,0.129,0.07655,1,0,0,"nominal"],
+    "CC|viento": [0.002,0.56659,0.7261,0.67991,0,0,0,"sin_evidencia"],
+    "CC-S|humedad_suelo": [-0.017,0.03435,0.07212,0.07655,1,0,0,"nominal"],
+    "CC-S|precipitacion": [-77.9,0.0707,0.08821,0.11877,0,0,0,"sin_evidencia"],
+    "CC-S|radiacion_solar": [0.047,0.82555,0.98137,0.84568,0,0,0,"sin_evidencia"],
+    "CC-S|temperatura": [0.44,0.00203,0.00203,0.02857,1,1,0,"robusta"],
+    "CC-S|temperatura_maxima": [0.726,0.03435,0.10707,0.07655,1,0,0,"nominal"],
+    "CC-S|viento": [0.011,0.14574,0.14574,0.21107,0,0,0,"sin_evidencia"],
+    "CE|humedad_suelo": [-0.023,0.01947,0.07984,0.07655,1,0,0,"nominal"],
+    "CE|precipitacion": [-97.095,0.04728,0.05852,0.08635,1,0,0,"nominal"],
+    "CE|radiacion_solar": [0.168,0.29006,0.29327,0.39298,0,0,0,"sin_evidencia"],
+    "CE|temperatura": [0.462,0.00272,0.00272,0.02857,1,1,0,"robusta"],
+    "CE|temperatura_maxima": [0.686,0.03435,0.129,0.07655,1,0,0,"nominal"],
+    "CE|viento": [0.002,0.56659,0.7261,0.67991,0,0,0,"sin_evidencia"],
+    "CN|humedad_suelo": [-0.017,0.0641,0.129,0.11217,0,0,0,"sin_evidencia"],
+    "CN|precipitacion": [-99.225,0.03435,0.04713,0.07655,1,0,0,"nominal"],
+    "CN|radiacion_solar": [0.059,0.69155,0.94414,0.76435,0,0,0,"sin_evidencia"],
+    "CN|temperatura": [0.412,0.00478,0.00478,0.04017,1,1,0,"robusta"],
+    "CN|temperatura_maxima": [0.672,0.03827,0.16822,0.07655,1,0,0,"nominal"],
+    "CN|viento": [0.019,0.08557,0.08557,0.13823,0,0,0,"sin_evidencia"],
+    "CN-O|humedad_suelo": [-0.022,0.02751,0.10707,0.07655,1,0,0,"nominal"],
+    "CN-O|precipitacion": [-112.075,0.00817,0.03356,0.05579,1,0,0,"nominal"],
+    "CN-O|radiacion_solar": [0.059,0.69155,0.94414,0.76435,0,0,0,"sin_evidencia"],
+    "CN-O|temperatura": [0.359,0.0093,0.0093,0.05579,1,0,0,"nominal"],
+    "CN-O|temperatura_maxima": [0.707,0.03077,0.10707,0.07655,1,0,0,"nominal"],
+    "CN-O|viento": [0.009,0.02189,0.02189,0.07655,1,0,0,"nominal"],
+    "CO|humedad_suelo": [-0.016,0.29006,0.65723,0.39298,0,0,0,"sin_evidencia"],
+    "CO|precipitacion": [-23.25,0.48061,1.0,0.63079,0,0,0,"sin_evidencia"],
+    "CO|radiacion_solar": [0.071,0.69155,0.87014,0.76435,0,0,0,"sin_evidencia"],
+    "CO|temperatura": [0.298,0.03827,0.03827,0.07655,1,0,0,"nominal"],
+    "CO|temperatura_maxima": [0.414,0.0939,0.21579,0.14607,0,0,0,"sin_evidencia"],
+    "CO|viento": [-0.002,0.7914,0.52831,0.84568,0,0,0,"sin_evidencia"],
+    "CS|humedad_suelo": [-0.015,0.03827,0.129,0.07655,1,0,0,"nominal"],
+    "CS|precipitacion": [-53.143,0.14574,0.14574,0.21107,0,0,0,"sin_evidencia"],
+    "CS|radiacion_solar": [0.105,0.56659,0.76142,0.67991,0,0,0,"sin_evidencia"],
+    "CS|temperatura": [0.409,0.00175,0.00175,0.02857,1,1,0,"robusta"],
+    "CS|temperatura_maxima": [0.579,0.01947,0.09728,0.07655,1,0,0,"nominal"],
+    "CS|viento": [-0.0,0.94727,0.94727,0.94727,0,0,0,"sin_evidencia"]
+  },
+  "est": [
+    [2000,956.4,958.9],
+    [2001,1125.3,901.3],
+    [2002,919.3,725.7],
+    [2003,805.0,1046.9],
+    [2004,822.2,688.7],
+    [2005,951.8,814.4],
+    [2006,1030.8,774.3],
+    [2007,691.6,631.4],
+    [2008,718.6,699.6],
+    [2009,567.0,519.8],
+    [2010,697.6,710.3],
+    [2011,693.4,613.9],
+    [2012,766.8,901.3],
+    [2013,782.7,652.2],
+    [2014,980.8,838.0],
+    [2015,1028.4,872.8],
+    [2016,948.1,1097.1],
+    [2017,770.5,766.0],
+    [2018,626.4,724.7],
+    [2019,911.9,889.8],
+    [2020,551.7,490.9],
+    [2021,734.8,794.8],
+    [2022,502.5,589.8],
+    [2023,578.1,641.6]
+  ],
+  "oni": [
+    ["SON",2016,-0.51],
+    ["OND",2016,-0.49],
+    ["NDJ",2016,-0.37],
+    ["DJF",2017,-0.08],
+    ["JFM",2017,0.08],
+    ["FMA",2017,0.27],
+    ["MAM",2017,0.32],
+    ["AMJ",2017,0.35],
+    ["MJJ",2017,0.32],
+    ["JJA",2017,0.14],
+    ["JAS",2017,-0.07],
+    ["ASO",2017,-0.23],
+    ["SON",2017,-0.44],
+    ["OND",2017,-0.61],
+    ["NDJ",2017,-0.76],
+    ["DJF",2018,-0.71],
+    ["JFM",2018,-0.67],
+    ["FMA",2018,-0.55],
+    ["MAM",2018,-0.35],
+    ["AMJ",2018,-0.07],
+    ["MJJ",2018,0.13],
+    ["JJA",2018,0.2],
+    ["JAS",2018,0.3],
+    ["ASO",2018,0.52],
+    ["SON",2018,0.82],
+    ["OND",2018,1.04],
+    ["NDJ",2018,1.05],
+    ["DJF",2019,0.99],
+    ["JFM",2019,0.94],
+    ["FMA",2019,0.87],
+    ["MAM",2019,0.82],
+    ["AMJ",2019,0.71],
+    ["MJJ",2019,0.59],
+    ["JJA",2019,0.38],
+    ["JAS",2019,0.2],
+    ["ASO",2019,0.31],
+    ["SON",2019,0.51],
+    ["OND",2019,0.72],
+    ["NDJ",2019,0.75],
+    ["DJF",2020,0.71],
+    ["JFM",2020,0.66],
+    ["FMA",2020,0.57],
+    ["MAM",2020,0.33],
+    ["AMJ",2020,0.04],
+    ["MJJ",2020,-0.18],
+    ["JJA",2020,-0.29],
+    ["JAS",2020,-0.43],
+    ["ASO",2020,-0.77],
+    ["SON",2020,-1.0],
+    ["OND",2020,-1.11],
+    ["NDJ",2020,-1.06],
+    ["DJF",2021,-0.99],
+    ["JFM",2021,-0.85],
+    ["FMA",2021,-0.74],
+    ["MAM",2021,-0.56],
+    ["AMJ",2021,-0.4],
+    ["MJJ",2021,-0.31],
+    ["JJA",2021,-0.35],
+    ["JAS",2021,-0.46],
+    ["ASO",2021,-0.64],
+    ["SON",2021,-0.77],
+    ["OND",2021,-0.91],
+    ["NDJ",2021,-0.83],
+    ["DJF",2022,-0.76],
+    ["JFM",2022,-0.68],
+    ["FMA",2022,-0.77],
+    ["MAM",2022,-0.86],
+    ["AMJ",2022,-0.83],
+    ["MJJ",2022,-0.73],
+    ["JJA",2022,-0.7],
+    ["JAS",2022,-0.78],
+    ["ASO",2022,-0.87],
+    ["SON",2022,-0.89],
+    ["OND",2022,-0.82],
+    ["NDJ",2022,-0.7],
+    ["DJF",2023,-0.55],
+    ["JFM",2023,-0.33],
+    ["FMA",2023,-0.11],
+    ["MAM",2023,0.19],
+    ["AMJ",2023,0.46],
+    ["MJJ",2023,0.73],
+    ["JJA",2023,1.0],
+    ["JAS",2023,1.25],
+    ["ASO",2023,1.5],
+    ["SON",2023,1.74],
+    ["OND",2023,1.9],
+    ["NDJ",2023,1.99],
+    ["DJF",2024,1.84],
+    ["JFM",2024,1.53],
+    ["FMA",2024,1.18],
+    ["MAM",2024,0.77],
+    ["AMJ",2024,0.43],
+    ["MJJ",2024,0.18],
+    ["JJA",2024,0.06],
+    ["JAS",2024,-0.04],
+    ["ASO",2024,-0.12],
+    ["SON",2024,-0.19],
+    ["OND",2024,-0.29],
+    ["NDJ",2024,-0.43],
+    ["DJF",2025,-0.46],
+    ["JFM",2025,-0.22],
+    ["FMA",2025,-0.08],
+    ["MAM",2025,0.02],
+    ["AMJ",2025,-0.04],
+    ["MJJ",2025,-0.02],
+    ["JJA",2025,-0.11],
+    ["JAS",2025,-0.26],
+    ["ASO",2025,-0.43],
+    ["SON",2025,-0.57],
+    ["OND",2025,-0.61],
+    ["NDJ",2025,-0.6],
+    ["DJF",2026,-0.39],
+    ["JFM",2026,-0.21],
+    ["FMA",2026,0.11],
+    ["MAM",2026,0.46],
+    ["AMJ",2026,0.95],
+    ["MJJ",2026,1.39],
+    ["JJA",2026,1.8],
+    ["JAS",2026,2.16],
+    ["ASO",2026,2.46]
+  ],
+  "esc": {
+    "El Niño": {
+      "3": [269.6,363.9,470.6],
+      "6": [557.7,726.0,1018.4]
+    },
+    "Neutro": {
+      "3": [212.1,298.5,466.4],
+      "6": [447.0,580.3,758.9]
+    },
+    "La Niña": {
+      "3": [252.6,337.4,426.0],
+      "6": [424.7,552.5,689.2]
+    }
+  },
+  "eva": [
+    [800,0.6,0.037],
+    [825,2.65,0.106],
+    [850,7.17,0.206],
+    [875,15.07,0.334],
+    [900,27.18,0.496],
+    [925,44.56,0.692],
+    [950,68.04,0.915],
+    [975,99.47,1.25],
+    [1000,143.25,1.754],
+    [1025,202.53,2.276],
+    [1050,276.37,2.734],
+    [1075,362.71,3.149],
+    [1100,461.25,3.568],
+    [1125,573.62,4.109],
+    [1150,705.47,4.903],
+    [1175,863.22,5.89],
+    [1200,1050.12,6.82],
+    [1225,1261.78,7.545],
+    [1250,1491.14,8.043],
+    [1275,1733.59,8.427],
+    [1300,1983.28,8.534]
+  ],
+  "bounds": [-64.645741818,-31.48168601,-64.601613737,-31.440588946],
+  "cota": 900,
+  "ring": [
+    [-64.639473,-31.468967],
+    [-64.63972,-31.468646],
+    [-64.63972,-31.468547],
+    [-64.640065,-31.468201],
+    [-64.640016,-31.467855],
+    [-64.640164,-31.467361],
+    [-64.639868,-31.466571],
+    [-64.639671,-31.466373],
+    [-64.639621,-31.466176],
+    [-64.639473,-31.466077],
+    [-64.639473,-31.465929],
+    [-64.639325,-31.465781],
+    [-64.639276,-31.465583],
+    [-64.639078,-31.465435],
+    [-64.639029,-31.464941],
+    [-64.638881,-31.464645],
+    [-64.638881,-31.463953],
+    [-64.639128,-31.46341],
+    [-64.639177,-31.46257],
+    [-64.639868,-31.461928],
+    [-64.640065,-31.461928],
+    [-64.64046,-31.46173],
+    [-64.640756,-31.461681],
+    [-64.641744,-31.461681],
+    [-64.641892,-31.461533],
+    [-64.642139,-31.461533],
+    [-64.642336,-31.461434],
+    [-64.642681,-31.460495],
+    [-64.642731,-31.4601],
+    [-64.643126,-31.459705],
+    [-64.643224,-31.45931],
+    [-64.643422,-31.459211],
+    [-64.643521,-31.458964],
+    [-64.644064,-31.45847],
+    [-64.644162,-31.457976],
+    [-64.64436,-31.457927],
+    [-64.644508,-31.45768],
+    [-64.644261,-31.456939],
+    [-64.644113,-31.45684],
+    [-64.644113,-31.456692],
+    [-64.644014,-31.456593],
+    [-64.643915,-31.456593],
+    [-64.643866,-31.456396],
+    [-64.643915,-31.455605],
+    [-64.643817,-31.455506],
+    [-64.643817,-31.454518],
+    [-64.643915,-31.45437],
+    [-64.643915,-31.454123],
+    [-64.644113,-31.454025],
+    [-64.644064,-31.453778],
+    [-64.644162,-31.453481],
+    [-64.64436,-31.453382],
+    [-64.644557,-31.453086],
+    [-64.6451,-31.453185],
+    [-64.645396,-31.452938],
+    [-64.645544,-31.452641],
+    [-64.645643,-31.451802],
+    [-64.645742,-31.451654],
+    [-64.645742,-31.45032],
+    [-64.645594,-31.449727],
+    [-64.645495,-31.449628],
+    [-64.645495,-31.44864],
+    [-64.645347,-31.448542],
+    [-64.645248,-31.448196],
+    [-64.644853,-31.447899],
+    [-64.644755,-31.447702],
+    [-64.644508,-31.447603],
+    [-64.644557,-31.446813],
+    [-64.644804,-31.446418],
+    [-64.644853,-31.446121],
+    [-64.645149,-31.445973],
+    [-64.6451,-31.445775],
+    [-64.645001,-31.445726],
+    [-64.645001,-31.445479],
+    [-64.644853,-31.445035],
+    [-64.644607,-31.444985],
+    [-64.644607,-31.444047],
+    [-64.644705,-31.443898],
+    [-64.644755,-31.443454],
+    [-64.644656,-31.443404],
+    [-64.644557,-31.443059],
+    [-64.644458,-31.44296],
+    [-64.64431,-31.44296],
+    [-64.643915,-31.442565],
+    [-64.643866,-31.442268],
+    [-64.643718,-31.442318],
+    [-64.643471,-31.44212],
+    [-64.643323,-31.441824],
+    [-64.643126,-31.441774],
+    [-64.642978,-31.441626],
+    [-64.64283,-31.441626],
+    [-64.642681,-31.441478],
+    [-64.642681,-31.441379],
+    [-64.642484,-31.441231],
+    [-64.642484,-31.441083],
+    [-64.642089,-31.440737],
+    [-64.64199,-31.440737],
+    [-64.641892,-31.440589],
+    [-64.641744,-31.440614],
+    [-64.641747,-31.440762],
+    [-64.641423,-31.440952],
+    [-64.641003,-31.440935],
+    [-64.640905,-31.441034],
+    [-64.640658,-31.441083],
+    [-64.64051,-31.441231],
+    [-64.640362,-31.441676],
+    [-64.640213,-31.441824],
+    [-64.639621,-31.44212],
+    [-64.639226,-31.442664],
+    [-64.639078,-31.442664],
+    [-64.638979,-31.442812],
+    [-64.638683,-31.442812],
+    [-64.638338,-31.443108],
+    [-64.63819,-31.443108],
+    [-64.637894,-31.442762],
+    [-64.637647,-31.442713],
+    [-64.637301,-31.442466],
+    [-64.637153,-31.442466],
+    [-64.637054,-31.442614],
+    [-64.636808,-31.442614],
+    [-64.636511,-31.442911],
+    [-64.63661,-31.443108],
+    [-64.63661,-31.443355],
+    [-64.636363,-31.443602],
+    [-64.636314,-31.4438],
+    [-64.636117,-31.443948],
+    [-64.636117,-31.444047],
+    [-64.636018,-31.444145],
+    [-64.635623,-31.444244],
+    [-64.635475,-31.444442],
+    [-64.635277,-31.444442],
+    [-64.635129,-31.444639],
+    [-64.634932,-31.444639],
+    [-64.634883,-31.444541],
+    [-64.634389,-31.444343],
+    [-64.6335,-31.444343],
+    [-64.633402,-31.444837],
+    [-64.633155,-31.444837],
+    [-64.633056,-31.444985],
+    [-64.633007,-31.445775],
+    [-64.632908,-31.445775],
+    [-64.63276,-31.445973],
+    [-64.63276,-31.446269],
+    [-64.632365,-31.446467],
+    [-64.632266,-31.446763],
+    [-64.63197,-31.44701],
+    [-64.631921,-31.447307],
+    [-64.631773,-31.447504],
+    [-64.631773,-31.447751],
+    [-64.63197,-31.447998],
+    [-64.63197,-31.448492],
+    [-64.631872,-31.44869],
+    [-64.631674,-31.448887],
+    [-64.631477,-31.448887],
+    [-64.631032,-31.449233],
+    [-64.630835,-31.449233],
+    [-64.630786,-31.449332],
+    [-64.630391,-31.44953],
+    [-64.630193,-31.44953],
+    [-64.629996,-31.449628],
+    [-64.629897,-31.449777],
+    [-64.629453,-31.449875],
+    [-64.629255,-31.45032],
+    [-64.628713,-31.450666],
+    [-64.628564,-31.451357],
+    [-64.628564,-31.452592],
+    [-64.628219,-31.45274],
+    [-64.628071,-31.452691],
+    [-64.627725,-31.452987],
+    [-64.627676,-31.453333],
+    [-64.62738,-31.453531],
+    [-64.62738,-31.453679],
+    [-64.627133,-31.453975],
+    [-64.627133,-31.454074],
+    [-64.627034,-31.454074],
+    [-64.626936,-31.454222],
+    [-64.626541,-31.454222],
+    [-64.626541,-31.454321],
+    [-64.626294,-31.454568],
+    [-64.626096,-31.454617],
+    [-64.626047,-31.454716],
+    [-64.625899,-31.454716],
+    [-64.62585,-31.454864],
+    [-64.625652,-31.454864],
+    [-64.625603,-31.454963],
+    [-64.625405,-31.455012],
+    [-64.625011,-31.455012],
+    [-64.624714,-31.455111],
+    [-64.624517,-31.455358],
+    [-64.624319,-31.455408],
+    [-64.624023,-31.455704],
+    [-64.623925,-31.45605],
+    [-64.623628,-31.45605],
+    [-64.623579,-31.456247],
+    [-64.623283,-31.456445],
+    [-64.623036,-31.457186],
+    [-64.623036,-31.457927],
+    [-64.623234,-31.458075],
+    [-64.623234,-31.458668],
+    [-64.622987,-31.458915],
+    [-64.622592,-31.458915],
+    [-64.622542,-31.459013],
+    [-64.62195,-31.459063],
+    [-64.621901,-31.459211],
+    [-64.621654,-31.45931],
+    [-64.621407,-31.459557],
+    [-64.621308,-31.459903],
+    [-64.621111,-31.460051],
+    [-64.621259,-31.461582],
+    [-64.621062,-31.462076],
+    [-64.620766,-31.462323],
+    [-64.620766,-31.462471],
+    [-64.620667,-31.46257],
+    [-64.62042,-31.46257],
+    [-64.620371,-31.462471],
+    [-64.620223,-31.462471],
+    [-64.620124,-31.462372],
+    [-64.619581,-31.462323],
+    [-64.619186,-31.462619],
+    [-64.618989,-31.462619],
+    [-64.618939,-31.462768],
+    [-64.618544,-31.462866],
+    [-64.618495,-31.46336],
+    [-64.618347,-31.463508],
+    [-64.618199,-31.463508],
+    [-64.618149,-31.463607],
+    [-64.617853,-31.463657],
+    [-64.617804,-31.464101],
+    [-64.617606,-31.464595],
+    [-64.617113,-31.464595],
+    [-64.616915,-31.464496],
+    [-64.616669,-31.464496],
+    [-64.616175,-31.464249],
+    [-64.615188,-31.464249],
+    [-64.615138,-31.464151],
+    [-64.614546,-31.464151],
+    [-64.614151,-31.463706],
+    [-64.613855,-31.463706],
+    [-64.613806,-31.463904],
+    [-64.61346,-31.463904],
+    [-64.613263,-31.463706],
+    [-64.613016,-31.463706],
+    [-64.612819,-31.463854],
+    [-64.612769,-31.464249],
+    [-64.61267,-31.464249],
+    [-64.612522,-31.464447],
+    [-64.612029,-31.464496],
+    [-64.611979,-31.464595],
+    [-64.611782,-31.464645],
+    [-64.611634,-31.464941],
+    [-64.611486,-31.464892],
+    [-64.611091,-31.46499],
+    [-64.610992,-31.465583],
+    [-64.610893,-31.465583],
+    [-64.610795,-31.465435],
+    [-64.610351,-31.465534],
+    [-64.610301,-31.465632],
+    [-64.610104,-31.465583],
+    [-64.610005,-31.466126],
+    [-64.609561,-31.466373],
+    [-64.609363,-31.466373],
+    [-64.609265,-31.466522],
+    [-64.609116,-31.466522],
+    [-64.609018,-31.466719],
+    [-64.60882,-31.466917],
+    [-64.608722,-31.466917],
+    [-64.608376,-31.467312],
+    [-64.608031,-31.467361],
+    [-64.60808,-31.467806],
+    [-64.607981,-31.467905],
+    [-64.607981,-31.468053],
+    [-64.607882,-31.468053],
+    [-64.607685,-31.468349],
+    [-64.60729,-31.468547],
+    [-64.607191,-31.468744],
+    [-64.60734,-31.468893],
+    [-64.607241,-31.469535],
+    [-64.607093,-31.469634],
+    [-64.607093,-31.469831],
+    [-64.606846,-31.470078],
+    [-64.606747,-31.470078],
+    [-64.606698,-31.470276],
+    [-64.606451,-31.470325],
+    [-64.606303,-31.471066],
+    [-64.605957,-31.471066],
+    [-64.605809,-31.471264],
+    [-64.605414,-31.471313],
+    [-64.604822,-31.471165],
+    [-64.604773,-31.471264],
+    [-64.604872,-31.471313],
+    [-64.604872,-31.471609],
+    [-64.604625,-31.471856],
+    [-64.604674,-31.47235],
+    [-64.604427,-31.472745],
+    [-64.603687,-31.472745],
+    [-64.603243,-31.472894],
+    [-64.602897,-31.472894],
+    [-64.602601,-31.47319],
+    [-64.602502,-31.47319],
+    [-64.602502,-31.473338],
+    [-64.602354,-31.473338],
+    [-64.602305,-31.473437],
+    [-64.602009,-31.473388],
+    [-64.601811,-31.473585],
+    [-64.601861,-31.474375],
+    [-64.601811,-31.474573],
+    [-64.601614,-31.474721],
+    [-64.601614,-31.475067],
+    [-64.602009,-31.475502],
+    [-64.602231,-31.475241],
+    [-64.602329,-31.475612],
+    [-64.602774,-31.475628],
+    [-64.602916,-31.475759],
+    [-64.603045,-31.475116],
+    [-64.603687,-31.475116],
+    [-64.603835,-31.475215],
+    [-64.60423,-31.475265],
+    [-64.604723,-31.475215],
+    [-64.60497,-31.475314],
+    [-64.605217,-31.475215],
+    [-64.605809,-31.475215],
+    [-64.605908,-31.475314],
+    [-64.606402,-31.475265],
+    [-64.607241,-31.475363],
+    [-64.60734,-31.475512],
+    [-64.607537,-31.475512],
+    [-64.607537,-31.47561],
+    [-64.607685,-31.475709],
+    [-64.607685,-31.475956],
+    [-64.607784,-31.476351],
+    [-64.607882,-31.476401],
+    [-64.607932,-31.476746],
+    [-64.60808,-31.476796],
+    [-64.608179,-31.476993],
+    [-64.608129,-31.477339],
+    [-64.608376,-31.477537],
+    [-64.608425,-31.477833],
+    [-64.608524,-31.477883],
+    [-64.608574,-31.478475],
+    [-64.60887,-31.478772],
+    [-64.609116,-31.478772],
+    [-64.609116,-31.478623],
+    [-64.609215,-31.478623],
+    [-64.609116,-31.479167],
+    [-64.609116,-31.47976],
+    [-64.609018,-31.479957],
+    [-64.609166,-31.480007],
+    [-64.609215,-31.480254],
+    [-64.609511,-31.48055],
+    [-64.609709,-31.480649],
+    [-64.610104,-31.480649],
+    [-64.610301,-31.480896],
+    [-64.610499,-31.480945],
+    [-64.610499,-31.481044],
+    [-64.610647,-31.481192],
+    [-64.611585,-31.481291],
+    [-64.611683,-31.481439],
+    [-64.61193,-31.481488],
+    [-64.612127,-31.481488],
+    [-64.612325,-31.481241],
+    [-64.61272,-31.481241],
+    [-64.612769,-31.48134],
+    [-64.612967,-31.48134],
+    [-64.613065,-31.481488],
+    [-64.613312,-31.481488],
+    [-64.61346,-31.481637],
+    [-64.614003,-31.481686],
+    [-64.614053,-31.48139],
+    [-64.614201,-31.481241],
+    [-64.614497,-31.481241],
+    [-64.614546,-31.480896],
+    [-64.614744,-31.480747],
+    [-64.61504,-31.480698],
+    [-64.61504,-31.480501],
+    [-64.615435,-31.480501],
+    [-64.615533,-31.480649],
+    [-64.615829,-31.480649],
+    [-64.615978,-31.480846],
+    [-64.616323,-31.480846],
+    [-64.616422,-31.480945],
+    [-64.616718,-31.480896],
+    [-64.616866,-31.481044],
+    [-64.617113,-31.480797],
+    [-64.617409,-31.480698],
+    [-64.617705,-31.480747],
+    [-64.617952,-31.480599],
+    [-64.618692,-31.48055],
+    [-64.61884,-31.480747],
+    [-64.618939,-31.480747],
+    [-64.619038,-31.48055],
+    [-64.619433,-31.480451],
+    [-64.620025,-31.480451],
+    [-64.620074,-31.480352],
+    [-64.620766,-31.480352],
+    [-64.620963,-31.480402],
+    [-64.621012,-31.480501],
+    [-64.62116,-31.480501],
+    [-64.62121,-31.480599],
+    [-64.621358,-31.480599],
+    [-64.621654,-31.480501],
+    [-64.621753,-31.480303],
+    [-64.621901,-31.480155],
+    [-64.622,-31.480155],
+    [-64.622345,-31.47971],
+    [-64.622493,-31.47971],
+    [-64.622641,-31.479513],
+    [-64.622839,-31.479463],
+    [-64.622888,-31.479117],
+    [-64.623332,-31.478673],
+    [-64.623875,-31.478475],
+    [-64.623925,-31.478377],
+    [-64.624764,-31.478475],
+    [-64.624813,-31.478327],
+    [-64.624961,-31.478228],
+    [-64.625553,-31.478278],
+    [-64.625652,-31.47808],
+    [-64.626442,-31.47813],
+    [-64.626491,-31.478031],
+    [-64.627182,-31.478031],
+    [-64.627232,-31.477932],
+    [-64.627528,-31.477784],
+    [-64.627528,-31.477636],
+    [-64.627676,-31.477586],
+    [-64.627676,-31.477487],
+    [-64.627775,-31.477487],
+    [-64.627972,-31.476895],
+    [-64.628713,-31.476944],
+    [-64.628811,-31.477043],
+    [-64.629305,-31.477092],
+    [-64.629404,-31.47724],
+    [-64.629749,-31.47724],
+    [-64.629947,-31.477043],
+    [-64.630045,-31.476746],
+    [-64.630243,-31.476598],
+    [-64.630243,-31.476499],
+    [-64.630687,-31.476104],
+    [-64.631181,-31.476104],
+    [-64.631921,-31.475956],
+    [-64.632217,-31.475561],
+    [-64.632513,-31.475512],
+    [-64.632612,-31.475413],
+    [-64.632661,-31.475018],
+    [-64.632859,-31.47482],
+    [-64.632859,-31.474721],
+    [-64.632958,-31.474721],
+    [-64.633204,-31.474425],
+    [-64.633155,-31.474079],
+    [-64.633303,-31.473733],
+    [-64.633402,-31.472992],
+    [-64.633599,-31.472992],
+    [-64.633747,-31.472795],
+    [-64.633994,-31.472795],
+    [-64.634043,-31.472647],
+    [-64.63429,-31.472548],
+    [-64.634389,-31.472301],
+    [-64.635524,-31.472153],
+    [-64.63587,-31.471807],
+    [-64.636018,-31.471758],
+    [-64.636462,-31.471708],
+    [-64.63666,-31.471758],
+    [-64.636709,-31.471856],
+    [-64.636956,-31.471807],
+    [-64.637252,-31.471412],
+    [-64.637647,-31.471264],
+    [-64.637745,-31.470868],
+    [-64.638042,-31.47077],
+    [-64.638042,-31.470621],
+    [-64.638239,-31.470226],
+    [-64.638535,-31.470226],
+    [-64.638683,-31.470078],
+    [-64.638683,-31.46993],
+    [-64.63893,-31.46988],
+    [-64.639078,-31.469732],
+    [-64.639078,-31.469634],
+    [-64.639276,-31.469485],
+    [-64.639473,-31.468967]
+  ],
+  "esc_real": [
+    [800,0.6,0.043,2],
+    [825,2.65,0.124,2],
+    [850,7.17,0.242,3],
+    [875,15.07,0.392,2],
+    [900,27.18,0.582,3],
+    [925,44.56,0.813,2],
+    [950,68.04,1.075,4],
+    [975,99.47,1.47,5],
+    [1000,143.25,2.06,2],
+    [1025,202.53,2.674,2],
+    [1050,276.37,3.213,2],
+    [1075,362.71,3.7,2],
+    [1100,461.25,4.193,2],
+    [1125,573.62,4.828,2],
+    [1150,705.47,5.761,4],
+    [1175,863.22,6.894,3],
+    [1200,1050.12,8.014,2],
+    [1225,1261.78,8.865,2],
+    [1250,1491.14,9.45,2],
+    [1275,1733.59,9.902,2],
+    [1300,1983.28,10.028,2]
+  ],
+  "oni_ult": {
+    "trimestre": "ASO 2026",
+    "anomalia": 2.46,
+    "fase_observada": "El Niño"
+  },
+  "resumen": {
+    "n_pruebas": 42,
+    "alpha": 0.05,
+    "umbral_bonferroni": 0.0011904761904761906,
+    "probabilidad_al_menos_un_falso_positivo": 0.8840177786999944,
+    "significativas_nominal": 23,
+    "significativas_bonferroni": 0,
+    "significativas_bh_nominal": 5,
+    "significativas_preblanqueadas": 10,
+    "significativas_varianza_ajustada": 8,
+    "robustas": 5,
+    "robustas_sin_series_duplicadas": 4,
+    "robustas_precipitacion": 0,
+    "significativas_precipitacion_nominal": 4,
+    "r1_mediana": 0.21516005313033015,
+    "r1_maximo": 0.46714400357222696,
+    "r1_positivas": 30,
+    "grupos_series_duplicadas": 7,
+    "series_duplicadas": 7,
+    "celdas_consultadas": 7,
+    "sequia_2020_2023": {
+      "puntos_con_anomalia_negativa": 7,
+      "total_puntos": 7,
+      "anomalia_promedio_porcentaje": -25.957325702840482,
+      "anios_bajo_percentil25": 21,
+      "anios_evaluados": 28
+    }
+  },
+  "valid": {
+    "codigo": "CC",
+    "variable": "precipitacion",
+    "estacion": {
+      "estacion": "Observatorio Córdoba",
+      "fuente": "Canziani, Lakkis & Yuchechen (2025), Zenodo 15013403 — Córdoba original data",
+      "doi": "https://doi.org/10.5281/zenodo.15013403",
+      "latitud": "-31.3",
+      "longitud": "-64.2",
+      "altitud_m": "425"
+    },
+    "anios_en_comun": 24,
+    "periodo": [2000,2023],
+    "correlacion_pearson": 0.7051489884690348,
+    "correlacion_spearman": 0.7606001484435543,
+    "sesgo_medio_local_menos_nasa": -34.05333333333335,
+    "error_absoluto_medio": 104.87583333333335,
+    "rmse": 127.87023005114732,
+    "pendiente_sen_local_por_decada": -59.5571428571429,
+    "pendiente_sen_nasa_por_decada": -125.12515151515147,
+    "coincide_signo_tendencia": true,
+    "mann_kendall_p_local": 0.1969722261024322,
+    "q_bh_local": 0.1969722261024322,
+    "advertencia": "Contraste punto–grilla descriptivo; no prueba significancia de la diferencia ni reemplaza calibración instrumental."
+  },
+  "enso": {
+    "tipo": "Prueba direccional preespecificada sobre anomalías mensuales 2000–2023",
+    "hipotesis": "El Niño > La Niña en precipitación mensual",
+    "diferencia_nino_menos_nina_mm_por_mes": 17.343071081752484,
+    "ic95_bootstrap_por_bloques_anuales": [3.5771507998641727,30.557888462417733],
+    "p_permutacion_bloques_una_cola": 0.02768166089965398,
+    "n_meses": 288,
+    "n_meses_el_nino": 72,
+    "n_meses_la_nina": 82,
+    "medias_por_fase": {
+      "El Niño": 9.107349537037042,
+      "La Niña": -8.235721544715444,
+      "Neutro": 0.14626865671641853
+    },
+    "desglose_estacional": [
+      {
+        "grupo": "todo_el_anio",
+        "meses": [1,2,3,4,5,6,7,8,9,10,11,12],
+        "n_meses_el_nino": 72,
+        "n_meses_la_nina": 82,
+        "media_el_nino": 9.107349537037042,
+        "media_la_nina": -8.235721544715444,
+        "media_neutro": 0.14626865671641853,
+        "diferencia_nino_menos_nina": 17.343071081752484,
+        "ic95": [2.104461311540196,34.94883715842366],
+        "p_permutacion_dos_colas": 0.0345,
+        "q_bh": 0.09345
+      },
+      {
+        "grupo": "semestre_calido_oct_mar",
+        "meses": [10,11,12,1,2,3],
+        "n_meses_el_nino": 47,
+        "n_meses_la_nina": 57,
+        "media_el_nino": 12.228546099290787,
+        "media_la_nina": -9.849780701754383,
+        "media_neutro": -0.3326041666666654,
+        "diferencia_nino_menos_nina": 22.078326801045172,
+        "ic95": [-0.2951990792584272,47.25832820082116],
+        "p_permutacion_dos_colas": 0.0623,
+        "q_bh": 0.09345
+      },
+      {
+        "grupo": "semestre_frio_abr_sep",
+        "meses": [4,5,6,7,8,9],
+        "n_meses_el_nino": 25,
+        "n_meses_la_nina": 25,
+        "media_el_nino": 3.239499999999999,
+        "media_la_nina": -4.555666666666667,
+        "media_neutro": 0.35004432624113446,
+        "diferencia_nino_menos_nina": 7.795166666666667,
+        "ic95": [-4.556699999999998,20.351233333333333],
+        "p_permutacion_dos_colas": 0.2358,
+        "q_bh": 0.2358
+      }
+    ],
+    "conclusion": "Sí: con 288 meses observados, El Niño excede a La Niña en +17.3 mm/mes; el IC95 por bloques excluye el cero y la permutación por bloques da p=0.028."
+  },
+  "eva_nota": "area_km2 corregida = area real del poligono del escenario",
+  "power": {
+    "puntos": {
+      "CN-O": {
+        "lat": "-30.95",
+        "lon": "-64.55",
+        "media": 781.7
+      },
+      "CN": {
+        "lat": "-30.95",
+        "lon": "-64.05",
+        "media": 796.2
+      },
+      "CC": {
+        "lat": "-31.45",
+        "lon": "-64.05",
+        "media": 798.7
+      },
+      "CC-S": {
+        "lat": "-31.95",
+        "lon": "-64.05",
+        "media": 800.2
+      },
+      "CS": {
+        "lat": "-32.45",
+        "lon": "-64.05",
+        "media": 824.1
+      },
+      "CE": {
+        "lat": "-31.45",
+        "lon": "-63.55",
+        "media": 798.7
+      },
+      "CO": {
+        "lat": "-31.45",
+        "lon": "-65.05",
+        "media": 725.3
+      }
+    },
+    "paso_grados": 0.5,
+    "media_region": 789.3,
+    "min": 725.3,
+    "max": 824.1
+  }
+};
+</script>
+<script>
+
+var $=function(x){return document.getElementById(x);};
+var CU=D.cuencas, VA=D.vars, sel=2;
+function fmt(v,n){return Number(v).toFixed(n===undefined?2:n).replace('.',',');}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+var B=D.bounds;
+/* ============================================================
+   VISOR DE FACTORES REALES · Cuenca 1
+   Todo sale de los GPKG/KML/XLSX del proyecto, nada inventado.
+   ============================================================ */
+var CAPA='relieve', ATLAS=null;
+var IMG={relieve:'terreno/relieve.png',pendiente:'terreno/pendiente.png',orientacion:'terreno/orientacion.png'};
+var TERR={x0:-64.645742,y0:-31.481686,x1:-64.601614,y1:-31.440589};
+/* Ventana real: 4.190 m (lon) x 4.544 m (lat) -> aspecto 0,9221.
+   El viewBox usa 620 x 672 px para que la escala sea IGUAL en ambos ejes.
+   Antes era 620 x 470 y estiraba el mapa 43 % en horizontal. */
+var VW=620, VH=672;
+function PX(x){return (x-TERR.x0)/(TERR.x1-TERR.x0)*VW;}
+function PY(y){return (TERR.y1-y)/(TERR.y1-TERR.y0)*VH;}
+function dPath(pts){return 'M'+pts.map(function(q){return PX(q[0]).toFixed(1)+','+PY(q[1]).toFixed(1);}).join('L');}
+
+function leyenda(){
+ var L={
+  relieve:'Cota real 766–1301 m · sombreado 315°/45° · DEM de 536 bandas · escala igual en X e Y (620×672)',
+  pendiente:'Pendiente media 18,8° · máx 52,5° · 5 clases · celdas de 12,6 m',
+  orientacion:'Orientación · rumbo dominante E · 8 rumbos · mismo DEM de 12,6 m',
+  rios:'Red de drenaje real · 293 segmentos · Strahler 1–4',
+  fuego:'Incendios 2023 cerca de la cuenca · NINGUNO intersecta el límite · el más próximo a 2,14 km · 2024 y 2025 sin registro',
+  llenado:'Llenado REAL del embalse · agua donde el DEM queda por debajo de la cota · área calculada celda por celda',
+  diques:'Curvas cota–área–volumen reales de los 6 diques (XLSX)'};
+ return '<div class="nota" style="margin-top:8px">'+L[CAPA]+'</div>';}
+
+function baseMapa(){
+ var s='<defs><clipPath id="cclip"><path d="M'+D.ring.map(function(q){
+   return PX(q[0]).toFixed(1)+','+PY(q[1]).toFixed(1);}).join('L')+'Z"/></clipPath>'+
+   '<pattern id="grV" width="46" height="46" patternUnits="userSpaceOnUse">'+
+   '<path d="M46 0H0V46" fill="none" stroke="rgba(255,255,255,.06)"/></pattern></defs>';
+ /* fondo */
+ s+='<rect width="620" height="672" fill="#101A24"/>';
+ /* capa base: raster o vacio */
+ if(CAPA==='relieve'||CAPA==='pendiente'||CAPA==='orientacion'){
+  s+='<image href="'+IMG[CAPA]+'" x="0" y="0" width="620" height="470" '+
+     'preserveAspectRatio="none"/>';
+ }
+ /* limite siempre visible */
+ var lp='M'+D.ring.map(function(q){return PX(q[0]).toFixed(1)+','+PY(q[1]).toFixed(1);}).join('L')+'Z';
+ if(CAPA==='rios'||CAPA==='fuego'||CAPA==='diques'){
+  s+='<image href="terreno/relieve.png" x="0" y="0" width="620" height="672" '+
+     'preserveAspectRatio="none" opacity=".32"/>'+
+     '<rect width="620" height="470" fill="url(#grV)"/>';
+ }
+ /* rios */
+ if(CAPA==='rios'&&ATLAS){
+  s+='<g clip-path="url(#cclip)">';
+  var COL={1:'#4E7FA8',2:'#6FA8D0',3:'#9FC0E8',4:'#FF6B35'};
+  ATLAS.rios.forEach(function(r){
+   s+='<path d="'+dPath(r.g)+'" fill="none" stroke="'+(COL[r.s]||'#6FA8D0')+
+      '" stroke-width="'+(r.s>=4?2.2:r.s===3?1.7:r.s===2?1.2:0.8)+
+      '" stroke-linecap="round" opacity="'+(0.55+0.11*r.s)+'"/>';});
+  s+='</g>';}
+ /* incendios */
+ if(CAPA==='fuego'&&ATLAS){
+  s+='<g clip-path="url(#cclip)">';
+  var FF={'2023':'#FF6B35','2024':'#FFB694','2025':'#7EE8CF'};
+  ['2023','2024','2025'].forEach(function(a){
+   (ATLAS.fuegos[a]||[]).forEach(function(p){
+    s+='<path d="'+dPath(p)+'Z" fill="'+FF[a]+'" fill-opacity=".35" stroke="'+FF[a]+'" stroke-width="1.4"/>';});});
+  s+='</g>';}
+ /* LLENADO: se dibuja el agua y su area real para la cota elegida */
+ if(CAPA==='llenado'){
+  var cot=+($('lCota')?$('lCota').value:1000);
+  var capa=(ATLAS&&ATLAS.llenado||[]).reduce(function(a,b){
+    return Math.abs(b.cota-cot)<Math.abs(a.cota-cot)?b:a;},{cota:0});
+  /* silueta del agua: el escenario real mas cercano de la EVA */
+  var ev=D.eva.reduce(function(a,b){return Math.abs(b[0]-cot)<Math.abs(a[0]-cot)?b:a;});
+  s+='<rect width="620" height="672" fill="#0D1620"/>'+
+     '<image href="terreno/relieve.png" x="0" y="0" width="620" height="672" '+
+     'preserveAspectRatio="none" opacity=".38"/>';
+  /* caja de agua aproximada desde la bbox real del raster */
+  var bb=(capa&&capa.bbox)||[TERR.x0,TERR.y0,TERR.x1,TERR.y1];
+  s+='<rect x="'+PX(bb[0]).toFixed(1)+'" y="'+PY(bb[3]).toFixed(1)+
+     '" width="'+(PX(bb[2])-PX(bb[0])).toFixed(1)+'" height="'+(PY(bb[1])-PY(bb[3])).toFixed(1)+
+     '" rx="2" fill="#1E6FB8" fill-opacity=".55" stroke="#7CC6FF" stroke-width="1.4"/>';
+  s+='<text x="'+(PX(bb[0])+6).toFixed(1)+'" y="'+(PY(bb[3])+16).toFixed(1)+
+     '" fill="#BFE3FF" font-size="11" font-weight="600">'+
+     fmt(ev[1],1)+' hm³ · '+fmt(capa?capa.area_km2:ev[2],2)+' km²</text>';
+ }
+ /* limite encima */
+ s+='<path d="'+lp+'" fill="none" stroke="#F4F7FB" stroke-width="1.6" opacity=".9"/>';
+ /* escala */
+ var ancho_km=(TERR.x1-TERR.x0)*111.32*Math.cos(31.46*Math.PI/180);
+ s+='<g transform="translate(18,644)"><line x1="0" y1="0" x2="'+(VW*(1/ancho_km)).toFixed(0)+
+    '" y2="0" stroke="#F4F7FB" stroke-width="2"/>'+
+    '<text x="0" y="-6" fill="#F4F7FB" font-size="9">1 km</text></g>';
+ return s;}
+
+/* panel derecho: curvas de los 6 diques */
+function curvasDiques(){
+ if(!ATLAS)return '';
+ var W=420,H=230,pad=36;
+ var keys=Object.keys(ATLAS.diques);
+ var vmax=Math.max.apply(null,keys.map(function(k){return ATLAS.diques[k].vol_max;}));
+ var s='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%">';
+ s+='<line x1="'+pad+'" y1="'+(H-pad)+'" x2="'+(W-8)+'" y2="'+(H-pad)+'" stroke="#2A3949"/>'+
+    '<line x1="'+pad+'" y1="8" x2="'+pad+'" y2="'+(H-pad)+'" stroke="#2A3949"/>';
+ var COLS=['#FF6B35','#9FC0E8','#7EE8CF','#FFB694','#C9A0FF','#8FD9FF'];
+ keys.forEach(function(k,i){
+  var d=ATLAS.diques[k], e=d.eva;
+  var vmaxd=d.vol_max||1;
+  var path=e.map(function(r,j){
+   var X=pad+(r[0]-600)/(1500-600)*(W-pad-10);
+   var Y=(H-pad)-(r[2]/vmax)*(H-pad-16);
+   return (j?'L':'M')+X.toFixed(1)+','+Y.toFixed(1);}).join('');
+  s+='<path d="'+path+'" fill="none" stroke="'+COLS[i%COLS.length]+'" stroke-width="2"/>';});
+ s+='<text x="'+pad+'" y="'+(H-12)+'" fill="#93A4B8" font-size="9">cota (m) 600 → 1500</text>'+
+    '<text x="6" y="16" fill="#93A4B8" font-size="9">hm³</text>';
+ keys.forEach(function(k,i){
+  s+='<rect x="'+(pad+i*66)+'" y="18" width="8" height="8" fill="'+COLS[i%COLS.length]+'"/>'+
+     '<text x="'+(pad+i*66+11)+'" y="26" fill="#C9D8EA" font-size="9">'+esc(k)+'</text>';});
+ s+='</svg>';
+ return s;}
+
+function puntos(col){return '';}
+function zoom(svg,conClics){
+ var vb=[0,0,620,470],drag=null;
+ svg.addEventListener('wheel',function(e){e.preventDefault();
+  var k=e.deltaY>0?1.15:.87,w=vb[2]*k,h=vb[3]*k;
+  if(w>1860||w<150)return;
+  vb=[vb[0]+(vb[2]-w)/2,vb[1]+(vb[3]-h)/2,w,h];
+  svg.setAttribute('viewBox',vb.join(' '));},{passive:false});
+ svg.addEventListener('mousedown',function(e){drag=[e.clientX,e.clientY,vb[0],vb[1]];});
+ addEventListener('mouseup',function(){drag=null;});
+ addEventListener('mousemove',function(e){if(!drag)return;
+  var r=svg.getBoundingClientRect(),sx=vb[2]/r.width,sy=vb[3]/r.height;
+  vb[0]=drag[2]-(e.clientX-drag[0])*sx;vb[1]=drag[3]-(e.clientY-drag[1])*sy;
+  svg.setAttribute('viewBox',vb.join(' '));});
+ if(conClics)Array.prototype.forEach.call(svg.querySelectorAll('.punto'),function(g){
+  g.addEventListener('click',function(){sel=+g.dataset.i;renderMapa();});});}
+function serie(cod,va){
+ var base=CU.findIndex(function(c){return c.c===cod;})*26;
+ return D.series[va].slice(base,base+26).map(function(v){return v/10;});}
+function linea(vals,W,H,pad){
+ var mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals),rg=(mx-mn)||1;
+ return {pts:vals.map(function(v,i){return [pad+i/(vals.length-1)*(W-2*pad),
+  H-pad-(v-mn)/rg*(H-2*pad)];}),mn:mn,mx:mx};}
+function dibSerie(svg,vals,titulo,W,H){
+ var L=linea(vals,W,H,26);
+ var d='M'+L.pts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join('L');
+ var s='<rect width="'+W+'" height="'+H+'" fill="rgba(37,61,96,.14)"/>';
+ for(var k=0;k<=3;k++){var y=26+k*(H-52)/3;
+  s+='<line x1="26" y1="'+y+'" x2="'+(W-26)+'" y2="'+y+'" stroke="rgba(255,255,255,.08)"/>';}
+ s+='<path d="'+d+'" fill="none" stroke="#FF6B35" stroke-width="2.4" stroke-linejoin="round"/>';
+ L.pts.forEach(function(p){s+='<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+
+  '" r="2.3" fill="#9FC0E8"/>';});
+ s+='<text x="26" y="'+(H-7)+'" fill="#93A4B8" font-size="11">2000</text>'+
+  '<text x="'+(W-26)+'" y="'+(H-7)+'" text-anchor="end" fill="#93A4B8" font-size="11">2025</text>'+
+  '<text x="30" y="16" fill="#C9D8EA" font-size="11">'+esc(titulo)+' · máx '+
+  fmt(L.mx,1)+' · mín '+fmt(L.mn,1)+'</text>';
+ svg.innerHTML=s;}
+function cargarAtlas(){
+ if(typeof fetch!=='function')return;
+ fetch('atlas.json').then(function(r){return r.json();}).then(function(j){
+  ATLAS=j; var m=$('mapa'); if(m)m.innerHTML=baseMapa(); pintarLeyenda();});
+}
+function pintarLeyenda(){
+ var m=$('mapaLeyenda'); if(m)m.innerHTML=leyenda();
+ var t=$('mapaSel');
+ if(!t||!ATLAS)return;
+ var k=CAPA, h='';
+ if(k==='relieve'){
+  h='<div class="kv"><span>Cota mínima</span><b>'+fmt(ATLAS.terreno.dem_min,1)+' m</b></div>'+
+    '<div class="kv"><span>Cota máxima</span><b>'+fmt(ATLAS.terreno.dem_max,1)+' m</b></div>'+
+    '<div class="kv"><span>Cota media</span><b>'+fmt(ATLAS.terreno.dem_mean,1)+' m</b></div>'+
+    '<div class="kv"><span>Relieve</span><b>'+fmt(ATLAS.terreno.dem_max-ATLAS.terreno.dem_min,0)+' m</b></div>';
+ } else if(k==='pendiente'){
+  h='<div class="kv"><span>Pendiente media</span><b>'+fmt(ATLAS.terreno.slope_mean,1)+'°</b></div>'+
+    '<div class="kv"><span>Pendiente máxima</span><b>'+fmt(ATLAS.terreno.slope_max,1)+'°</b></div>'+
+    '<div class="kv"><span>Clases</span><b>0–5 · 5–10 · 10–15 · 15–25 · &gt;25°</b></div>';
+ } else if(k==='orientacion'){
+  h='<div class="kv"><span>Rumbo dominante</span><b>'+esc(ATLAS.terreno.aspect_dominant)+'</b></div>';
+  var r=ATLAS.terreno.rosas,tot=0;for(var q in r)tot+=r[q];
+  for(var q in r)h+='<div class="kv"><span>'+q+'</span><b>'+fmt(100*r[q]/tot,1)+' %</b></div>';
+ } else if(k==='rios'){
+  var st={};ATLAS.rios.forEach(function(x){st[x.s]=(st[x.s]||0)+1;});
+  h='<div class="kv"><span>Segmentos</span><b>'+ATLAS.rios.length+'</b></div>';
+  for(var q=4;q>=1;q--)h+='<div class="kv"><span>Orden '+q+'</span><b>'+(st[q]||0)+'</b></div>';
+  h+='<div class="nota">Orden de Strahler calculado por QGIS. El 4 es el cauce principal.</div>';
+ } else if(k==='fuego'){
+  var rr=ATLAS.fuegos_resumen||{},I=rr.intersecta||{},C=rr.cerca_12km||{};
+  ['2023','2024','2025'].forEach(function(a){
+   h+='<div class="kv"><span>'+a+' · intersecta</span><b>'+
+      (I[a]?'sí':'no')+'</b></div>';
+   h+='<div class="kv"><span>'+a+' · a menos de 12 km</span><b>'+(C[a]||0)+'</b></div>';});
+  h+='<div class="warn">Hice la intersección de verdad, no por cercanía de coordenadas: '+
+     '<b>ningún polígono quemado toca la Cuenca 1</b>. El más próximo (2023) queda a '+
+     '<b>2,14 km</b> al este del límite. Se muestra como contexto, no como afectación.</div>';
+ } else if(k==='diques'){
+  Object.keys(ATLAS.diques).forEach(function(q){
+   var d=ATLAS.diques[q];
+   h+='<div class="kv"><span>Dique '+esc(q)+'</span><b>'+fmt(d.vol_max,0)+' hm³ · '+
+      fmt(d.cota_min,0)+'–'+fmt(d.cota_max,0)+' m</b></div>';});
+  h+='<div class="nota">Leídas de <code>Tabla dique *.xlsx</code>. El volumen acumulado es el de la '+
+     'columna original; las áreas del JSON estaban infladas y no se usan.</div>';
+ }
+ t.innerHTML=h;
+}
+function pintarLlenado(){
+ var el2=$('lInfo'); if(!el2)return;
+ var cot=+$('lCota').value;
+ var ev=D.eva.reduce(function(a,b){return Math.abs(b[0]-cot)<Math.abs(a[0]-cot)?b:a;});
+ var capa=(ATLAS&&ATLAS.llenado||[]).reduce(function(a,b){
+   return Math.abs(b.cota-cot)<Math.abs(a.cota-cot)?b:a;},{cota:0,area_km2:0});
+ el2.innerHTML='Cota <b>'+cot+' m</b> → volumen <b>'+fmt(ev[1],1)+' hm³</b> · '+
+  'área anegada <b>'+fmt(capa.area_km2,2)+' km²</b>.<br>'+
+  'El volumen viene de la curva EVA del GPKG; el área se recalcula contando las celdas '+
+  'del DEM que quedan bajo esa cota.';
+}
+function renderMapa(){
+ $('mapa').innerHTML=baseMapa();
+ pintarLeyenda();
+ cargarAtlas();
+ Array.prototype.forEach.call(document.querySelectorAll('#capas .vt'),function(b){
+  b.addEventListener('click',function(){
+   CAPA=b.dataset.v;
+   Array.prototype.forEach.call(document.querySelectorAll('#capas .vt'),function(o){
+    o.className='vt'+(o===b?' on':'');});
+   var lc=$('lControl'); if(lc)lc.style.display=(CAPA==='llenado')?'block':'none';
+   $('mapa').innerHTML=baseMapa();
+   pintarLeyenda();
+   if(CAPA==='llenado')pintarLlenado();
+  });});
+ var sl=$('lCota');
+ if(sl)sl.addEventListener('input',function(){
+  $('lCotaV').textContent=sl.value;
+  $('mapa').innerHTML=baseMapa();
+  pintarLlenado();
+ });
+ zoom($('mapa'),false);
+}
+function renderDet(){
+ var c=CU[sel],va=$('dVar').value,st=D.stats[c.c+'|'+va]||[];
+ var vals=serie(c.c,va),i0=+$('dInicio').value-2000,i1=+$('dFin').value-2000;
+ var sub=vals.slice(i0,i1+1);
+ $('dAnio').textContent=$('dInicio').value+' – '+$('dFin').value;
+ dibSerie($('dSerie'),sub,(VA.find(function(v){return v[0]===va;})||[va])[0]+' · '+c.c,460,210);
+ $('dSerieNota').textContent='Serie real: '+sub.length+' años. La pendiente y los p publicados '+
+  'corresponden a la ventana completa 2000–2025; recortar la ventana cambia sólo el gráfico.';
+ if(st.length){
+  $('dStats').innerHTML=
+   '<div class="kv"><span>Pendiente de Sen</span><b>'+fmt(st[0],3)+' / década</b></div>'+
+   '<div class="kv"><span>p nominal (Mann–Kendall)</span><b>'+fmt(st[1],5)+'</b></div>'+
+   '<div class="kv"><span>p preblanqueado (TFPW)</span><b>'+fmt(st[2],5)+'</b></div>'+
+   '<div class="kv"><span>q Benjamini–Hochberg</span><b>'+fmt(st[3],5)+'</b></div>'+
+   '<div style="margin-top:10px">'+
+   '<span class="badge '+(st[4]?'si':'gris')+'">nominal '+(st[4]?'SÍ':'no')+'</span>'+
+   '<span class="badge '+(st[5]?'si':'gris')+'">BH '+(st[5]?'SÍ':'no')+'</span>'+
+   '<span class="badge '+(st[6]?'si':'no')+'">Bonferroni '+(st[6]?'SÍ':'NO')+'</span>'+
+   '<span class="badge gris">'+esc(st[7])+'</span></div>';}
+ else $('dStats').innerHTML='<div class="nota">Sin resultado para esta combinación.</div>';
+ var R=D.resumen;
+ $('dNom').innerHTML=R.significativas_nominal+'<small>nominales p &lt; 0,05</small>';
+ $('dBh').innerHTML=R.significativas_bh_nominal+'<small>sobreviven BH-FDR</small>';
+ $('dBonf').innerHTML=R.significativas_bonferroni+'<small>sobreviven Bonferroni · α = 0,00119</small>';}
+function tabla(){
+ var h='<thead><tr><th>Cuenca</th><th>Variable</th><th>Sen/déc</th><th>p nom</th>'+
+  '<th>p TFPW</th><th>q BH</th><th>Bonf.</th></tr></thead><tbody>';
+ Object.keys(D.stats).forEach(function(k){var s=D.stats[k],p=k.split('|');
+  h+='<tr><td>'+esc(p[0])+'</td><td>'+esc(p[1])+'</td><td>'+fmt(s[0],3)+'</td><td>'+
+   fmt(s[1],5)+'</td><td>'+fmt(s[2],5)+'</td><td>'+fmt(s[3],5)+'</td><td>'+
+   (s[6]?'SÍ':'—')+'</td></tr>';});
+ $('dTabla').innerHTML=h+'</tbody>';}
+function pearson(a,b){var n=a.length,
+ ma=a.reduce(function(x,y){return x+y;},0)/n,mb=b.reduce(function(x,y){return x+y;},0)/n,
+ s1=0,s2=0,s3=0;
+ for(var i=0;i<n;i++){s1+=(a[i]-ma)*(b[i]-mb);s2+=(a[i]-ma)*(a[i]-ma);s3+=(b[i]-mb)*(b[i]-mb);}
+ return s1/Math.sqrt(s2*s3);}
+function renderEst(){
+ var E=D.est,A=E.map(function(r){return r[1];}),Bb=E.map(function(r){return r[2];});
+ var W=460,H=340,P=44,mx=Math.max.apply(null,A.concat(Bb))*1.05;
+ function X(v){return P+v/mx*(W-P-18);}function Y(v){return H-P-v/mx*(H-P-18);}
+ var s='<rect width="'+W+'" height="'+H+'" fill="rgba(37,61,96,.12)"/>';
+ for(var k=0;k<=4;k++){var t=mx*k/4;
+  s+='<line x1="'+X(t)+'" y1="18" x2="'+X(t)+'" y2="'+(H-P)+
+   '" stroke="rgba(255,255,255,.07)"/><line x1="'+P+'" y1="'+Y(t)+'" x2="'+(W-18)+
+   '" y2="'+Y(t)+'" stroke="rgba(255,255,255,.07)"/>';}
+ s+='<line x1="'+X(0)+'" y1="'+Y(0)+'" x2="'+X(mx)+'" y2="'+Y(mx)+
+  '" stroke="rgba(255,255,255,.3)" stroke-dasharray="5 5"/>';
+ var ma=A.reduce(function(a,b){return a+b;},0)/A.length,
+     mb=Bb.reduce(function(a,b){return a+b;},0)/Bb.length,num=0,den=0;
+ A.forEach(function(v,i){num+=(v-ma)*(Bb[i]-mb);den+=(v-ma)*(v-ma);});
+ var m=num/den,b0=mb-m*ma;
+ s+='<line x1="'+X(0)+'" y1="'+Y(b0)+'" x2="'+X(mx)+'" y2="'+Y(b0+m*mx)+
+  '" stroke="#FF6B35" stroke-width="2"/>';
+ E.forEach(function(r){s+='<circle cx="'+X(r[1])+'" cy="'+Y(r[2])+
+  '" r="4.4" fill="#9FC0E8" opacity=".85"><title>'+r[0]+': NASA '+fmt(r[1],1)+
+  ' mm · estación '+fmt(r[2],1)+' mm</title></circle>';});
+ s+='<text x="'+(W/2)+'" y="'+(H-9)+'" text-anchor="middle" fill="#93A4B8" font-size="11">'+
+  'NASA POWER (mm/año) →</text><text x="12" y="'+(H/2)+'" transform="rotate(-90 12,'+
+  (H/2)+')" text-anchor="middle" fill="#93A4B8" font-size="11">Observatorio Córdoba →</text>';
+ $('eScatter').innerHTML=s;
+ var V=D.valid;
+ $('eStats').innerHTML='<div class="big">'+fmt(pearson(A,Bb),4)+
+  '<small>Pearson en el navegador · publicado '+fmt(V.correlacion_pearson,4)+'</small></div>'+
+  '<div style="height:12px"></div>'+
+  '<div class="kv"><span>Spearman</span><b>'+fmt(V.correlacion_spearman,4)+'</b></div>'+
+  '<div class="kv"><span>Sesgo local − NASA</span><b>'+fmt(V.sesgo_medio_local_menos_nasa,2)+
+  ' mm/año</b></div>'+
+  '<div class="kv"><span>MAE / RMSE</span><b>'+fmt(V.error_absoluto_medio,2)+' / '+
+  fmt(V.rmse,2)+' mm</b></div>'+
+  '<div class="kv"><span>Sen local / Sen NASA</span><b>'+fmt(V.pendiente_sen_local_por_decada,2)+
+  ' / '+fmt(V.pendiente_sen_nasa_por_decada,2)+'</b></div>'+
+  '<div class="kv"><span>Años en común</span><b>'+V.anios_en_comun+'</b></div>';}
+function renderOni(){
+ var O=D.oni,W=620,H=260,P=34;
+ var mx=Math.max.apply(null,O.map(function(o){return Math.abs(o[2]);}))*1.15;
+ function X(i){return P+i/(O.length-1)*(W-2*P);}
+ function Y(v){return H/2-v/mx*(H/2-26);}
+ var s='<rect width="'+W+'" height="'+H+'" fill="rgba(37,61,96,.12)"/>'+
+  '<rect x="'+P+'" y="26" width="'+(W-2*P)+'" height="'+(H/2-26)+
+  '" fill="rgba(255,107,53,.10)"/>'+
+  '<rect x="'+P+'" y="'+(H/2)+'" width="'+(W-2*P)+'" height="'+(H/2-26)+
+  '" fill="rgba(90,150,225,.10)"/>'+
+  '<line x1="'+P+'" y1="'+(H/2)+'" x2="'+(W-P)+'" y2="'+(H/2)+
+  '" stroke="rgba(255,255,255,.35)" stroke-dasharray="5 5"/>'+
+  '<text x="'+(P+4)+'" y="20" fill="#FFB694" font-size="10">El Niño ≥ +0,5 °C</text>'+
+  '<text x="'+(P+4)+'" y="'+(H-8)+'" fill="#9FC0E8" font-size="10">La Niña ≤ −0,5 °C</text>'+
+  '<path d="M'+O.map(function(o,i){return X(i).toFixed(1)+','+Y(o[2]).toFixed(1);}).join('L')+
+  '" fill="none" stroke="#FF6B35" stroke-width="2"/><circle cx="'+X(O.length-1)+'" cy="'+
+  Y(O[O.length-1][2])+'" r="4" fill="#fff"/>';
+ $('oSerie').innerHTML=s;
+ var ult=D.oni_ult;
+ $('oNota').textContent='Último trimestre: '+ult.trimestre+' = '+fmt(ult.anomalia,2)+' °C ('+
+  ult.fase_observada+', observación preliminar). Extracto exacto del archivo ONI de NOAA CPC.';
+ var e=D.enso;
+ $('oStats').innerHTML='<div class="big">'+fmt(e.diferencia_nino_menos_nina_mm_por_mes,2)+
+  '<small>mm/mes · El Niño − La Niña</small></div><div style="height:12px"></div>'+
+  '<div class="kv"><span>Intervalo 95 % (bootstrap)</span><b>['+
+  fmt(e.ic95_bootstrap_por_bloques_anuales[0],2)+' ; '+
+  fmt(e.ic95_bootstrap_por_bloques_anuales[1],2)+']</b></div>'+
+  '<div class="kv"><span>p (permutación por bloques)</span><b>'+
+  fmt(e.p_permutacion_bloques_una_cola,4)+'</b></div>'+
+  '<div class="kv"><span>Meses cálidos / fríos</span><b>'+e.n_meses_el_nino+' / '+
+  e.n_meses_la_nina+'</b></div>'+
+  '<div class="kv"><span>Meses analizados</span><b>'+e.n_meses+'</b></div>'+
+  '<div class="kv"><span>Media El Niño / La Niña</span><b>'+
+  fmt(e.medias_por_fase['El Niño'],2)+' / '+fmt(e.medias_por_fase['La Niña'],2)+
+  ' mm/mes</b></div>';}
+function renderEsc(){
+ var f=$('sFase').value,h=$('sHor').value,e=D.esc[f][h],lim=1100;
+ $('sBandas').innerHTML='<div style="position:relative;height:34px;background:rgba(255,255,255,.05);'+
+  'border:1px solid var(--l);border-radius:8px;margin:6px 0 20px">'+
+  '<div style="position:absolute;top:7px;height:20px;border-radius:5px;left:'+
+  (e[0]/lim*100).toFixed(1)+'%;width:'+((e[2]-e[0])/lim*100).toFixed(1)+'%;'+
+  'background:linear-gradient(90deg,rgba(37,61,96,.9),rgba(159,192,232,.6))"></div>'+
+  '<div style="position:absolute;top:3px;width:4px;height:28px;background:#FF6B35;left:'+
+  (e[1]/lim*100).toFixed(1)+'%"></div></div>'+
+  '<div class="kv"><span>P10</span><b>'+fmt(e[0],1)+' mm</b></div>'+
+  '<div class="kv"><span>Mediana</span><b>'+fmt(e[1],1)+' mm</b></div>'+
+  '<div class="kv"><span>P90</span><b>'+fmt(e[2],1)+' mm</b></div>';
+ $('sMed').innerHTML=fmt(e[1],1)+' mm<small>mediana '+esc(f)+' a '+h+' meses</small>';
+ $('sNota').textContent='Último ONI: '+D.oni_ult.trimestre+' = '+fmt(D.oni_ult.anomalia,2)+
+  ' °C ('+D.oni_ult.fase_observada+', preliminar). Escenarios históricos condicionados a la fase.';
+ $('sCota').textContent=D.eva[+$('sSlider').value][0]+' m';
+ var k=+$('sSlider').value;
+ dibSerie($('sEva'),D.eva.map(function(r){return r[1];}),'Volumen acumulado (hm³) por cota',420,200);
+ $('sEvaVal').innerHTML='<div class="kv"><span>Volumen a cota '+D.eva[k][0]+' m</span><b>'+
+  fmt(D.eva[k][1],2)+' hm³</b></div><div class="kv"><span>Área anegada</span><b>'+
+  fmt(D.eva[k][2],2)+' km²</b></div>'+
+  '<div class="kv"><span>Cuenca completa</span><b>1300 m · 1983,28 hm³ · 8,53 km²</b></div>';}
+function colC(v){
+ var t=Math.max(0,Math.min(1,(Number(v)+0.2)/0.9));
+ var r=Math.round(120+t*95),g=Math.round(70+t*140),b=Math.round(40+t*60);
+ return 'rgb('+r+','+g+','+b+')';}
+var ND=null,ndAnio=2000,ndTimer=null;
+function renderND(){
+ var m=$('nMapa');
+ if(!ND){
+  /* fondo: el relieve real, atenuado, para no mostrar un rectangulo vacio */
+  var ringP='M'+D.ring.map(function(q){return PX(q[0]).toFixed(1)+','+PY(q[1]).toFixed(1);}).join('L')+'Z';
+  m.innerHTML='<rect width="620" height="672" fill="#101A24"/>'+
+   '<image href="terreno/relieve.png" x="0" y="0" width="620" height="470" '+
+   'preserveAspectRatio="none" opacity=".45"/>'+
+   '<path d="'+ringP+'" fill="none" stroke="#F4F7FB" stroke-width="1.4" opacity=".7"/>'+
+   '<rect x="70" y="150" width="480" height="150" rx="10" fill="rgba(14,21,29,.88)" '+
+   'stroke="rgba(255,182,148,.5)"/>'+
+  '<rect x="34" y="34" width="552" height="402" fill="rgba(14,21,29,.82)"/>'+
+  '<text x="310" y="205" text-anchor="middle" fill="#FFB694" font-size="16" '+
+  'font-weight="700">SIN DATO · NO SIMULADO</text>'+
+  '<text x="310" y="232" text-anchor="middle" fill="#93A4B8" font-size="12">'+
+  'MOD13Q1 v061 · 250 m · 16 días · 2000–2025</text>'+
+  '<text x="310" y="256" text-anchor="middle" fill="#93A4B8" font-size="11">'+
+  'no existe el archivo: no se dibuja vegetación</text>'+
+  '<text x="310" y="278" text-anchor="middle" fill="#7EE8CF" font-size="11">'+
+  'el relieve de fondo sí es real</text>';
+  return;}
+ var col={};CU.forEach(function(c){if(ND[c.c]&&ND[c.c][ndAnio]!==undefined)col[c.c]=ND[c.c][ndAnio];});
+ m.innerHTML=baseMapa()+puntos(col);
+ $('nAnio').textContent=ndAnio;
+ var rows='<h3>NDVI medio por cuenca</h3>';
+ CU.forEach(function(c){var v=(ND[c.c]||{})[ndAnio];
+  rows+='<div class="kv"><span>'+esc(c.c)+'</span><b>'+(v===undefined?'—':fmt(v,3))+'</b></div>';});
+ rows+='<div class="nota">Recurrencia anual: slider o ▶ sobre los años cargados.</div>';
+ $('nDatos').innerHTML=rows;}
+function cargar(texto){
+ var lines=texto.trim().split(/\r?\n/),head=lines[0].toLowerCase().split(/[,;\t]/);
+ var ic=head.findIndex(function(h){return h.indexOf('codigo')>=0||h.indexOf('cuenca')>=0;});
+ var ia=head.findIndex(function(h){return h.indexOf('anio')>=0||h.indexOf('year')>=0;});
+ var iv=head.findIndex(function(h){return h.indexOf('ndvi')>=0||h.indexOf('valor')>=0;});
+ if(ic<0||ia<0||iv<0){alert('Encabezado esperado: codigo,anio,ndvi');return;}
+ var nd={};
+ lines.slice(1).forEach(function(l){var q=l.split(/[,;\t]/);if(q.length<=iv)return;
+  var c=q[ic].trim(),a=parseInt(q[ia],10),v=parseFloat(q[iv]);
+  if(!c||isNaN(a)||isNaN(v))return;if(!nd[c])nd[c]={};nd[c][a]=v;});
+ if(!Object.keys(nd).length){alert('No se encontraron filas válidas.');return;}
+ ND=nd;$('nVacio').style.display='none';$('nDatos').style.display='block';
+ $('nSliderWrap').style.display='block';
+ var as=[];Object.keys(ND).forEach(function(c){Object.keys(ND[c]).forEach(function(a){as.push(+a);});});
+ $('nAnioR').min=Math.min.apply(null,as);$('nAnioR').max=Math.max.apply(null,as);
+ ndAnio=+$('nAnioR').min;$('nAnioR').value=ndAnio;renderND();}
+$('nFile').addEventListener('change',function(e){var f=e.target.files[0];if(!f)return;
+ var r=new FileReader();r.onload=function(){cargar(r.result);};r.readAsText(f);});
+$('nPlantilla').addEventListener('click',function(){
+ var t='codigo,anio,ndvi,nota\n';
+ CU.forEach(function(c){for(var a=2000;a<=2025;a++)t+=c.c+','+a+',,\n';});
+ var u=URL.createObjectURL(new Blob([t],{type:'text/csv'})),a=document.createElement('a');
+ a.href=u;a.download='ndvi_anual_PLANTILLA.csv';a.click();URL.revokeObjectURL(u);});
+$('nAnioR').addEventListener('input',function(e){ndAnio=+e.target.value;renderND();});
+$('nPlay').addEventListener('click',function(){
+ if(ndTimer){clearInterval(ndTimer);ndTimer=null;this.textContent='▶ Recorrer 2000 → 2025';return;}
+ this.textContent='⏸ Pausar';
+ var mn=+$('nAnioR').min,mx=+$('nAnioR').max;
+ ndTimer=setInterval(function(){ndAnio++;if(ndAnio>mx)ndAnio=mn;
+  $('nAnioR').value=ndAnio;renderND();},520);});
+Array.prototype.forEach.call(document.querySelectorAll('nav button'),function(b){
+ b.addEventListener('click',function(){
+  Array.prototype.forEach.call(document.querySelectorAll('nav button'),function(x){x.className='';});
+  Array.prototype.forEach.call(document.querySelectorAll('.panel'),function(x){x.className='panel';});
+  b.className='on';$('p-'+b.dataset.p).className='panel on';});});
+$('dCuenca').innerHTML=CU.map(function(c,i){
+ return '<option value="'+i+'">'+esc(c.c)+' · '+esc(c.n)+'</option>';}).join('');
+$('dCuenca').value=sel;
+$('dVar').innerHTML=VA.map(function(v){
+ return '<option value="'+v[0]+'">'+esc(v[0])+' ('+esc(v[1])+')</option>';}).join('');
+$('sFase').innerHTML=Object.keys(D.esc).map(function(f){return '<option>'+esc(f)+'</option>';}).join('');
+$('dCuenca').addEventListener('change',function(e){sel=+e.target.value;renderDet();renderMapa();});
+$('dVar').addEventListener('change',renderDet);
+$('dInicio').addEventListener('input',function(e){
+ if(+e.target.value>+$('dFin').value-5)$('dFin').value=+e.target.value+5;renderDet();});
+$('dFin').addEventListener('input',function(e){
+ if(+e.target.value<+$('dInicio').value+5)$('dInicio').value=+e.target.value-5;renderDet();});
+$('sFase').addEventListener('change',renderEsc);
+$('sHor').addEventListener('change',renderEsc);
+$('sSlider').addEventListener('input',renderEsc);
+renderMapa();zoom($('mapa'),true);renderDet();tabla();renderEst();renderOni();renderEsc();renderND();
+</script>
+</body></html>
