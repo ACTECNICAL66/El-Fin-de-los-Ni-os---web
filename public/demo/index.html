@@ -1315,7 +1315,7 @@ function baseMapa(){
  s+='<rect width="620" height="672" fill="#101A24"/>';
  /* capa base: raster o vacio */
  if(CAPA==='relieve'||CAPA==='pendiente'||CAPA==='orientacion'){
-  s+='<image href="'+IMG[CAPA]+'" x="0" y="0" width="620" height="470" '+
+  s+='<image href="'+IMG[CAPA]+'" x="0" y="0" width="620" height="'+VH+'" '+
      'preserveAspectRatio="none"/>';
  }
  /* limite siempre visible */
@@ -1323,7 +1323,7 @@ function baseMapa(){
  if(CAPA==='rios'||CAPA==='fuego'||CAPA==='diques'){
   s+='<image href="terreno/relieve.png" x="0" y="0" width="620" height="672" '+
      'preserveAspectRatio="none" opacity=".32"/>'+
-     '<rect width="620" height="470" fill="url(#grV)"/>';
+     '<rect width="620" height="'+VH+'" fill="url(#grV)"/>';
  }
  /* rios */
  if(CAPA==='rios'&&ATLAS){
@@ -1654,7 +1654,7 @@ function renderND(){
   /* fondo: el relieve real, atenuado, para no mostrar un rectangulo vacio */
   var ringP='M'+D.ring.map(function(q){return PX(q[0]).toFixed(1)+','+PY(q[1]).toFixed(1);}).join('L')+'Z';
   m.innerHTML='<rect width="620" height="672" fill="#101A24"/>'+
-   '<image href="terreno/relieve.png" x="0" y="0" width="620" height="470" '+
+   '<image href="terreno/relieve.png" x="0" y="0" width="620" height="672" '+
    'preserveAspectRatio="none" opacity=".45"/>'+
    '<path d="'+ringP+'" fill="none" stroke="#F4F7FB" stroke-width="1.4" opacity=".7"/>'+
    '<rect x="70" y="150" width="480" height="150" rx="10" fill="rgba(14,21,29,.88)" '+
