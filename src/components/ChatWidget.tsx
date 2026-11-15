@@ -20,7 +20,11 @@ const FAQ: Record<string, string> = {
   "qué son las micro-represas":
     "Las micro-represas son pequeñas estructuras de retención propuestas para almacenar o ralentizar agua en una cuenca. Su ubicación, costo y efectos ambientales deben evaluarse con estudios de terreno e hidrológicos antes de proponer su construcción.",
   "cuántas cuencas se analizaron":
-    "El visor incluye siete cuencas de Córdoba. El Detective Mode compara seis variables NASA POWER por un punto de grilla representativo en cada cuenca; no calcula un promedio espacial del polígono ni determina ubicaciones óptimas de obras.",
+    "Hay dos cosas distintas y conviene no confundirlas. El proyecto delimitó ocho cuencas hidrográficas reales en QGIS, entre 1,20 y 22,14 km², con sus polígonos en el GPKG. Y por separado consulta siete celdas de la grilla NASA POWER de 0,5° (unos 50 × 50 km). Los siete puntos no son cuencas: ninguno cae dentro de una cuenca real y el más cercano está a 21 km.",
+  "cuál es la cuenca 1":
+    "La Cuenca 1 es la del dique principal: 8,54 km², límite real de 476 vértices tomado del GPKG, cotas de 766 a 1301 m y 1.993,31 hm³ de volumen total. A cota 900 m anega 27,18 hm³ sobre 0,50 km². Ese dato se verifica de dos formas independientes: la curva EVA y el conteo de celdas del DEM, que coinciden en 99,6 %.",
+  "hay ndvi":
+    "No. Busqué en todo el repositorio del proyecto y no existe ningún archivo de NDVI: no hay capa en los 24 GPKG ni columna en las seis tablas XLSX. La sección declara el vacío en lugar de simularlo, y queda un cargador listo para un CSV real de MOD13Q1 v061. Tampoco hay gemelo digital en vivo ni telemetría de sensores.",
   "qué corrige el respaldo estadístico":
     "El Mann–Kendall original no corregía autocorrelación temporal. Publicamos un ajuste de varianza por n efectivo y un preblanqueamiento libre de tendencia (TFPW), además del q de Benjamini–Hochberg para las 42 pruebas. Quedan 5 resultados robustos, todos de temperatura media; ninguna tendencia de precipitación sobrevive las correcciones.",
   "cuál es el caso de estudio":
@@ -44,7 +48,7 @@ const FAQ: Record<string, string> = {
   "hay gemelo digital":
     "La solución publicada es una réplica reproducible: datos abiertos, scripts, modelo, panel V4 y visor 2D con estado explícito de simulación. No hay sensores conectados ni telemetría en vivo, por eso no lo llamamos gemelo digital operativo.",
   "cuánto avanzó el análisis de cuencas":
-    "Está casi completo en el equipo local: QGIS, DEM, curvas, tablas EVA, GeoJSON, visores 2D y 3D, seis tablas de dique y más de 20 GB. El visor del repo ya usa la forma real digitalizada de la captura (809,58 hm³ / 6,51 km² a cota 1167 m), sin tiles externos; las coordenadas exactas requieren el data.js del GPKG/XLSX. Ver /#cuencas.",
+    "Está integrado. El visor usa los polígonos reales extraídos de los GPKG, no una digitalización a ojo. Tiene siete capas: relieve, pendiente, orientación, drenaje con orden de Strahler, incendios, llenado del embalse y curvas de los seis diques. Todo sale de archivos del proyecto. Ver /demo/.",
   "qué tecnología usan":
     "La web usa React/TypeScript y scripts Python reproducibles. El paquete cuencas de más de 20 GB se inventarió y el visor 2D quedó integrado sin CDN en /simulacion-2d/. La réplica incluye datos, modelo, panel y visor; la red IoT de campo sigue siendo un piloto futuro, no telemetría activa.",
 };
@@ -85,20 +89,60 @@ export default function ChatWidget() {
   }, [messages]);
 
   const handleSend = async () => {
-    if (!input.trim()) return;
+    if (!input.trim() || loading) return;
     const userMsg = input.trim();
     setInput("");
-    setMessages(prev => [...prev, { role: "user", text: userMsg }]);
+    const historial = [...messages, { role: "user" as const, text: userMsg }];
+    setMessages(historial);
     setLoading(true);
 
-    setTimeout(() => {
-      const answer = findAnswer(userMsg);
-      const response =
-        answer ||
-        "No tengo una respuesta específica para esa consulta. Te sugiero explorar las secciones del proyecto o consultar la documentación en https://github.com/ACTECNICAL66/elfindelosni-os.github.io";
-      setMessages(prev => [...prev, { role: "bot", text: response }]);
+    // 1. intenta el backend con Gemini (la clave vive solo en el servidor)
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: historial
+            .filter(m => m.text)
+            .slice(-12)
+            .map(m => ({ role: m.role === "bot" ? "assistant" : "user", text: m.text })),
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data?.success && data.text) {
+          setMessages(prev => [...prev, { role: "bot", text: data.text }]);
+          setLoading(false);
+          return;
+        }
+      }
+
+      // 2. si el backend no esta configurado o falla, responde el FAQ local
+      const local = findAnswer(userMsg);
+      setMessages(prev => [
+        ...prev,
+        {
+          role: "bot",
+          text:
+            local ||
+            "No tengo una respuesta verificada para esa consulta. El chat con IA no está configurado en este servidor y el repertorio local no cubre el tema. Podés explorar las secciones del proyecto o ver los datos en /demo/.",
+        },
+      ]);
+    } catch {
+      const local = findAnswer(userMsg);
+      setMessages(prev => [
+        ...prev,
+        {
+          role: "bot",
+          text:
+            local ||
+            "No pude contactar al asistente. Respondo con el repertorio local: probá preguntando por las tendencias, el respaldo estadístico, la Cuenca 1 o el NDVI.",
+        },
+      ]);
+    } finally {
       setLoading(false);
-    }, 600);
+    }
   };
 
   return (
@@ -127,7 +171,7 @@ export default function ChatWidget() {
                   Asistente del Proyecto
                 </p>
                 <p className="text-white/60 text-[10px]">
-                  Respuestas basadas en los datos publicados · edición 2026
+                  IA con el contexto del proyecto · si falla, repertorio local
                 </p>
               </div>
             </div>
