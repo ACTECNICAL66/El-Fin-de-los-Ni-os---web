@@ -19,3 +19,7 @@ docs/
 .review/
 __pycache__/
 *.pyc
+
+# Cache de descargas NDVI (puede pesar GB)
+.ndvi_cache/
+.venv/
