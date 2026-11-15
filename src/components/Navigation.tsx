@@ -40,12 +40,27 @@ export default function Navigation() {
       active: location.pathname === "/documentacion",
     },
     {
-      label: "Detective Mode",
+      label: "Detective",
       href: "/detective-mode",
       active: location.pathname === "/detective-mode",
     },
     {
-      label: "DRONE",
+      label: "Monitoreo",
+      href: "/monitoreo",
+      active: location.pathname === "/monitoreo",
+    },
+    {
+      label: "ENSO",
+      href: "/#enso",
+      active: false,
+    },
+    {
+      label: "Cuencas 2D",
+      href: "/#cuencas",
+      active: false,
+    },
+    {
+      label: "Dron (futuro)",
       href: "/drone",
       active: location.pathname === "/drone",
     },
@@ -100,7 +115,7 @@ export default function Navigation() {
                   {link.label === "Documentación" && (
                     <BookOpen className="w-4 h-4" />
                   )}
-                  {link.label === "DRONE" && <Plane className="w-4 h-4" />}
+                  {link.label === "Dron (futuro)" && <Plane className="w-4 h-4" />}
                   {link.label}
                 </span>
                 {link.active && (
@@ -152,7 +167,7 @@ export default function Navigation() {
                     {link.label === "Documentación" && (
                       <BookOpen className="w-4 h-4" />
                     )}
-                    {link.label === "DRONE" && <Plane className="w-4 h-4" />}
+                    {link.label === "Dron (futuro)" && <Plane className="w-4 h-4" />}
                     {link.label}
                   </span>
                 </Link>

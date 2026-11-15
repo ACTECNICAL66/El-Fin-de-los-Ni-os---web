@@ -22,7 +22,7 @@ export default function Footer() {
                             </span>
                         </Link>
                         <p className="text-white/60 leading-relaxed max-w-sm mb-6">
-                            Sistema de gestión hídrica resiliente ante los fenómenos climáticos ENSO. Proyecto desarrollado para el NASA Space Apps Challenge 2025.
+                            Sistema de gestión hídrica resiliente ante los fenómenos climáticos ENSO. Proyecto desarrollado para el NASA Space Apps Challenge 2026.
                         </p>
                         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/80 text-xs font-medium">
                             <Satellite className="w-3.5 h-3.5 text-water-400" />
@@ -94,7 +94,7 @@ export default function Footer() {
                         </div>
                     </div>
                     <p className="text-xs text-white/40 font-medium">
-                        © 2025 IPET N°66 Juan Balseiro. Córdoba, Argentina.
+                        © 2026 IPET N°66 Juan Balseiro. Córdoba, Argentina.
                     </p>
                 </div>
             </div>

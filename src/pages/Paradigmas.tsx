@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, type ReactNode } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
-import ChatWidget from "@/components/ChatWidget";
+import ChatWidget, { findAnswer } from "@/components/ChatWidget";
 import { trpc } from "@/providers/trpc";
 import { useScrollAnimation } from "@/hooks/useAnimations";
 import {
@@ -15,14 +15,22 @@ import {
   Users,
   Send,
   Loader2,
-  ToggleLeft,
-  ToggleRight,
   BarChart3,
   TrendingUp,
   AlertTriangle,
   CheckCircle2,
   XCircle,
 } from "lucide-react";
+
+/**
+ * La entrega pública no incluye credenciales de IA. Para habilitar el resumen
+ * experimental, definir VITE_GEMINI_API_KEY en el entorno de build; sin clave,
+ * la interfaz muestra un mensaje honesto en lugar de llamar a una API ajena.
+ */
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY as string | undefined;
+const GEMINI_ENDPOINT = GEMINI_API_KEY
+  ? `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${encodeURIComponent(GEMINI_API_KEY)}`
+  : null;
 
 const FALLBACK_PROJECTS = [
   {
@@ -171,9 +179,14 @@ function ParadigmaHero() {
     setLoading(true);
     setShowSummary(true);
     setSummary("");
+    if (!GEMINI_ENDPOINT) {
+      setSummary("Esta demo de IA no está configurada en la entrega pública: no hay credencial ni backend de IA desplegado. Los datos y el análisis están en el inicio, el mapa comparativo y el respaldo estadístico.");
+      setLoading(false);
+      return;
+    }
     try {
       const response = await fetch(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyCow8qhRGzD9ABugrXzEQMdX_1EmD2PuHU",
+        GEMINI_ENDPOINT,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -182,7 +195,7 @@ function ParadigmaHero() {
               {
                 parts: [
                   {
-                    text: `Como experto en gestion hidrica, genera un resumen ejecutivo dirigido a autoridades provinciales sobre el proyecto "El Fin de los Ninos" para Cordoba Argentina. El proyecto propone micro-represas distribuidas monitoreadas con sensores ESP32 y datos satelitales NASA como alternativa a megaproyectos hidricos. Incluye datos de 7 cuencas analizadas, indices NDVI/ESI, y proyecciones a 2050 con demanda de 2600 Hm3. Genera un resumen profesional de 3 paragrafos.`,
+                    text: `Como experto en gestión hídrica, genera un resumen ejecutivo dirigido a autoridades provinciales sobre el proyecto "El Fin de los Niños" para Córdoba Argentina. El proyecto propone micro-represas distribuidas monitoreadas con sensores ESP32 y datos satelitales NASA como alternativa a megaproyectos hídricos. Incluye datos de 7 cuencas analizadas, indices NDVI/ESI, y proyecciones a 2050 con demanda de 2600 Hm3. Genera un resumen profesional de 3 paragrafos.`,
                   },
                 ],
               },
@@ -219,7 +232,7 @@ function ParadigmaHero() {
       />
       <div className="max-w-5xl mx-auto px-6 text-center relative z-10">
         <span className="inline-block tag-blue mb-6">
-          NASA Space Apps Challenge 2025
+          NASA Space Apps Challenge 2026
         </span>
         <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">
           Análisis Comparativo de Paradigmas en la{" "}
@@ -683,9 +696,14 @@ function ComparisonSection() {
     setLoading(true);
     setShowAnalysis(true);
     setAnalysis("");
+    if (!GEMINI_ENDPOINT) {
+      setAnalysis("Esta demo de IA no está configurada en la entrega pública: no hay credencial ni backend de IA desplegado. La comparación de paradigmas se publica con datos estáticos y sus límites en el informe.");
+      setLoading(false);
+      return;
+    }
     try {
       const response = await fetch(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyCow8qhRGzD9ABugrXzEQMdX_1EmD2PuHU",
+        GEMINI_ENDPOINT,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -694,7 +712,7 @@ function ComparisonSection() {
               {
                 parts: [
                   {
-                    text: `Como estratega en planificacion urbana y cambio climatico, analiza las implicaciones al 2050 para Cordoba Argentina. Datos: Poblacion 4.8M, demanda hidrica 2600 Hm3. Compara el paradigma centralizado (costo 9/10, impacto 9/10, vulnerabilidad 8/10) vs distribuido (resiliencia 9/10, sostenibilidad 9/10, escalabilidad 9/10). Proporciona recomendaciones de implementacion escalonada 2025-2050. Responde en 3 paragrafos.`,
+                    text: `Como estratega en planificacion urbana y cambio climatico, analiza las implicaciones al 2050 para Córdoba Argentina. Datos: Población 4.8M, demanda hídrica 2600 Hm3. Compara el paradigma centralizado (costo 9/10, impacto 9/10, vulnerabilidad 8/10) vs distribuido (resiliencia 9/10, sostenibilidad 9/10, escalabilidad 9/10). Proporciona recomendaciones de implementación escalonada 2026-2050. Responde en 3 paragrafos.`,
                   },
                 ],
               },
@@ -940,43 +958,32 @@ function AIAssistant() {
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [extendedKnowledge, setExtendedKnowledge] = useState(false);
-  const [creatorInstructions, setCreatorInstructions] = useState("");
   const chatEndRef = useRef<HTMLDivElement>(null);
-  const sessionId = useRef(`session_${Date.now()}`);
 
-  const sendMutation = trpc.chat.sendMessage.useMutation();
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleSend = async () => {
+  const handleSend = () => {
     if (!input.trim()) return;
     const userMsg = input.trim();
     setInput("");
     setMessages(prev => [...prev, { role: "user", text: userMsg }]);
     setLoading(true);
 
-    try {
-      const result = await sendMutation.mutateAsync({
-        sessionId: sessionId.current,
-        message: userMsg,
-        extendedKnowledge,
-        creatorInstructions: creatorInstructions || undefined,
-      });
-      setMessages(prev => [...prev, { role: "model", text: result.response }]);
-    } catch {
+    // Respuestas locales y deterministas: no hay backend de IA en la entrega pública.
+    setTimeout(() => {
+      const answer = findAnswer(userMsg);
       setMessages(prev => [
         ...prev,
         {
           role: "model",
-          text: "Lo siento, ocurrió un error. El backend podría no estar disponible en este momento. Por favor intentá de nuevo más tarde o consultá la documentación del proyecto.",
+          text: answer || "No tengo una respuesta específica para esa consulta. Revisá el mapa comparativo, el respaldo estadístico, el caso de estudio o el informe completo enlazado en el pie de página.",
         },
       ]);
-    } finally {
       setLoading(false);
-    }
+    }, 450);
   };
 
   return (
@@ -988,16 +995,11 @@ function AIAssistant() {
       <div className="max-w-4xl mx-auto px-6 relative z-10">
         <div className="text-center mb-10">
           <h2 className="text-3xl font-bold text-white flex items-center justify-center gap-2">
-            Asistente de IA
-            <span className="relative flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-eco-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-eco-500" />
-            </span>
+            Asistente local de consulta
           </h2>
           <p className="mt-4 text-white/60 max-w-2xl mx-auto">
-            Consultá los datos hídricos de Córdoba con inteligencia artificial.
-            El asistente puede responder preguntas sobre cuencas, calidad de
-            agua, tendencias climáticas y más.
+            Respuestas deterministas basadas en los CSV y el informe publicados.
+            No hay modelo de IA ni backend conectado en esta entrega.
           </p>
           <div className="mt-4 flex flex-wrap justify-center gap-2">
             {[
@@ -1019,9 +1021,9 @@ function AIAssistant() {
           <div className="p-6">
             <div className="glass border-l-4 border-water-500 pl-4 py-2 mb-4 rounded-r">
               <p className="text-sm text-white/70">
-                Este asistente se conecta al backend del proyecto para responder
-                con datos reales. Si el backend no está disponible, el mensaje
-                de error te lo indicará.
+                Las respuestas salen de una base de preguntas frecuentes local,
+                trazable a los datos publicados. No se envían consultas a
+                servicios externos ni se generan predicciones.
               </p>
             </div>
             <div className="h-80 overflow-y-auto glass rounded-lg p-4 mb-4 space-y-4">
@@ -1069,60 +1071,6 @@ function AIAssistant() {
             </div>
           </div>
 
-          <div className="border-t border-white/10 p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">
-              Panel del Creador
-            </h3>
-            <div className="glass p-4 rounded-lg mb-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-semibold text-white/80">
-                    Conocimiento Extendido
-                  </p>
-                  <p className="text-xs text-white/50">
-                    Permite a la IA responder temas sobre hidrología, GIS, etc.
-                  </p>
-                </div>
-                <button
-                  onClick={() => setExtendedKnowledge(!extendedKnowledge)}
-                >
-                  {extendedKnowledge ? (
-                    <ToggleRight className="w-10 h-10 text-eco-500" />
-                  ) : (
-                    <ToggleLeft className="w-10 h-10 text-white/30" />
-                  )}
-                </button>
-              </div>
-            </div>
-            <div className="bg-yellow-500/10 border-l-4 border-yellow-400 p-3 rounded-r-lg mb-4">
-              <p className="text-sm font-bold text-yellow-400">Mejora la IA</p>
-              <p className="text-xs text-yellow-300/70">
-                Usá este panel para darle nuevas instrucciones o contexto a la
-                IA.
-              </p>
-            </div>
-            <textarea
-              value={creatorInstructions}
-              onChange={e => setCreatorInstructions(e.target.value)}
-              placeholder="Ej: A partir de ahora, cuando hablemos de calidad del agua, enfocate en los niveles de pH y turbidez."
-              className="w-full h-24 bg-white/5 border border-white/10 rounded-lg p-3 focus:ring-2 focus:ring-eco-500 focus:border-transparent text-sm text-white placeholder:text-white/30"
-            />
-            <button
-              onClick={() => {
-                setMessages(prev => [
-                  ...prev,
-                  {
-                    role: "model",
-                    text: "Comportamiento de la IA actualizado con tus nuevas instrucciones.",
-                  },
-                ]);
-                setCreatorInstructions("");
-              }}
-              className="mt-3 w-full bg-eco-500/20 text-eco-400 py-2 rounded-lg hover:bg-eco-500/30 transition-colors font-medium"
-            >
-              Actualizar Comportamiento de la IA
-            </button>
-          </div>
         </div>
       </div>
     </section>

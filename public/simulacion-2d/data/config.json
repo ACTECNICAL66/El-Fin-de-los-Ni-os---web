@@ -1,0 +1,45 @@
+{
+  "elevation_range": [
+    767,
+    1301
+  ],
+  "default_elevation": 1167,
+  "bounds": [
+    -64.4522808,
+    -31.405089,
+    -64.3880053,
+    -31.3514675
+  ],
+  "scenario_elevations": [
+    767,
+    792,
+    817,
+    842,
+    867,
+    892,
+    917,
+    942,
+    967,
+    992,
+    1017,
+    1042,
+    1067,
+    1092,
+    1117,
+    1142,
+    1167,
+    1192,
+    1217,
+    1242,
+    1267,
+    1292,
+    1301
+  ],
+  "total_volume_hm3": 2050.54,
+  "max_surface_area_m2": 12351168.0,
+  "crs": "EPSG:4326",
+  "origen_geometria": "Digitalización de captura_simulacion_cuenca1_real.png",
+  "origen_eva": "Curva calibrada con cota 1167 m: 809.58 hm³ y 6.51 km²",
+  "advertencia": "Forma real trazada desde la captura; coordenadas y EVA por tramos aproximadas. Usar data.js del generador original para reemplazo exacto.",
+  "demo": false
+}

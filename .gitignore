@@ -13,3 +13,8 @@ dist-ssr/
 # Large PDFs (add manually if needed)
 frontend/public/Proyecto_El_Fin_de_los_Ninos.pdf
 docs/
+
+# Scratch copies of user attachments and Python bytecode
+.review/
+__pycache__/
+*.pyc

@@ -27,18 +27,18 @@ export default function Login() {
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#0B3D91] to-[#1a237e] relative">
         <img
           src={asset("/cordoba-landscape.jpg")}
-          alt="Cordoba"
+          alt="Córdoba"
           className="absolute inset-0 w-full h-full object-cover opacity-30"
         />
         <div className="relative z-10 flex flex-col justify-center items-center text-center p-12 w-full">
           <span className="inline-block bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider mb-6 border border-white/20">
-            NASA Space Apps Challenge 2025
+            NASA Space Apps Challenge 2026
           </span>
           <h1 className="text-4xl font-bold text-white mb-4">
-            El Fin de los Ninos
+            El Fin de los Niños
           </h1>
           <p className="text-white/80 text-lg max-w-md">
-            Gestion hidrica resiliente para Cordoba
+            Gestión hídrica resiliente para Córdoba
           </p>
           <div className="mt-8 flex items-center gap-2 text-white/60 text-sm">
             <Droplets className="w-5 h-5" />

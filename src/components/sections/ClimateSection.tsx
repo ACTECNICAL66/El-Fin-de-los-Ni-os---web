@@ -13,24 +13,32 @@ export default function ClimateSection() {
       <div className="max-w-7xl mx-auto px-6">
         <SectionHeading
           icon={CloudSunRain}
-          title="Impacto de El Nino y La Nina en Cordoba"
+          title="Impacto de El Niño y La Niña en Córdoba"
         />
-        <p className="text-white/70 leading-relaxed mb-8 max-w-4xl">
-          El fenomeno de El Nino/Oscilacion del Sur (ENSO) tiene impactos
-          significativos en el regimen de precipitaciones de Cordoba, afectando
-          la disponibilidad hidrica y la vulnerabilidad ante eventos extremos.
+        <p className="text-white/70 leading-relaxed mb-5 max-w-4xl">
+          El fenómeno El Niño / Oscilación del Sur (ENSO) es el contexto
+          climático que motivó el proyecto y aparece desarrollado en el informe.
+          La corrección 2026 lo convierte además en un análisis reproducible:
+          las 42 pruebas de tendencia y las <strong className="text-white">504 pruebas ENSO</strong> se
+          publican por separado, con sus magnitudes, intervalos y correcciones.
         </p>
+        <div className="mb-8 rounded-xl border border-emerald-300/20 bg-emerald-300/5 px-4 py-3 text-sm text-emerald-100/80 max-w-4xl">
+          Sí analizamos ONI / Niño 3.4 de NOAA CPC. La estación real del
+          Observatorio Córdoba atribuye <strong className="text-emerald-200">+17,3 mm/mes</strong> a
+          El Niño frente a La Niña (p por bloques = 0,028). Ver{" "}
+          <a href="#enso" className="text-water-300 underline underline-offset-2">la sección ENSO</a>.
+        </div>
 
         <div className="flex flex-wrap justify-center gap-8 mb-8">
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 rounded bg-red-500" />
             <span className="text-sm text-white/60">
-              El Nino (Lluvias intensas)
+              El Niño (Lluvias intensas)
             </span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 rounded bg-water-500" />
-            <span className="text-sm text-white/60">La Nina (Sequia)</span>
+            <span className="text-sm text-white/60">La Niña (Sequia)</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-5 h-5 rounded bg-orange-500" />
@@ -43,17 +51,17 @@ export default function ClimateSection() {
             {[
               {
                 key: "elnino" as const,
-                label: "Fenomeno El Nino",
+                label: "Fenómeno El Niño",
                 color: "#EF4444",
               },
               {
                 key: "lanina" as const,
-                label: "Fenomeno La Nina",
+                label: "Fenómeno La Niña",
                 color: "#1EB8FF",
               },
               {
                 key: "impactos" as const,
-                label: "Impactos en Cordoba",
+                label: "Impactos en Córdoba",
                 color: "#F59E0B",
               },
             ].map(tab => (
@@ -82,12 +90,13 @@ export default function ClimateSection() {
                 <div className="grid md:grid-cols-2 gap-8">
                   <div>
                     <h3 className="text-xl font-bold text-white mb-4">
-                      El Nino y sus Efectos en Cordoba
+                      El Niño y sus Efectos en Córdoba
                     </h3>
                     <p className="text-white/70 mb-4">
-                      Durante los eventos de El Nino, Cordoba experimenta
-                      tipicamente condiciones mas humedas de lo normal, con
-                      aumento en las precipitaciones entre un 20-40%.
+                      La bibliografía describe que, durante eventos de El Niño,
+                      Córdoba tiende a condiciones más húmedas de lo normal.
+                      Este sitio no estima porcentajes propios de aumento de
+                      lluvia.
                     </p>
                     <ul className="space-y-2 text-white/70 text-sm">
                       <li className="flex items-start gap-2">
@@ -108,19 +117,19 @@ export default function ClimateSection() {
                       </li>
                       <li className="flex items-start gap-2">
                         <Leaf className="w-4 h-4 text-eco-400 mt-0.5 flex-shrink-0" />
-                        Recarga mejorada de acuiferos
+                        Recarga mejorada de acuíferos
                       </li>
                     </ul>
                   </div>
                   <div className="rounded-xl overflow-hidden shadow-md border border-white/10">
                     <img
                       src={asset("/el-nino-satellite.jpg")}
-                      alt="El Nino satellite image"
+                      alt="El Niño satellite image"
                       className="w-full h-64 object-cover"
                     />
                     <p className="text-xs text-white/50 italic p-3 bg-white/5">
                       Imagen satelital de anomalias de temperatura durante El
-                      Nino. Fuente: NASA
+                      Niño. Fuente: NASA
                     </p>
                   </div>
                 </div>
@@ -132,25 +141,25 @@ export default function ClimateSection() {
                 <div className="grid md:grid-cols-2 gap-8">
                   <div>
                     <h3 className="text-xl font-bold text-white mb-4">
-                      La Nina y sus Efectos en Cordoba
+                      La Niña y sus Efectos en Córdoba
                     </h3>
                     <p className="text-white/70 mb-4">
-                      Los eventos de La Nina suelen traer condiciones mas secas
-                      a Cordoba, con reduccion en las precipitaciones que pueden
-                      superar el 30% bajo lo normal.
+                      La bibliografía describe que La Niña suele asociarse a
+                      condiciones más secas en la región. No calculamos aquí una
+                      reducción porcentual ni la contrastamos con nuestras series.
                     </p>
                     <ul className="space-y-2 text-white/70 text-sm">
                       <li className="flex items-start gap-2">
                         <AlertTriangle className="w-4 h-4 text-water-400 mt-0.5 flex-shrink-0" />
-                        Disminucion del caudal en rios y arroyos
+                        Disminución del caudal en rios y arroyos
                       </li>
                       <li className="flex items-start gap-2">
                         <AlertTriangle className="w-4 h-4 text-water-400 mt-0.5 flex-shrink-0" />
-                        Reduccion de los niveles en embalses y diques
+                        Reducción de los niveles en embalses y diques
                       </li>
                       <li className="flex items-start gap-2">
                         <AlertTriangle className="w-4 h-4 text-water-400 mt-0.5 flex-shrink-0" />
-                        Mayor estres hidrico para la agricultura
+                        Mayor estres hídrico para la agricultura
                       </li>
                       <li className="flex items-start gap-2">
                         <AlertTriangle className="w-4 h-4 text-water-400 mt-0.5 flex-shrink-0" />
@@ -158,19 +167,19 @@ export default function ClimateSection() {
                       </li>
                       <li className="flex items-start gap-2">
                         <AlertTriangle className="w-4 h-4 text-water-400 mt-0.5 flex-shrink-0" />
-                        Disminucion de la recarga de acuiferos
+                        Disminución de la recarga de acuíferos
                       </li>
                     </ul>
                   </div>
                   <div className="rounded-xl overflow-hidden shadow-md border border-white/10">
                     <img
                       src={asset("/la-nina-satellite.jpg")}
-                      alt="La Nina satellite image"
+                      alt="La Niña satellite image"
                       className="w-full h-64 object-cover"
                     />
                     <p className="text-xs text-white/50 italic p-3 bg-white/5">
                       Imagen satelital de anomalias de temperatura durante La
-                      Nina. Fuente: NASA
+                      Niña. Fuente: NASA
                     </p>
                   </div>
                 </div>
@@ -180,44 +189,44 @@ export default function ClimateSection() {
             {activeTab === "impactos" && (
               <div className="animate-fadeIn">
                 <h3 className="text-xl font-bold text-white mb-4">
-                  Impactos Socioeconomicos del ENSO en Cordoba
+                  Impactos Socioeconómicos del ENSO en Córdoba
                 </h3>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-3 text-white/70 text-sm">
                     <p>
                       <strong className="text-water-400">Agricultura:</strong>{" "}
-                      Perdidas de cosechas durante sequias (La Nina) y danos por
-                      inundaciones (El Nino)
+                      Pérdidas de cosechas durante sequias (La Niña) y daños por
+                      inundaciones (El Niño)
                     </p>
                     <p>
                       <strong className="text-water-400">
                         Infraestructura:
                       </strong>{" "}
-                      Danos en caminos y puentes durante eventos extremos de
+                      Daños en caminos y puentes durante eventos extremos de
                       lluvia
                     </p>
                     <p>
-                      <strong className="text-water-400">Salud Publica:</strong>{" "}
+                      <strong className="text-water-400">Salud Pública:</strong>{" "}
                       Aumento de enfermedades vectoriales durante periodos
                       humedos
                     </p>
                     <p>
-                      <strong className="text-water-400">Energia:</strong>{" "}
-                      Reduccion en la generacion hidroelectrica durante sequias
+                      <strong className="text-water-400">Energía:</strong>{" "}
+                      Reducción en la generación hidroeléctrica durante sequias
                     </p>
                     <p>
                       <strong className="text-water-400">Ecosistemas:</strong>{" "}
-                      Alteracion de habitats acuaticos y terrestres
+                      Alteracion de habitats acuáticos y terrestres
                     </p>
                   </div>
                   <div className="glass-card-light rounded-lg p-5 border-l-4 border-orange-500">
                     <h4 className="font-bold text-white mb-3">
-                      Proyecciones Futuras (2050)
+                      Escenarios al 2050 (informe del proyecto)
                     </h4>
                     <ul className="space-y-2 text-white/70 text-sm">
                       <li className="flex items-start gap-2">
                         <TrendingUp className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
-                        Poblacion: 4.8 millones de habitantes
+                        Población: 4.8 millones de habitantes
                       </li>
                       <li className="flex items-start gap-2">
                         <TrendingUp className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
@@ -225,11 +234,11 @@ export default function ClimateSection() {
                       </li>
                       <li className="flex items-start gap-2">
                         <TrendingUp className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
-                        Intensificacion de fenomenos ENSO
+                        Mayor presión sobre la demanda hídrica (proyección)
                       </li>
                       <li className="flex items-start gap-2">
                         <TrendingUp className="w-4 h-4 text-orange-400 mt-0.5 flex-shrink-0" />
-                        Micro-represas clave para seguridad hidrica
+                        Micro-represas clave para seguridad hídrica
                       </li>
                     </ul>
                   </div>

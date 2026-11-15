@@ -1,4 +1,5 @@
-import { ExternalLink, Plane } from "lucide-react";
+import { Link } from "react-router";
+import { ExternalLink, Plane, ArrowLeft, Clock3 } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 
@@ -13,16 +14,17 @@ export default function DronePage() {
         <section className="max-w-7xl mx-auto px-6 mb-8">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5">
             <div>
-              <div className="flex items-center gap-2 text-water-300 text-sm font-medium mb-3">
-                <Plane className="w-4 h-4" /> Diseño conceptual
+              <div className="flex items-center gap-2 text-amber-300 text-sm font-medium mb-3">
+                <Plane className="w-4 h-4" /> Aplicación futura · concepto de diseño
               </div>
               <h1 className="font-display text-3xl md:text-4xl font-bold text-white">
                 DRONE · Aqua-Guardian AG-01
               </h1>
               <p className="text-white/65 leading-relaxed max-w-3xl mt-3">
-                Explora el concepto de vehículo anfibio para monitoreo de diques:
-                visor 3D interactivo, vistas técnicas, galería y estimación de
-                factibilidad de vuelo.
+                Un visor 3D para explorar la idea de un vehículo anfibio de
+                inspección de diques: vistas técnicas, galería y estimación de
+                factibilidad de vuelo. Se ubica después del análisis estadístico
+                porque hoy es solo diseño digital.
               </p>
             </div>
             <a
@@ -37,11 +39,38 @@ export default function DronePage() {
 
           <div
             role="note"
-            className="mt-6 rounded-xl border border-amber-300/20 bg-amber-300/5 px-4 py-3 text-sm text-amber-100/80"
+            className="mt-6 rounded-xl border border-amber-300/25 bg-amber-300/5 px-5 py-4 text-sm text-amber-100/85 leading-relaxed"
           >
-            Es una propuesta de diseño digital. Las dimensiones y cálculos que
-            aparecen en el visor son parámetros del concepto y no acreditan un
-            prototipo construido ni pruebas de vuelo o navegación.
+            <strong className="text-amber-200">Estado: concepto de diseño.</strong>{" "}
+            Las dimensiones y cálculos del visor son parámetros del concepto: no
+            acreditan un prototipo construido, vuelos de prueba ni navegación.
+            El dron <strong className="text-amber-200">no recoge datos</strong>,
+            no está conectado a sensores y no participa en ninguno de los 42
+            resultados de tendencia ni en el mapa comparativo.
+          </div>
+
+          <div className="mt-5 grid sm:grid-cols-3 gap-4">
+            <div className="glass-card p-4">
+              <Clock3 className="w-4 h-4 text-water-400 mb-2" />
+              <p className="text-xs text-white/45 uppercase tracking-wider mb-1">Hoy</p>
+              <p className="text-sm text-white/70">Visor 3D y diseño conceptual descargable.</p>
+            </div>
+            <div className="glass-card p-4">
+              <Clock3 className="w-4 h-4 text-amber-300 mb-2" />
+              <p className="text-xs text-white/45 uppercase tracking-wider mb-1">Antes de volar</p>
+              <p className="text-sm text-white/70">Definir misión, sensores, permisos y validar la electrónica en campo.</p>
+            </div>
+            <div className="glass-card p-4">
+              <Clock3 className="w-4 h-4 text-eco-400 mb-2" />
+              <p className="text-xs text-white/45 uppercase tracking-wider mb-1">Después</p>
+              <p className="text-sm text-white/70">Recién con datos propios podría integrarse al monitoreo.</p>
+            </div>
+          </div>
+
+          <div className="mt-5">
+            <Link to="/" className="btn-secondary inline-flex">
+              <ArrowLeft className="w-4 h-4" /> Volver al análisis y sus datos
+            </Link>
           </div>
         </section>
 

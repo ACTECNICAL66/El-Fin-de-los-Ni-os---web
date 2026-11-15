@@ -1,0 +1,114 @@
+{
+  "titulo": "Análisis geomorfológico e hidráulico de cuencas — estado 2026",
+  "estado": "Casi completo: el flujo QGIS → DEM → curvas → EVA → escenarios → visores 2D/3D está implementado y documentado por el equipo",
+  "escala": "Paquete local de trabajo de más de 20 GB, según las capturas aportadas",
+  "decision_repo": "El repositorio web conserva los scripts, el visor 2D y una vista demostrativa reproducible; los GeoTIFF, GPKG, GLTF, XLSX y vendor originales permanecen en el paquete local del equipo por tamaño, no porque el análisis esté sin hacer.",
+  "capturas": [
+    {
+      "archivo": "public/data/captura_cuencas_general.png",
+      "descripcion": "Carpeta raíz del proyecto con carpetas de cuenca, Mapas, Molinos, Complementos, proyecto QGIS, TIFF infrarrojo de 795 MB, scripts y seis tablas de dique."
+    },
+    {
+      "archivo": "public/data/captura_cuenca1.png",
+      "descripcion": "Contenido de Cuenca 1: data/, vendor/, GLTF, GPKG, DEM, tabla EVA, generador de escenas 3D, generador de escenarios, visores 2D/3D y servidor local."
+    },
+    {
+      "archivo": "public/data/captura_simulacion_cuenca1_real.png",
+      "descripcion": "Captura del visor 2D calculado con la cuenca real: cota 1167 m, 809,58 hm³, 6,51 km², límite naranja y polígono de inundación irregular."
+    }
+  ],
+  "carpetas_visibles": [
+    "Cuenca 1",
+    "Cuenca 2",
+    "Cuenca 3",
+    "Cuenca 5",
+    "Cuenca 6",
+    "Cuenca SA",
+    "Mapas",
+    "Molinos",
+    "Complementos"
+  ],
+  "raiz": {
+    "proyecto_qgis": "Proyecto MD V10.qgz",
+    "configuracion_qgis": "Proyecto MD V10.qgz.qt3settings",
+    "infrarrojo": "Archivo infrarrojo de Certif... TIF (795 MB)",
+    "configuracion_cuencas": "cuencas.json",
+    "index": "index.html",
+    "tablas_eva": [
+      "Tabla dique 1.xlsx",
+      "Tabla dique 2.xlsx",
+      "Tabla dique 3.xlsx",
+      "Tabla dique 5.xlsx",
+      "Tabla dique 6.xlsx",
+      "Tabla dique SA.xlsx"
+    ],
+    "scripts_y_visores": [
+      "generar_todo.py",
+      "iniciar.py",
+      "microcuencas.py",
+      "multi_2d.html",
+      "multi_3d.html",
+      "rejilla_dems.py",
+      "run_all.py",
+      "servidor.py"
+    ]
+  },
+  "cuenca_1": {
+    "cartografia": [
+      "Cuenca 1 delimit.gpkg",
+      "Datos,cuenca 1 curvas.gpkg",
+      "Datos.gpkg",
+      "Stream de c1.gpkg",
+      "cuenca para vol.qgz"
+    ],
+    "dem": [
+      "DEM cuenca1.tif",
+      "DEM cuenca1.tfw",
+      "DEM cuenca1.tif.aux.xml"
+    ],
+    "curvas_y_volumenes": [
+      "Tabla dique 1.xlsx",
+      "generar_escenarios.py"
+    ],
+    "visores": [
+      "index_2d.html",
+      "index_3d.html",
+      "CUECNA1.gltf",
+      "generar_escena_3d.py",
+      "servidor.py",
+      "data/",
+      "vendor/"
+    ],
+    "pipeline": [
+      "Delimitación y reproyección en QGIS",
+      "DEM y rejilla de celdas",
+      "Curvas de nivel y bandas ELEV_MAX",
+      "Tabla EVA (cota–volumen–área)",
+      "Unión de bandas y exportación GeoJSON",
+      "Visor 2D con cota, volumen, superficie, perfil A-B, animación y tiempo de llenado",
+      "Escena 3D / GLTF y visor multi-cuenca"
+    ]
+  },
+  "integracion_web": {
+    "visor_2d": "public/simulacion-2d/index.html",
+    "visor_fuente": "public/simulacion-2d/index_2d_original.html",
+    "generador_original": "scripts/generar_escenarios_cuenca1.py",
+    "servidor_original": "scripts/servidor_visor_2d.py",
+    "demo_data": "public/simulacion-2d/data/data.js",
+    "nota": "La vista integrada ya NO usa elipses: el polígono azul y el límite naranja se digitalizaron de la captura real. La EVA se calibró con 809,58 hm³ / 6,51 km² a cota 1167 m. La georreferenciación es aproximada; para coordenadas y curvas exactas hay que sustituir data/data.js por la salida de Tabla dique 1.xlsx + GPKG. Las librerías son locales y no hay tiles externos.",
+    "vendor_local": "public/simulacion-2d/vendor/ (Leaflet 1.9.4, Chart.js e imágenes)",
+    "generador_demo": "scripts/generar_demo_2d.py",
+    "readme": "public/simulacion-2d/README.md",
+    "captura_real": "public/data/captura_simulacion_cuenca1_real.png",
+    "contorno_digitalizado": "public/simulacion-2d/data/contorno_cuenca.json",
+    "fondo_local": "public/simulacion-2d/data/mapa_cuenca_real.png",
+    "script_digitalizacion": "scripts/digitalizar_captura_cuenca.py"
+  },
+  "caudales_enso_diseno_m3s": {
+    "El Niño": 5.0,
+    "Normal": 0.8,
+    "La Niña": 0.1,
+    "advertencia": "Presets de caudal de diseño del visor 2D; no son un pronóstico ni la atribución estadística ENSO."
+  },
+  "conclusion": "El análisis de cuencas está casi completo y cuenta con DEM, QGIS, curvas, EVA, GeoJSON, 2D, 3D y scripts de generación; la web lo representa con inventario, simulación integrada y enlaces reproducibles."
+}

@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulación de llenado 2D — Cuenca 1 (vista integrada)</title>
+<!-- Dependencias vendorizadas en /vendor (sin CDN): los visores funcionan sin internet -->
+<link rel="stylesheet" href="vendor/leaflet.css" />
+<script src="vendor/leaflet.js"></script>
+<script src="vendor/chart.umd.min.js"></script>
+<script src="data/data.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: #1a1a2e; color: #e0e0e0; overflow: hidden; }
+#app { display: flex; height: 100vh; }
+#sidebar {
+  width: 380px; min-width: 380px; background: #16213e; padding: 20px;
+  display: flex; flex-direction: column; border-right: 2px solid #0f3460; overflow-y: auto;
+}
+#sidebar h1 { font-size: 18px; margin-bottom: 4px; color: #e94560; }
+#sidebar .subtitle { font-size: 12px; color: #888; margin-bottom: 16px; }
+#map { flex: 1; background: radial-gradient(circle at 50% 45%, #16283b 0%, #0a0a23 72%); }
+.control-group { margin-bottom: 16px; }
+.control-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #aaa; }
+input[type="range"] { width: 100%; accent-color: #e94560; cursor: pointer; }
+.value-display { display: flex; justify-content: space-between; font-size: 13px; margin-top: 4px; }
+.val { color: #e94560; font-weight: bold; }
+.info-card {
+  background: #0f3460; border-radius: 8px; padding: 12px; margin-bottom: 8px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.info-card .label { font-size: 11px; color: #888; text-transform: uppercase; }
+.info-card .value { font-size: 20px; font-weight: bold; color: #fff; }
+.info-card .unit { font-size: 11px; color: #888; margin-left: 4px; }
+.btn {
+  background: #e94560; color: #fff; border: none; border-radius: 6px;
+  padding: 10px 16px; font-size: 14px; font-weight: 600; cursor: pointer;
+  transition: all 0.2s; width: 100%;
+}
+.btn:hover { background: #d63851; }
+.btn-secondary { background: #0f3460; }
+.btn-secondary:hover { background: #1a4a7a; }
+.btn-group { display: flex; gap: 8px; }
+.btn-group .btn { flex: 1; }
+#chart-container { margin-top: auto; height: 160px; position: relative; }
+#chart-container canvas { width: 100% !important; height: 100% !important; }
+.info-row { display: flex; gap: 8px; }
+.info-row .info-card { flex: 1; }
+#legend { margin-top: 8px; display: flex; align-items: center; gap: 8px; font-size: 12px; }
+#legend .swatch { width: 20px; height: 12px; border-radius: 3px; }
+.panel-title { font-size: 12px; font-weight: 700; color: #e94560; text-transform: uppercase; letter-spacing: .5px; margin: 0 0 8px; }
+hr.sep { border: none; border-top: 1px solid #0f3460; margin: 14px 0; }
+/* chips de caudal de diseno */
+.chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+.chip { background:#0f3460; border:1px solid #1a4a7a; color:#cfe; border-radius:999px; padding:4px 10px; font-size:11px; cursor:pointer; transition:.15s; }
+.chip:hover { background:#1a4a7a; }
+.chip.active { background:#e94560; border-color:#e94560; color:#fff; font-weight:600; }
+@media (max-width: 768px) {
+  #app { flex-direction: column; }
+  #sidebar { width: 100%; min-width: unset; max-height: 50vh; border-right: none; border-bottom: 2px solid #0f3460; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="sidebar">
+  <div style="background:#16303a;border:1px solid #48c9b0;border-radius:8px;padding:10px;margin-bottom:12px;font-size:11px;line-height:1.45;color:#d5fff7">
+    <strong style="color:#7ee8cf">FORMA REAL DE CUENCA 1.</strong> Polígono y límite trazados desde la captura del visor del equipo; EVA calibrada con 809,58 hm³ a cota 1167 m. Coordenadas aproximadas: para exactitud GIS, usar el <code>data.js</code> del generador original. Los caudales ENSO son presets de diseño, no pronóstico.
+  </div>
+    <h1>Simulaci&oacute;n de Llenado</h1>
+    <div class="subtitle">Cuenca 1 · trazado real · QGIS / DEM / EVA · vista integrada</div>
+
+    <div class="control-group">
+      <label>Cota de agua: <span id="elevDisplay" class="val">900</span> m</label>
+      <!-- min/max/value los sobrescribe init() desde CONFIG: no hardcodear aca -->
+      <input type="range" id="elevSlider" min="800" max="1300" value="900" step="25">
+      <div class="value-display">
+        <span id="minElevLabel">800 m</span>
+        <span id="maxElevLabel">1300 m</span>
+      </div>
+    </div>
+
+    <div class="info-row">
+      <div class="info-card">
+        <div class="label">Volumen</div>
+        <div><span class="value" id="volDisplay">0</span><span class="unit">hm&sup3;</span></div>
+      </div>
+      <div class="info-card">
+        <div class="label">Superficie</div>
+        <div><span class="value" id="areaDisplay">0</span><span class="unit">km&sup2;</span></div>
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn" id="playBtn">&#9654; Animar</button>
+      <button class="btn btn-secondary" id="resetViewBtn">&#8982; Encuadrar</button>
+    </div>
+
+    <div id="legend">
+      <span class="swatch" style="background:#2266cc;opacity:0.5"></span>
+      <span id="legendText">Inundaci&oacute;n a cota 900 m</span>
+    </div>
+
+    <hr class="sep">
+
+    <!-- ===== 1.3 / 1.5  CAUDAL DE DISENO Y TIEMPO DE LLENADO ===== -->
+    <div class="panel-title">Caudal de dise&ntilde;o</div>
+    <div class="chips" id="flowChips">
+      <button class="chip" data-enso="nino">El Ni&ntilde;o</button>
+      <button class="chip" data-enso="normal">Normal</button>
+      <button class="chip" data-enso="nina">La Ni&ntilde;a</button>
+    </div>
+    <div style="font-size:10px;color:#8c93a8;margin:-3px 0 9px">Caudales de diseño del visor original; no son una predicción ENSO.</div>
+    <div class="control-group">
+      <label>Caudal de ingreso: <span id="flowDisplay" class="val">0.5</span> m&sup3;/s</label>
+      <input type="range" id="flowSlider" min="0" max="5" value="0.5" step="0.1">
+      <div class="value-display">
+        <span>0</span>
+        <span>5 m&sup3;/s</span>
+      </div>
+    </div>
+
+    <div class="info-row">
+      <div class="info-card">
+        <div class="label">Tiempo a esta cota</div>
+        <div><span class="value" id="timeDisplay">—</span></div>
+      </div>
+      <div class="info-card">
+        <div class="label">Caudal espec&iacute;fico</div>
+        <div><span class="value" id="wseDisplay">—</span><span class="unit">m</span></div>
+      </div>
+    </div>
+
+    <hr class="sep">
+
+    <!-- ===== 1.2  CURVA COTA-VOLUMEN-SUPERFICIE ===== -->
+    <div class="panel-title">Curva cota - volumen</div>
+    <div id="chart-container">
+      <canvas id="profileChart"></canvas>
+    </div>
+
+    <!-- ===== 1.4  SECCION TOPOGRAFICA (perfil A-B) ===== -->
+    <div class="panel-title">Secci&oacute;n topogr&aacute;fica A-B</div>
+    <div id="section-container" style="height:170px;position:relative;margin-bottom:8px">
+      <canvas id="sectionChart"></canvas>
+    </div>
+    <div style="font-size:11px;color:#888" id="sectionInfo">
+      Corte siguiendo el fondo del valle (thalweg).
+    </div>
+  </div>
+  <div id="map"></div>
+</div>
+
+<script>
+// El rango de cotas se toma de la CONFIGURACION GENERADA, no de constantes
+// escritas a mano. Antes 800/1300 estaba duplicado en el HTML del slider, en el
+// JS y en el atributo min/max, y config.json declaraba [767, 1301]: tres
+// fuentes de verdad que no coincidian.
+let ELEV_MIN = 800, ELEV_MAX = 1300;
+
+// Validate data loaded correctly
+if (typeof FLOOD_SCENARIOS === 'undefined' || typeof CONFIG === 'undefined') {
+  document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#1a1a2e;color:#e94560;font-family:sans-serif;flex-direction:column;gap:12px;">'
+    + '<h2>Error: Datos no cargados</h2>'
+    + '<p style="color:#888;font-size:14px;">Asegurate de abrir con el servidor HTTP (no directo con file://)</p>'
+    + '<p style="color:#888;font-size:13px;">En el repo web: revis&aacute; <code>data/data.js</code>, <code>contorno_cuenca.json</code> y <code>mapa_cuenca_real.png</code>.</p>'
+    + '</div>';
+  throw new Error('Data not loaded');
+}
+
+const scenarios = FLOOD_SCENARIOS.features;
+const evaData = EVA_DATA;
+const config = CONFIG;
+
+// Unica fuente de verdad para el rango: las cotas que realmente existen en los
+// datos. Se usa scenario_elevations si esta disponible; si no, se deduce de los
+// propios escenarios. La tabla EVA completa (767-1301) se usa solo para la curva.
+const SCENARIO_ELEVS = (config.scenario_elevations && config.scenario_elevations.length)
+  ? config.scenario_elevations.slice()
+  : scenarios.map(s => s.properties.elevation).sort((a, b) => a - b);
+ELEV_MIN = SCENARIO_ELEVS[0];
+ELEV_MAX = SCENARIO_ELEVS[SCENARIO_ELEVS.length - 1];
+const DEFAULT_ELEV = SCENARIO_ELEVS.includes(config.default_elevation)
+  ? config.default_elevation
+  : ELEV_MIN;
+
+// ------------------------------------------------------------------
+// Tabla cota-volumen interpolada (para el tiempo de llenado).
+// La tabla EVA tiene 535 filas a paso de 1 m, mucho mas fina que los 23
+// escenarios: se usa para interpolar volumen y superficie a cualquier cota.
+// ------------------------------------------------------------------
+const EVA_BY_ELEV = new Map();
+evaData.forEach(d => EVA_BY_ELEV.set(d.elevation, d));
+
+// Interpolacion lineal sobre la tabla EVA para una cota arbitraria.
+function evaAt(elev) {
+  if (EVA_BY_ELEV.has(elev)) return EVA_BY_ELEV.get(elev);
+  let lo = null, hi = null;
+  for (const e of EVA_BY_ELEV.keys()) {
+    if (e <= elev && (lo === null || e > lo)) lo = e;
+    if (e >= elev && (hi === null || e < hi)) hi = e;
+  }
+  if (lo === null) return null;
+  if (hi === null || lo === hi) return EVA_BY_ELEV.get(lo);
+  const a = EVA_BY_ELEV.get(lo), b = EVA_BY_ELEV.get(hi);
+  const t = (elev - lo) / (hi - lo);
+  return {
+    elevation: elev,
+    cum_vol_hm3: a.cum_vol_hm3 + (b.cum_vol_hm3 - a.cum_vol_hm3) * t,
+    surface_area_m2: a.surface_area_m2 + (b.surface_area_m2 - a.surface_area_m2) * t,
+    slice_area_m2: a.slice_area_m2 + (b.slice_area_m2 - a.slice_area_m2) * t,
+  };
+}
+
+// Tiempo de llenado hasta una cota con un caudal dado.
+// Almacenamiento: t(h) = V(cota) / Q.
+// El caudal se maneja en m3/s (unidad estandar en ingenieria hidraulica):
+//   Q [m3/h] = Q * 3600      y    V [m3] = hm3 * 1e6
+// Con caudales en L/s los tiempos salen en decenas o miles de anos para esta
+// obra, que no es util como referencia de diseno.
+function fillTimeHours(elev, flowM3s) {
+  if (!flowM3s || flowM3s <= 0) return null;
+  const e = evaAt(elev);
+  if (!e) return null;
+  const volM3 = e.cum_vol_hm3 * 1e6;       // hm3 -> m3
+  const flowM3h = flowM3s * 3600;          // m3/s -> m3/h
+  return volM3 / flowM3h;
+}
+
+// Caudal especifico = dVol/dCota. Indica cuanta agua entra por cada metro
+// que sube el nivel: util para saber cuanto crece la superficie.
+function fillRateM2PerM(elev) {
+  const dH = 1;
+  const a = evaAt(elev - dH / 2), b = evaAt(elev + dH / 2);
+  if (!a || !b) return null;
+  const dV = (b.cum_vol_hm3 - a.cum_vol_hm3) * 1e6;   // m3 en dH metros
+  return dV / dH;                                     // m2 de lamina
+}
+
+// Formatea horas como "Xd Yh" legible. A partir de un ano usa anos, porque
+// con caudales bajos los tiempos de llenado llegan a decenas de anos.
+function formatDuration(hours) {
+  if (hours === null || hours === undefined || !isFinite(hours)) return '—';
+  if (hours < 1 / 60) return 'inst.';
+  if (hours < 1) return Math.round(hours * 60) + ' min';
+  if (hours < 48) {
+    const h = Math.floor(hours), m = Math.round((hours - h) * 60);
+    return h + 'h ' + (m > 0 ? m + 'm' : '');
+  }
+  const d = Math.floor(hours / 24), h = Math.round(hours - d * 24);
+  if (d < 365) return d + 'd ' + (h > 0 ? h + 'h' : '');
+  const y = d / 365.25;
+  return y < 10 ? y.toFixed(1) + ' años' : Math.round(y) + ' años';
+}
+
+let map, floodLayer, watershedLayer, sectionLine;
+let animating = false, animTimer = null;
+let chart = null;
+let sectionChart = null;
+let PROFILE = null;          // perfil topografico A-B (seccion 1.4)
+let currentElev = DEFAULT_ELEV;
+
+// Estado del caudal de diseno (1.3 / 1.5)
+let designFlow = 0.5;        // m3/s
+// Caudales de referencia por fase ENSO, en m3/s. Valores de orden de magnitud
+// para una cuenca de ~8.5 km2 en la region's Cordoba.
+const ENSO_FLOWS = {
+  nino: 5.0,      // El Nino: episodio lluvioso intenso
+  normal: 0.8,    // Condiciones normales
+  nina: 0.1,      // La Nina: estiaje, caudal minimo
+};
+
+function showError(msg) {
+  const el = document.createElement('div');
+  el.style.cssText = 'position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#16213e;color:#e94560;padding:20px;border-radius:8px;z-index:9999;text-align:center;max-width:400px;';
+  el.innerHTML = '<h3>Error</h3><p style="color:#aaa;font-size:13px;margin-top:8px;">' + msg + '</p>';
+  document.getElementById('app').appendChild(el);
+}
+
+function init() {
+  const bounds = config.bounds;
+  const southWest = [bounds[1], bounds[0]];
+  const northEast = [bounds[3], bounds[2]];
+
+  // Sincroniza el slider con el rango real de escenarios.
+  // El slider se INDEXA (0..N-1) en vez de usar la cota como valor: las cotas
+  // no son uniformes (la ultima queda fuera de la grilla regular), asi que un
+  // <input type=range> con step fijo no podria alcanzarla.
+  const slider = document.getElementById('elevSlider');
+  slider.min = '0';
+  slider.max = String(SCENARIO_ELEVS.length - 1);
+  slider.step = '1';
+  slider.value = String(Math.max(0, SCENARIO_ELEVS.indexOf(DEFAULT_ELEV)));
+  document.getElementById('minElevLabel').textContent = ELEV_MIN + ' m';
+  document.getElementById('maxElevLabel').textContent = ELEV_MAX + ' m';
+
+  try {
+    map = L.map('map', { zoomControl: true, attributionControl: false });
+  } catch(e) {
+    showError('No se pudo cargar Leaflet. Verifica vendor/leaflet.js.');
+    return;
+  }
+
+  // Fondo local: sin tiles externos, sin API key y sin marcas de agua.
+  // La imagen contiene SOLO la forma azul y el límite naranja extraídos de la
+  // captura real; los vectores de abajo añaden la cota seleccionada.
+  if (typeof MAPA_REAL_URL !== 'undefined') {
+    L.imageOverlay(MAPA_REAL_URL, [southWest, northEast], {
+      opacity: 0.42,
+      interactive: false,
+      alt: 'Forma real de Cuenca 1 digitalizada desde la captura del equipo'
+    }).addTo(map);
+  }
+
+  map.fitBounds([southWest, northEast], { padding: [30, 30] });
+
+  // Watershed boundary
+  if (typeof WATERSHED_BOUNDARY !== 'undefined') {
+    watershedLayer = L.geoJSON(WATERSHED_BOUNDARY, {
+      style: { color: '#ff6b35', weight: 2, fill: false, dashArray: '4 4' }
+    }).addTo(map);
+  }
+
+  initChart();
+  updateScenario(DEFAULT_ELEV);
+}
+
+function getScenario(elev) {
+  return scenarios.find(s => s.properties.elevation === elev);
+}
+
+function updateScenario(elev) {
+  const scen = getScenario(elev);
+  if (!scen) return;
+  currentElev = elev;
+
+  document.getElementById('elevDisplay').textContent = elev;
+  document.getElementById('volDisplay').textContent = scen.properties.volume_hm3.toLocaleString();
+  document.getElementById('areaDisplay').textContent = scen.properties.area_km2.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
+  document.getElementById('legendText').textContent = 'Inundaci\u00f3n a cota ' + elev + ' m';
+
+  if (floodLayer) map.removeLayer(floodLayer);
+  floodLayer = L.geoJSON(scen.geometry, {
+    style: { color: '#4488ff', weight: 1, fillColor: '#2266cc', fillOpacity: 0.35 }
+  }).addTo(map);
+
+  updateChart(elev);
+  updateTimeReadouts(elev);
+  updateSection(elev);
+}
+
+// Tiempo de llenado y caudal especifico (1.3).
+function updateTimeReadouts(elev) {
+  const t = fillTimeHours(elev, designFlow);
+  document.getElementById('timeDisplay').textContent = formatDuration(t);
+
+  const rate = fillRateM2PerM(elev);
+  document.getElementById('wseDisplay').textContent = rate === null
+    ? '—'
+    : (rate >= 1000 ? (rate / 1000).toFixed(2) + 'k' : Math.round(rate));
+}
+
+function initChart() {
+  const ctx = document.getElementById('profileChart').getContext('2d');
+  const filtered = evaData.filter(d => d.elevation >= ELEV_MIN);
+  const elevations = filtered.map(d => d.elevation);
+  const volumes = filtered.map(d => d.cum_vol_hm3);
+  const areas = filtered.map(d => d.surface_area_m2 / 1e6);   // km2
+
+  chart = new Chart(ctx, {
+    type: 'scatter',
+    data: {
+      datasets: [{
+        label: 'Volumen',
+        data: elevations.map((e, i) => ({ x: e, y: volumes[i] })),
+        backgroundColor: '#4488ff',
+        borderColor: '#4488ff',
+        pointRadius: 0,
+        showLine: true,
+        // tension 0 (sin curvas Bézier): la curva debe ser la real, interpolada
+        // linealmente. Con tension > 0 Chart.js "abomba" los datos.
+        tension: 0,
+        borderWidth: 2,
+        yAxisID: 'y',
+      }, {
+        label: 'Superficie',
+        data: elevations.map((e, i) => ({ x: e, y: areas[i] })),
+        backgroundColor: '#2ecc71',
+        borderColor: '#2ecc71',
+        pointRadius: 0,
+        showLine: true,
+        tension: 0,
+        borderWidth: 2,
+        borderDash: [4, 3],
+        yAxisID: 'y1',
+      }, {
+        label: 'Actual',
+        data: [],
+        backgroundColor: '#e94560',
+        borderColor: '#e94560',
+        pointRadius: 6,
+        pointStyle: 'rectRot',
+        yAxisID: 'y',
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      interaction: { mode: 'nearest', axis: 'x', intersect: false },
+      onClick(evt, elements, chartInstance) {
+        // Permite mover el punto de operacion con un clic sobre la curva.
+        const pts = chartInstance.getElementsAtEventForMode(evt, 'nearest', { axis: 'x', intersect: false }, false);
+        if (!pts.length) return;
+        const x = chartInstance.data.datasets[0].data[pts[0].index].x;
+        // Lleva la seleccion al escenario mas cercano que exista.
+        let best = SCENARIO_ELEVS[0], bd = Infinity;
+        for (const e of SCENARIO_ELEVS) {
+          const d = Math.abs(e - x);
+          if (d < bd) { bd = d; best = e; }
+        }
+        document.getElementById('elevSlider').value = String(SCENARIO_ELEVS.indexOf(best));
+        updateScenario(best);
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              if (ctx.dataset.label === 'Actual') {
+                return ctx.parsed.x + ' m: ' + ctx.parsed.y.toFixed(1) + ' hm\u00B3';
+              }
+              const unit = ctx.dataset.label === 'Superficie' ? ' km\u00B2' : ' hm\u00B3';
+              return ctx.parsed.x + ' m: ' + ctx.parsed.y.toFixed(2) + unit;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          title: { display: true, text: 'Cota (m)', color: '#888' },
+          ticks: { color: '#888', maxTicksLimit: 6 },
+          grid: { color: '#ffffff11' },
+          min: ELEV_MIN, max: ELEV_MAX,
+        },
+        y: {
+          position: 'left',
+          title: { display: true, text: 'Vol (hm\u00B3)', color: '#888' },
+          ticks: { color: '#888' },
+          grid: { color: '#ffffff11' },
+          beginAtZero: true,
+        },
+        y1: {
+          position: 'right',
+          title: { display: true, text: 'Sup (km\u00B2)', color: '#2ecc71' },
+          ticks: { color: '#2ecc71', maxTicksLimit: 5 },
+          grid: { drawOnChartArea: false },
+          beginAtZero: true,
+        }
+      }
+    }
+  });
+}
+
+function updateChart(elev) {
+  if (!chart) return;
+  // dataset 0 = Volumen (curva real), 1 = Superficie, 2 = punto de operacion.
+  // Antes el marcador se escribia en el dataset 1, que era "Actual"; al
+  // agregar la serie de superficie el indice quedo desalineado y el marcador
+  // aparecia sobre la superficie en vez del volumen.
+  const e = evaAt(elev);
+  if (!e) return;
+  chart.data.datasets[2].data = [{ x: elev, y: e.cum_vol_hm3 }];
+  chart.update();
+}
+
+// ==============================================================
+// 1.1  ANIMACION INTERPOLADA
+//
+// Antes la animacion saltaba entre los 23 escenarios discretos con un
+// setInterval: se veía como un "salto" entre aplanamientos. Ahora interpola
+// la cota de forma continua y actualiza los indicadores en cada frame, con la
+// lamina creciendo de forma fluida. Los poligonos discretos siguen siendo los
+// de los escenarios (no se recalcula geometria), pero los valores mostrados
+// son interpolados.
+// ==============================================================
+let animRaf = null, animLastTs = null;
+
+// Cota continua correspondiente a un progreso t en [0,1] de la animacion.
+function elevAtProgress(t) {
+  if (SCENARIO_ELEVS.length < 2) return SCENARIO_ELEVS[0];
+  const x = t * (SCENARIO_ELEVS.length - 1);
+  const i = Math.floor(x);
+  const f = x - i;
+  const a = SCENARIO_ELEVS[i];
+  const b = SCENARIO_ELEVS[Math.min(i + 1, SCENARIO_ELEVS.length - 1)];
+  return a + (b - a) * f;
+}
+
+function animStep(ts) {
+  if (!animating) return;
+  if (animLastTs === null) animLastTs = ts;
+  const dt = (ts - animLastTs) / 1000;
+  animLastTs = ts;
+  // 1 nivel cada 350 ms equivale al ritmo del setInterval anterior.
+  const perLevel = 0.35;
+  animProgress += dt / (SCENARIO_ELEVS.length * perLevel);
+  if (animProgress > 1) animProgress = 0;
+
+  const elev = elevAtProgress(animProgress);
+  const idx = Math.round(animProgress * (SCENARIO_ELEVS.length - 1));
+  const snap = SCENARIO_ELEVS[Math.max(0, Math.min(SCENARIO_ELEVS.length - 1, idx))];
+
+  // El poligono solo existe para las cotas de escenario: se dibuja el mas
+  // cercano, mientras los valores leidos si son interpolados.
+  document.getElementById('elevSlider').value = String(idx);
+  if (snap !== lastDrawnElev) {
+    lastDrawnElev = snap;
+    drawFloodPolygon(snap);
+  }
+  document.getElementById('elevDisplay').textContent = Math.round(elev);
+  updateTimeReadouts(Math.round(elev));
+  updateSection(Math.round(elev));
+
+  animRaf = requestAnimationFrame(animStep);
+}
+
+// Dibuja solo el poligono (sin tocar los indicadores interpolados).
+function drawFloodPolygon(elev) {
+  const scen = getScenario(elev);
+  if (!scen || !map) return;
+  if (floodLayer) map.removeLayer(floodLayer);
+  floodLayer = L.geoJSON(scen.geometry, {
+    style: { color: '#4488ff', weight: 1, fillColor: '#2266cc', fillOpacity: 0.35 }
+  }).addTo(map);
+}
+
+let animProgress = 0, lastDrawnElev = null;
+
+function stopAnimation() {
+  animating = false;
+  animLastTs = null;
+  if (animRaf) { cancelAnimationFrame(animRaf); animRaf = null; }
+  clearInterval(animTimer);
+  const btn = document.getElementById('playBtn');
+  if (btn) btn.innerHTML = '\u25B6 Animar';
+}
+
+document.getElementById('elevSlider').addEventListener('input', function() {
+  const elev = SCENARIO_ELEVS[parseInt(this.value)];
+  if (elev === undefined) return;
+  stopAnimation();
+  animProgress = 0;
+  lastDrawnElev = null;
+  currentElev = elev;
+  updateScenario(elev);
+});
+
+document.getElementById('playBtn').addEventListener('click', function() {
+  if (animating) { stopAnimation(); return; }
+  animating = true;
+  this.innerHTML = '\u23F8 Pausar';
+  // Arranca desde la posicion actual del slider.
+  const idx = parseInt(document.getElementById('elevSlider').value) || 0;
+  animProgress = idx / Math.max(1, SCENARIO_ELEVS.length - 1);
+  animLastTs = null;
+  animRaf = requestAnimationFrame(animStep);
+});
+
+document.getElementById('resetViewBtn').addEventListener('click', function() {
+  const bounds = config.bounds;
+  map.fitBounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]], { padding: [30, 30] });
+});
+
+// ==============================================================
+// 1.4  SECCION TOPOGRAFICA (perfil A-B)
+//
+// Muestra el perfil del fondo del valle con la lamina de agua a la cota
+// actual. Es el grafico que mas valor tecnico aporta: permite ver donde se
+// ubica la lamina respecto al fondo, cuanto es el resguardo y que parte
+// del valle queda seca.
+// ==============================================================
+function initSection() {
+  const ctx = document.getElementById('sectionChart').getContext('2d');
+  const s = PROFILE.s.map(v => v / 1000);      // metros -> km
+  const z = PROFILE.z;
+
+  sectionChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      datasets: [
+        {
+          label: 'Terreno',
+          data: s.map((x, i) => ({ x: x, y: z[i] })),
+          borderColor: '#8b6f47',
+          backgroundColor: 'rgba(139,111,71,0.35)',
+          borderWidth: 2,
+          pointRadius: 0,
+          fill: 'origin',
+          tension: 0,
+          order: 2,
+        },
+        {
+          label: 'Agua',
+          data: [],
+          borderColor: '#4fc3f7',
+          backgroundColor: 'rgba(79,195,247,0.45)',
+          borderWidth: 2,
+          pointRadius: 0,
+          fill: '+1',        // rellena entre terreno y agua
+          tension: 0,
+          order: 1,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      scales: {
+        x: {
+          type: 'linear',
+          title: { display: true, text: 'Distancia (km)', color: '#888' },
+          ticks: { color: '#888', maxTicksLimit: 6 },
+          grid: { color: '#ffffff11' },
+        },
+        y: {
+          reverse: true,    // cota creciendo hacia arriba se lee mejor
+          title: { display: true, text: 'Cota (m)', color: '#888' },
+          ticks: { color: '#888', maxTicksLimit: 6 },
+          grid: { color: '#ffffff11' },
+        },
+      },
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+    },
+  });
+
+  document.getElementById('sectionInfo').textContent =
+    'Corte A-B siguiendo el fondo del valle - ' +
+    (PROFILE.length_m / 1000).toFixed(2) + ' km, de ' +
+    Math.round(Math.min.apply(null, z)) + ' m a ' +
+    Math.round(Math.max.apply(null, z)) + ' m.';
+}
+
+function updateSection(elev) {
+  if (!sectionChart || !PROFILE) return;
+  // La lamina se dibuja como polilinea horizontal a la cota actual, limitada a
+  // los tramos donde el terreno queda por debajo de esa cota.
+  const s = PROFILE.s, z = PROFILE.z;
+  const water = [];
+  for (let i = 0; i < s.length; i++) {
+    if (z[i] <= elev) {
+      water.push({ x: s[i] / 1000, y: elev });
+    } else if (water.length) {
+      break;      // el valle vuelve a subir: termina la lamina
+    }
+  }
+  sectionChart.data.datasets[1].data = water;
+  sectionChart.update('none');
+}
+
+// Carga el perfil desde la escena 3D (lo produce generar_escena_3d.py).
+function loadProfile(cb) {
+  fetch('data/escena_3d.json')
+    .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)))
+    .then(d => { PROFILE = d.profile; cb(); })
+    .catch(err => {
+      // La seccion es un extra: si falla, el resto del visor sigue funcionando.
+      PROFILE = null;
+      document.getElementById('sectionInfo').textContent =
+        'Perfil no disponible (' + err.message + '). Regenerar con generar_escena_3d.py';
+      cb();
+    });
+}
+
+// Linea A-B sobre el mapa, para ubicar el corte.
+function drawSectionLine() {
+  if (!PROFILE || !map) return;
+  if (sectionLine) map.removeLayer(sectionLine);
+  sectionLine = L.polyline([PROFILE.a, PROFILE.b], {
+    color: '#ffd54f', weight: 2, opacity: 0.85, dashArray: '6 6',
+  }).addTo(map);
+  L.circleMarker(PROFILE.a, { radius: 4, color: '#ffd54f', fillOpacity: 1, weight: 2 }).addTo(map);
+  L.circleMarker(PROFILE.b, { radius: 4, color: '#ffd54f', fillOpacity: 1, weight: 2 }).addTo(map);
+}
+
+// ==============================================================
+// 1.3 / 1.5  CAUDAL DE DISENO (ESCENARIOS ENSO)
+// ==============================================================
+document.getElementById('flowSlider').addEventListener('input', function() {
+  designFlow = parseFloat(this.value);
+  document.getElementById('flowDisplay').textContent = designFlow.toFixed(2).replace(/\.?0+$/, '');
+  updateTimeReadouts(currentElev);
+});
+
+// Los chips fijan un caudal representativo de cada fase del ENSO.
+Array.prototype.forEach.call(document.querySelectorAll('#flowChips .chip'), function(chip) {
+  chip.addEventListener('click', function() {
+    const enso = chip.dataset.enso;
+    if (ENSO_FLOWS[enso] === undefined) return;
+    Array.prototype.forEach.call(document.querySelectorAll('#flowChips .chip'), function(c) {
+      c.classList.remove('active');
+    });
+    chip.classList.add('active');
+    designFlow = ENSO_FLOWS[enso];
+    const fs = document.getElementById('flowSlider');
+    fs.value = String(Math.min(parseFloat(fs.max), designFlow));
+    document.getElementById('flowDisplay').textContent = designFlow.toFixed(2).replace(/\.?0+$/, '');
+    updateTimeReadouts(currentElev);
+  });
+});
+
+document.getElementById('flowDisplay').textContent = designFlow.toFixed(2).replace(/\.?0+$/, '');
+
+// La seccion topografica se carga despues del mapa: el perfil vive en la
+// escena 3D. Si no esta disponible, el resto del visor sigue funcionando.
+init();
+loadProfile(function() {
+  if (PROFILE) {
+    initSection();
+    drawSectionLine();
+    updateSection(currentElev);
+  }
+});
+</script>
+</body>
+</html>

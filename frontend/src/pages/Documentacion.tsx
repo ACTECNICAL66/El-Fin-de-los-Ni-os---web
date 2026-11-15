@@ -45,9 +45,9 @@ export default function Documentacion() {
                             "El Fin de los Niños" es una arquitectura de ingeniería civil y software diseñada para contrarrestar los efectos extremos de los fenómenos El Niño y La Niña (ENSO) en la provincia de Córdoba. Se aleja deliberadamente de los grandes embalses centralizados para apostar por una red distribuida de micro-represas conectadas.
                         </p>
                         <div className="glass-card p-6 border-l-4 border-l-water-400 bg-water-500/5">
-                            <h4 className="font-bold text-white mb-2">Concepto Core: El "Gemelo Digital" Hídrico</h4>
+                            <h4 className="font-bold text-white mb-2">Concepto Core: réplica hídrica reproducible</h4>
                             <p className="text-white/60 text-sm leading-relaxed">
-                                El sistema utiliza una réplica virtual alimentada por datos satelitales y sensores IoT en terreno para modelar el comportamiento del agua y la vegetación, permitiendo retener o liberar agua aguas arriba antes de que el problema llegue a los núcleos urbanos.
+                                La entrega 2026 publica una réplica virtual alimentada por NASA POWER, ONI de NOAA CPC, una estación observada, inventario de cuencas y el visor 2D. El panel de sensores es una simulación sin hardware conectado: no se presenta como telemetría de campo ni como control en vivo. La atribución ENSO y sus intervalos están en la web activa.
                             </p>
                         </div>
                     </div>
@@ -99,11 +99,11 @@ export default function Documentacion() {
                             {[
                                 {
                                     icon: Cpu, title: 'Capa 1: Hardware Edge (IoT) y Firmware',
-                                    content: 'Firmware desarrollado en C++ para microcontroladores ESP32 y simulado en Proteus. El hardware supervisa en terreno sensores de nivel hidrostático, pluviómetros de balancín y humedad del suelo, reportando datos vía GSM/LoRa.'
+                                    content: 'Firmware desarrollado en C++ para microcontroladores ESP32 y simulado en Proteus. El prototipo de laboratorio prevé sensores de nivel, pluviómetros y humedad; el panel V4 reproduce la interfaz sin hardware conectado y la telemetría de campo queda para un piloto posterior.'
                                 },
                                 {
                                     icon: MapIcon, title: 'Capa 2: Inteligencia Espacial (GIS)',
-                                    content: 'Modelado intensivo de elevación digital (DEM) utilizando QGIS y Global Mapper. Identificación de sumideros naturales e integración con los modelos predictivos de la NASA WorldWind.'
+                                    content: 'Modelado de elevación digital (DEM), curvas y tablas EVA en QGIS. El paquete de cuencas está inventariado en la web activa y el visor 2D usa escenarios de llenado; los caudales por fase ENSO son presets de diseño, no pronósticos.'
                                 },
                                 {
                                     icon: LinkIcon, title: 'Capa 3: Integración Web',
@@ -221,7 +221,7 @@ export default function Documentacion() {
                             <div className="flex-1 text-center sm:text-left">
                                 <h3 className="text-2xl font-display font-bold text-white mb-2">Informe Técnico Completo</h3>
                                 <p className="text-white/60 text-sm">
-                                    Descarga el informe técnico completo del proyecto con metodología, análisis de cuencas, modelos predictivos y resultados.
+                                    Descarga el informe técnico completo del proyecto con metodología, análisis de cuencas, prototipos y resultados; sus contradicciones se documentan en la revisión 2026.
                                 </p>
                             </div>
                             <a

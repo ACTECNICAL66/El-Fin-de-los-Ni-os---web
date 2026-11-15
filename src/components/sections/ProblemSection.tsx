@@ -22,51 +22,51 @@ const problemData: ProblemItem[] = [
   {
     question: "A quienes afecta?",
     answer:
-      "El fenomeno ENSO afecta a toda la poblacion de la provincia de Cordoba, con impacto desproporcionado en agricultores, comunidades rurales, poblacion vulnerable y sectores productivos dependientes del recurso hidrico como la agricultura, ganaderia, industria y generacion de energia hidroelectrica.",
+      "El fenómeno ENSO afecta a toda la poblacion de la provincia de Córdoba, con impacto desproporcionado en agricultores, comunidades rurales, poblacion vulnerable y sectores productivos dependientes del recurso hídrico como la agricultura, ganaderia, industria y generación de energía hidroeléctrica.",
     icon: Users,
     actionable: false,
   },
   {
     question: "Cuales son las causas del problema?",
     answer:
-      "Las causas principales son el calentamiento (El Nino) o enfriamiento (La Nina) anomalo de las temperaturas superficiales del Oceano Pacifico ecuatorial, combinado con cambios en los patrones de vientos alisios y la alteracion de la circulacion atmosferica global (Celula de Walker). Esto modifica la distribucion de humedad y precipitaciones a escala planetaria.",
+      "Las causas principales son el calentamiento (El Niño) o enfriamiento (La Niña) anomalo de las temperaturas superficiales del Océano Pacífico ecuatorial, combinado con cambios en los patrones de vientos alisios y la alteracion de la circulacion atmosferica global (Célula de Walker). Esto modifica la distribución de humedad y precipitaciones a escala planetaria.",
     icon: Thermometer,
     actionable: false,
   },
   {
     question: "Por que se produce?",
     answer:
-      "Se produce por la interaccion oceano-atmosfera en el Pacifico tropical. En condiciones normales, los vientos alisios empujan agua calida hacia Asia. Durante El Nino, estos vientos se debilitan, permitiendo que el agua calida se desplace hacia America. Durante La Nina, los vientos se intensifican, generando condiciones opuestas. Este es un fenomeno climatico natural y ciclico.",
+      "Se produce por la interacción oceano-atmósfera en el Pacífico tropical. En condiciones normales, los vientos alisios empujan agua calida hacia Asia. Durante El Niño, estos vientos se debilitan, permitiendo que el agua calida se desplace hacia America. Durante La Niña, los vientos se intensifican, generando condiciones opuestas. Este es un fenómeno climatico natural y ciclico.",
     icon: Activity,
     actionable: false,
   },
   {
     question: "Pueden actuar sobre la causa?",
     answer:
-      "No es posible actuar directamente sobre las causas del ENSO, ya que son fenomenos climaticos naturales a escala planetaria, producto de la dinamica acoplada oceano-atmosfera. Sin embargo, se puede actuar indirectamente mitigando el cambio climatico antropogenico que podria estar intensificando estos fenomenos, reduciendo emisiones de gases de efecto invernadero.",
+      "No es posible actuar directamente sobre las causas del ENSO, ya que son fenómenos climáticos naturales a escala planetaria, producto de la dinámica acoplada oceano-atmósfera. Sin embargo, se puede actuar indirectamente mitigando el cambio climatico antropogenico que podria estar intensificando estos fenómenos, reduciendo emisiones de gases de efecto invernadero.",
     icon: Shield,
     actionable: true,
     actionDescription:
-      "Reducir emisiones de GEI, cumplir acuerdos climaticos internacionales, promover energias renovables.",
+      "Reducir emisiones de GEI, cumplir acuerdos climáticos internacionales, promover energías renovables.",
   },
   {
     question: "Cuales son las consecuencias?",
     answer:
-      "Las consecuencias incluyen: inundaciones y desbordes de rios durante El Nino; sequias prolongadas y deficit hidrico durante La Nina; perdidas de cosechas y produccion agricola; danos a infraestructura vial y urbana; crisis en el suministro de agua potable; afectacion a ecosistemas acuaticos y terrestres; perdidas economicas multimillonarias; desplazamiento de poblaciones; aumento de enfermedades relacionadas con el agua.",
+      "Las consecuencias incluyen: inundaciones y desbordes de rios durante El Niño; sequias prolongadas y deficit hídrico durante La Niña; pérdidas de cosechas y producción agrícola; daños a infraestructura vial y urbana; crisis en el suministro de agua potable; afectacion a ecosistemas acuáticos y terrestres; pérdidas economicas multimillonarias; desplazamiento de poblaciones; aumento de enfermedades relacionadas con el agua.",
     icon: AlertTriangle,
     actionable: false,
   },
   {
     question: "Que efectos produce?",
     answer:
-      "Efectos directos: variacion de precipitaciones (El Nino: aumento del 20-40%, La Nina: reduccion de hasta el 30%), cambios en temperatura media, alteracion de caudales de rios y arroyos, modificacion de niveles freaticos. Efectos indirectos: inseguridad alimentaria, migracion rural-urbana, conflictos por uso del agua, perdida de biodiversidad, aumento de riesgo de incendios forestales durante La Nina.",
+      "Efectos directos descritos en la bibliografía: variación de precipitaciones entre fases húmedas y secas, cambios en temperatura media y en caudales. Este sitio no estima porcentajes propios ni los contrasta con las 42 pruebas. Efectos indirectos: inseguridad alimentaria, migración rural-urbana, conflictos por uso del agua y mayor riesgo de incendios en períodos secos.",
     icon: Droplets,
     actionable: false,
   },
   {
     question: "Pueden actuar sobre las consecuencias?",
     answer:
-      "Si, es posible y necesario actuar sobre las consecuencias mediante: sistemas de alerta temprana con datos satelitales NASA, construccion de micro-represas distribuidas, gestion adaptativa de embalses, agricultura resiliente (cultivos resistentes, riego eficiente), monitoreo en tiempo real con sensores IoT (ESP32), planificacion territorial basada en datos, protocolos de respuesta ante emergencias, y educacion comunitaria para la resiliencia hidrica.",
+      "Si, es posible y necesario actuar sobre las consecuencias mediante: sistemas de alerta temprana con datos satelitales NASA, construccion de micro-represas distribuidas, gestión adaptativa de embalses, agricultura resiliente (cultivos resistentes, riego eficiente), monitoreo en tiempo real con sensores IoT (ESP32), planificacion territorial basada en datos, protocolos de respuesta ante emergencias, y educacion comunitaria para la resiliencia hídrica.",
     icon: Search,
     actionable: true,
     actionDescription:
@@ -80,12 +80,12 @@ export default function ProblemSection() {
       <div className="max-w-7xl mx-auto px-6">
         <SectionHeading
           icon={Activity}
-          title="Analisis del Problema: El Nino y La Nina en Cordoba"
+          title="Análisis del Problema: El Niño y La Niña en Córdoba"
         />
         <p className="text-white/70 leading-relaxed mb-8 max-w-4xl">
-          Un analisis integral del fenomeno ENSO y su impacto en la provincia de
-          Cordoba, abordando causas, consecuencias y estrategias de accion para
-          construir resiliencia hidrica.
+          Un análisis integral del fenómeno ENSO y su impacto en la provincia de
+          Córdoba, abordando causas, consecuencias y estrategias de acción para
+          construir resiliencia hídrica.
         </p>
 
         <div className="space-y-6 mb-10">
@@ -139,13 +139,13 @@ export default function ProblemSection() {
 
         <div className="section-alt rounded-2xl p-8 border border-white/10">
           <h3 className="text-xl font-bold text-white mb-4 text-center">
-            Resumen del Analisis
+            Resumen del Análisis
           </h3>
           <div className="grid sm:grid-cols-2 gap-6">
             <div className="glass-card-light rounded-xl p-5 border-l-4 border-red-500">
               <h4 className="font-bold text-red-400 mb-2">Sobre las causas</h4>
               <p className="text-sm text-white/60">
-                El ENSO es un fenomeno natural e inevitable. No podemos evitar
+                El ENSO es un fenómeno natural e inevitable. No podemos evitar
                 que ocurra, pero podemos predecirlo y prepararnos.
               </p>
             </div>
@@ -154,8 +154,8 @@ export default function ProblemSection() {
                 Sobre las consecuencias
               </h4>
               <p className="text-sm text-white/60">
-                Ahi reside nuestra capacidad de accion: mitigar impactos
-                mediante tecnologia, planificacion y gestion adaptativa.
+                Ahi reside nuestra capacidad de acción: mitigar impactos
+                mediante tecnologia, planificacion y gestión adaptativa.
               </p>
             </div>
           </div>

@@ -5,6 +5,13 @@ import {
   Github,
   Mail,
   ShieldAlert,
+  Activity,
+  MapPinned,
+  Cpu,
+  LayoutDashboard,
+  Target,
+  CloudSun,
+  Layers,
 } from "lucide-react";
 
 export default function Footer() {
@@ -25,14 +32,20 @@ export default function Footer() {
                 El Fin de los Niños
               </span>
             </Link>
-            <p className="text-white/60 leading-relaxed max-w-sm mb-6">
-              Sistema de gestión hídrica resiliente ante los fenómenos
-              climáticos ENSO. Proyecto desarrollado para el NASA Space Apps
-              Challenge 2025.
+            <p className="text-white/60 leading-relaxed max-w-sm mb-4">
+              Análisis de tendencias climáticas 2000–2025, atribución ENSO con
+              ONI / Niño 3.4, cuencas y simulación 2D reproducibles. Proyecto
+              desarrollado para el NASA Space Apps Challenge 2026; los sensores
+              y el visor se publican como réplica sin telemetría en vivo.
             </p>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/80 text-xs font-medium">
-              <ExternalLink className="w-3.5 h-3.5 text-water-400" />
-              Powered by NASA Earthdata
+            <div className="flex flex-wrap gap-2">
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/80 text-xs font-medium">
+                <ExternalLink className="w-3.5 h-3.5 text-water-400" />
+                Datos: NASA POWER
+              </span>
+              <span className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/50 text-xs">
+                Sensores y dron: diseño / prototipo, sin mediciones de campo
+              </span>
             </div>
           </div>
 
@@ -57,6 +70,46 @@ export default function Footer() {
                   Análisis de Paradigmas
                 </Link>
               </li>
+              <li>
+                <Link
+                  to="/#mapa-comparativo"
+                  className="text-white/60 hover:text-water-400 transition-colors text-sm inline-flex items-center gap-2"
+                >
+                  <MapPinned className="w-3.5 h-3.5" /> Mapa comparativo
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/#respaldo-estadistico"
+                  className="text-white/60 hover:text-water-400 transition-colors text-sm inline-flex items-center gap-2"
+                >
+                  <Activity className="w-3.5 h-3.5" /> Respaldo estadístico
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/#encuadre-desafio"
+                  className="text-white/60 hover:text-water-400 transition-colors text-sm inline-flex items-center gap-2"
+                >
+                  <Target className="w-3.5 h-3.5" /> Encuadre del desafío 2026
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/#enso"
+                  className="text-white/60 hover:text-water-400 transition-colors text-sm inline-flex items-center gap-2"
+                >
+                  <CloudSun className="w-3.5 h-3.5" /> Atribución ENSO
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/#cuencas"
+                  className="text-white/60 hover:text-water-400 transition-colors text-sm inline-flex items-center gap-2"
+                >
+                  <Layers className="w-3.5 h-3.5" /> Cuencas y visor 2D
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -65,6 +118,32 @@ export default function Footer() {
               Recursos
             </h4>
             <ul className="space-y-4">
+              <li>
+                <Link
+                  to="/monitoreo"
+                  className="text-white/60 hover:text-water-400 transition-colors text-sm inline-flex items-center gap-2"
+                >
+                  <Cpu className="w-3.5 h-3.5" /> Electrónica y monitoreo
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/panel"
+                  className="text-white/60 hover:text-water-400 transition-colors text-sm inline-flex items-center gap-2"
+                >
+                  <LayoutDashboard className="w-3.5 h-3.5" /> Panel de control V4 (demo)
+                </Link>
+              </li>
+              <li>
+                <a
+                  href="https://docs.google.com/document/d/11dXRoOLjMCFvs1rITCMewpi3_DfsOlHDD8drtrgiccY/edit?usp=sharing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white/60 hover:text-water-400 transition-colors text-sm"
+                >
+                  Informe completo
+                </a>
+              </li>
               <li>
                 <a
                   href="https://github.com/ACTECNICAL66/El-Fin-de-los-Ni-os---web"
@@ -97,7 +176,7 @@ export default function Footer() {
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-eco-500" />
               </span>
               <span className="text-xs font-mono text-white/50">
-                SISTEMA ONLINE
+                PANEL ESTÁTICO ONLINE
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -108,7 +187,7 @@ export default function Footer() {
             </div>
           </div>
           <p className="text-xs text-white/40 font-medium">
-            &copy; 2025 IPET N&deg;66 Juan Balseiro. C&oacute;rdoba, Argentina.
+            &copy; 2026 IPET N&deg;66 Juan Balseiro. C&oacute;rdoba, Argentina.
           </p>
         </div>
       </div>
