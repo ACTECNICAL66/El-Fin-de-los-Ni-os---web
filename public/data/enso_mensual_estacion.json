@@ -1,0 +1,96 @@
+{
+  "tipo": "Prueba direccional preespecificada sobre anomalías mensuales 2000–2023",
+  "hipotesis": "El Niño > La Niña en precipitación mensual",
+  "diferencia_nino_menos_nina_mm_por_mes": 17.343071081752484,
+  "ic95_bootstrap_por_bloques_anuales": [
+    3.5771507998641727,
+    30.557888462417733
+  ],
+  "p_permutacion_bloques_una_cola": 0.02768166089965398,
+  "n_meses": 288,
+  "n_meses_el_nino": 72,
+  "n_meses_la_nina": 82,
+  "medias_por_fase": {
+    "El Niño": 9.107349537037042,
+    "La Niña": -8.235721544715444,
+    "Neutro": 0.14626865671641853
+  },
+  "desglose_estacional": [
+    {
+      "grupo": "todo_el_anio",
+      "meses": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "n_meses_el_nino": 72,
+      "n_meses_la_nina": 82,
+      "media_el_nino": 9.107349537037042,
+      "media_la_nina": -8.235721544715444,
+      "media_neutro": 0.14626865671641853,
+      "diferencia_nino_menos_nina": 17.343071081752484,
+      "ic95": [
+        2.104461311540196,
+        34.94883715842366
+      ],
+      "p_permutacion_dos_colas": 0.0345,
+      "q_bh": 0.09345
+    },
+    {
+      "grupo": "semestre_calido_oct_mar",
+      "meses": [
+        10,
+        11,
+        12,
+        1,
+        2,
+        3
+      ],
+      "n_meses_el_nino": 47,
+      "n_meses_la_nina": 57,
+      "media_el_nino": 12.228546099290787,
+      "media_la_nina": -9.849780701754383,
+      "media_neutro": -0.3326041666666654,
+      "diferencia_nino_menos_nina": 22.078326801045172,
+      "ic95": [
+        -0.2951990792584272,
+        47.25832820082116
+      ],
+      "p_permutacion_dos_colas": 0.0623,
+      "q_bh": 0.09345
+    },
+    {
+      "grupo": "semestre_frio_abr_sep",
+      "meses": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "n_meses_el_nino": 25,
+      "n_meses_la_nina": 25,
+      "media_el_nino": 3.239499999999999,
+      "media_la_nina": -4.555666666666667,
+      "media_neutro": 0.35004432624113446,
+      "diferencia_nino_menos_nina": 7.795166666666667,
+      "ic95": [
+        -4.556699999999998,
+        20.351233333333333
+      ],
+      "p_permutacion_dos_colas": 0.2358,
+      "q_bh": 0.2358
+    }
+  ],
+  "conclusion": "Sí: con 288 meses observados, El Niño excede a La Niña en +17.3 mm/mes; el IC95 por bloques excluye el cero y la permutación por bloques da p=0.028."
+}

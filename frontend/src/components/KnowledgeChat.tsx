@@ -11,43 +11,59 @@ interface Message {
 const KB: { keywords: string[]; answer: string }[] = [
     {
         keywords: ['cuenca', 'cuencas', 'basin', 'basins', 'territorio', 'sitios'],
-        answer: `Analizamos **7 cuencas hidrográficas** en las Sierras de Córdoba:\n\n• **Cuenca Norte-Oeste** (125.5 km²) — Prioridad alta, ideal para recarga de acuíferos\n• **Cuenca Norte-Este** (98.3 km²) — Retención hídrica con bajo riesgo de erosión\n• **Cuenca Centro** (156.7 km²) — Microdiques para uso rural y agrícola\n• **Cuenca Centro-Sur** (134.2 km²) — Control de excedentes e inundaciones\n• **Cuenca Sur-Este** (187.4 km²) — Mayor área, mitigación de crecidas\n• **Cuenca Sur-Este Secundaria** (78.6 km²) — Captación estacional de bajo costo\n• **Dique San Roque** (16.5 km²) — Nodo central del sistema hídrico regional`
+        answer: `Esta versión legacy trabaja con **7 códigos de cuenca** (CN-O, CN, CC, CC-S, CS, CE, CO). Cada uno se consultó en un **punto de grilla representativo** de NASA POWER, no en un promedio de todo el polígono. Los rectángulos del GeoJSON son referencias esquemáticas: las delineaciones hidrológicas están en el informe y aún deben publicarse con metadata para reproducirlas.`
     },
     {
         keywords: ['nasa', 'satélite', 'satelite', 'landsat', 'modis', 'ecostress', 'data', 'earthdata', 'dato'],
-        answer: `Utilizamos **4 datasets de NASA/NOAA**:\n\n📡 **Landsat 8/9** — Imágenes multiespectrales para calcular NDVI y cobertura vegetal\n🌡️ **MODIS** — Temperatura de superficie y evapotranspiración\n💧 **ECOSTRESS** — Estrés hídrico preciso en plantas\n📊 **VIIRS** — Reflectancia para índices de sequía (ESI)\n\nTodo disponible en NASA Earthdata (earthdata.nasa.gov)`
+        answer: `El análisis conectado usa **NASA POWER Monthly API** (2000–2025) con seis variables: precipitación, temperatura media y máxima, viento, humedad de la zona radicular y radiación solar. Landsat, MODIS NDVI, GPM IMERG, SMAP, GRACE y ECOSTRESS aparecen en el informe como contexto o integraciones futuras; **no alimentan las 42 pruebas publicadas**.`
     },
     {
         keywords: ['ndvi', 'vegetación', 'vegetacion', 'indice', 'índice', 'verde'],
-        answer: `El **NDVI (Índice de Vegetación de Diferencia Normalizada)** mide la salud de la vegetación:\n\n🟢 **NDVI > 0.65** → Saludable — monitoreo rutinario\n🟡 **NDVI 0.40-0.65** → Estrés leve — considerar riego\n🔴 **NDVI < 0.40** → Estrés severo — acción urgente\n\nNuestro algoritmo combina precipitación, temperatura y el fenómeno ENSO activo para predecir el NDVI con meses de antelación.`
+        answer: `El informe describe un análisis de NDVI y falso color infrarrojo en QGIS, pero la web no publica una serie NDVI reproducible ni fechas/sensor/procedencia de las imágenes. Por eso la edición 2026 lo declara **pendiente de integración** y no lo usa para calcular tendencias ni predecir valores futuros.`
     },
     {
         keywords: ['niño', 'niña', 'enso', 'clima', 'sequía', 'sequia', 'inundación', 'inundacion'],
-        answer: `Los fenómenos **ENSO** son el desafío central del proyecto:\n\n⛈️ **El Niño** → Lluvias extremas, inundaciones en Córdoba. Sistema libera agua anticipadamente aguas abajo.\n🌵 **La Niña** → Sequías prolongadas. Sistema retiene agua capturada en épocas previas.\n⚖️ **Normal** → Monitoreo predictivo para anticipar anomalías.\n\nNuestro modelo puede predecir el impacto **3-6 meses** antes del evento climático.`
+        answer: `**Sí hay atribución ENSO en la entrega 2026.** Se publicaron 504 pruebas parciales contra ONI / Niño 3.4, composites por fase, una estación real de 288 meses y escenarios condicionales de 3–6 meses. El resultado observado principal es +17,3 mm/mes en El Niño frente a La Niña (IC95 +3,6 a +30,6; p por bloques = 0,028). Es atribución estadística con intervalos, no un pronóstico operativo ni causalidad mecanicista; ver /#enso en la web activa.`
+    },
+    {
+    {
+        keywords: ['cuencas', 'qgis', 'dem', 'eva', 'visor 2d', 'simulación de llenado'],
+        answer: `El análisis de cuencas está **casi completo** en el paquete local de más de 20 GB: QGIS, DEM, curvas, seis tablas EVA, GeoJSON, visores 2D y 3D. El visor 2D del repo ya sigue la forma real digitalizada de la captura (809,58 hm³ / 6,51 km² a cota 1167 m), sin tiles externos; las coordenadas exactas requieren el data.js generado con GPKG/XLSX. Ver /#cuencas.`
+    },
+    {
+        keywords: ['estación', 'estacion', 'pluviómetro', 'pluviometro', 'observatorio córdoba', 'plantilla'],
+        answer: `La plantilla vacía se eliminó. Hay 288 meses reales (2000–2023) del Observatorio Córdoba, con r = 0,71 y Spearman 0,76 frente a NASA POWER, además del contraste ENSO mensual significativo. Ver /#enso.`
+    },
+        keywords: ['estadística', 'estadistica', 'p-valor', 'p valor', 'autocorrelación', 'autocorrelacion', 'bonferroni'],
+        answer: `Se publicaron 42 pruebas de Mann–Kendall. El p nominal no corrige autocorrelación; con TFPW, ajuste de varianza y Benjamini–Hochberg sobreviven **5 resultados robustos**, todos de temperatura media, y **ninguno de precipitación**. Bonferroni (α/42 = 0,00119) no deja significancias. Ver la sección «Respaldo estadístico» de la web activa.`
     },
     {
         keywords: ['costo', 'precio', 'economía', 'economia', 'presupuesto', 'dinero', 'ahorro'],
-        answer: `Comparativa de costos del paradigma centralizado vs distribuido:\n\n🏗️ **Mega-represas (Siglo XX)**:\n• Proyecto "Segundo San Roque" → USD 2.000M+\n• Acueducto Río Paraná → USD 5.000M+\n• Ampliación Los Molinos → USD 800M+\n\n✅ **Micro-represas distribuidas (nuestro modelo)**:\n• **85% más económicas** por unidad de almacenamiento\n• Sin costos de relocalización de comunidades\n• Mantenimiento descentralizado y comunitario`
+        answer: `El informe estima un presupuesto de referencia de **ARS 262.430** con precios de marzo–octubre de 2025. Es una estimación de materiales/prototipo, no un costo de obra construida ni una comparación validada con mega-represas. Las cifras comparativas de versiones anteriores no están respaldadas en el repositorio.`
     },
     {
         keywords: ['esp32', 'iot', 'sensor', 'hardware', 'arduino', 'proteus', 'firmware'],
-        answer: `La capa **IoT Edge** del sistema:\n\n🔧 **Microcontrolador**: ESP32 programado en C++\n📡 **Comunicación**: GSM/LoRa para zonas remotas\n🌊 **Sensores**: Nivel hidrostático, pluviómetro de balancín, humedad de suelo\n🖥️ **Simulación**: Proteus IDE para validación previa al campo\n\nCada nodo IoT reporta datos en tiempo real al gemelo digital hídrico.`
+        answer: `El informe documenta un **prototipo de laboratorio**: ESP32-S3 con WiFi, endpoints /data, /toggleCompuerta, /toggleX y /toggleY, sensores previstos y código de error -999.0. Las capturas se tomaron con el microcontrolador sin sensores conectados. La solución web publicada es una **réplica reproducible** (datos, modelo, panel V4 y visor 2D) con estado «simulación sin hardware conectado»; no hay telemetría en vivo. El piloto de campo de 6–12 meses sigue siendo el paso siguiente para calibración, IP65 y watchdog.`
+    },
+    {
+        keywords: ['dron', 'drone', 'ag-01', 'vuelo'],
+        answer: `El AG-01 es un **concepto de diseño y visor 3D de una aplicación futura**. No está construido, no vuela y no recoge datos. Se presenta después del análisis estadístico y no participa en los 42 resultados.`
     },
     {
         keywords: ['qgis', 'gis', 'dem', 'mapa', 'geoespacial', 'sig', 'google earth', 'global mapper'],
-        answer: `Herramientas **GIS y geoespaciales** utilizadas:\n\n🗺️ **QGIS** — Análisis de DEM, identificación de sumideros naturales (flow accumulation)\n🌍 **Google Earth Pro** — Reconocimiento visual de territorio y cuencas\n📊 **Global Mapper** — Procesamiento avanzado de modelos de elevación\n🛰️ **NASA WorldWind** — Visualización 3D de datos satelitales\n\nEste análisis permitió identificar los 7 sitios óptimos para micro-represas.`
+        answer: `El informe describe: descarga de DEM (USGS EarthExplorer/Copernicus, 30 o 90 m), unión de tiles, hillshade, dirección y acumulación de flujo, delimitación de cuencas desde puntos de salida, curvas de nivel de 1 m, cálculo de volumen por prisma trapezoidal y composición NIR-R-G/NDVI. Faltan publicar tiles, CRS, fecha, umbral de acumulación, coordenadas de salida y la planilla de cálculo para que sea reproducible.`
     },
     {
         keywords: ['paradigma', 'centralizado', 'distribuido', 'diferencia', 'por qué', 'porque'],
-        answer: `**Paradigma Centralizado (Siglo XX)** vs **Distribuido (Siglo XXI)**:\n\n❌ **Centralizado**: Costo 9/10 · Impacto ambiental 9/10 · Vulnerabilidad 8/10\n✅ **Distribuido**: Costo 3/10 · Impacto 2/10 · Vulnerabilidad 2/10\n\nEl principio clave: **"Atrapar el agua donde cae"** — reducir el escurrimiento en cuencas altas previene inundaciones aguas abajo sin infraestructura costosa.`
+        answer: `El informe contrasta un paradigma centralizado con micro-represas distribuidas y modulares. Es una **propuesta de diseño** con análisis topográfico y límites explícitos (sin geotecnia de campo ni consulta comunitaria amplia), no una obra evaluada ni un resultado medido de este sitio.`
     },
     {
         keywords: ['proyecto', 'qué es', 'que es', 'objetivo', 'fin de los niños', 'nasa space apps'],
-        answer: `**"El Fin de los Niños"** es un proyecto presentado en el NASA Space Apps Challenge 2025.\n\n🎯 **Objetivo**: Diseñar un sistema distribuido de micro-represas para gestionar el agua en Córdoba bajo eventos ENSO extremos.\n\n🧠 **Innovación**: Un "Gemelo Digital Hídrico" que combina datos satelitales + sensores IoT + modelos predictivos para actuar meses antes de cada emergencia climática.`
+        answer: `**"El Fin de los Niños"** se presenta en el NASA Space Apps Challenge 2026. La entrega conectada publica series NASA POWER 2000–2025, atribución ENSO con ONI de NOAA CPC, un inventario de cuencas y visor 2D, respaldo estadístico, un caso de estudio y la réplica de electrónica. El orden es: primero los datos y sus límites, después la tecnología propuesta.`
     },
     {
         keywords: ['san roque', 'dique', 'embalse', 'represa'],
-        answer: `El **Dique San Roque** (inaugurado en 1891) es el nodo hídrico central de Córdoba. Capacidad: ~200 hm³. Problemas actuales: sedimentación, presión de demanda y vulnerabilidad ante eventos climáticos extremos.\n\nNuestro proyecto propone aliviar su carga regulando el agua **aguas arriba** mediante las 6 cuencas analizadas, extendiendo su vida útil y eficiencia.`
+        answer: `El informe usa el Dique San Roque como nodo y referencia geográfica, y documenta niveles bajos durante la sequía 2020–2023. La web activa no dimensiona obras ni simula su operación: el análisis de tendencias se limita a siete puntos de grilla climáticos.`
     },
 ]
 
@@ -214,7 +230,7 @@ export default function KnowledgeChat() {
                             <Send className="w-4 h-4" />
                         </button>
                     </div>
-                    <p className="text-[10px] text-center text-white/20 mt-3 uppercase tracking-wider font-medium">Powered by NASA Space Apps 2025 Intelligence</p>
+                    <p className="text-[10px] text-center text-white/20 mt-3 uppercase tracking-wider font-medium">Powered by NASA Space Apps 2026 Intelligence</p>
                 </div>
             </div>
         </>

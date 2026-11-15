@@ -1,0 +1,282 @@
+{
+  "tipo": "Escenario condicional histórico de planificación; NO es pronóstico operativo",
+  "fecha_corte": "2026-11-14",
+  "ultimo_oni": {
+    "trimestre": "ASO 2026",
+    "anomalia": 2.46,
+    "fase_observada": "El Niño"
+  },
+  "ventanas": {
+    "3_meses": [
+      11,
+      12,
+      1
+    ],
+    "6_meses": [
+      11,
+      12,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "fases": {
+    "El Niño": {
+      "meses": [
+        {
+          "mes": 11,
+          "nombre": "Nov",
+          "n": 9,
+          "mediana": 103.1,
+          "p25": 86.0,
+          "p75": 116.6,
+          "origen": "El Niño"
+        },
+        {
+          "mes": 12,
+          "nombre": "Dic",
+          "n": 9,
+          "mediana": 135.5,
+          "p25": 108.4,
+          "p75": 192.0,
+          "origen": "El Niño"
+        },
+        {
+          "mes": 1,
+          "nombre": "Ene",
+          "n": 8,
+          "mediana": 108.25,
+          "p25": 88.1,
+          "p75": 159.29999999999998,
+          "origen": "El Niño"
+        },
+        {
+          "mes": 2,
+          "nombre": "Feb",
+          "n": 7,
+          "mediana": 135.0,
+          "p25": 98.6,
+          "p75": 281.3,
+          "origen": "El Niño"
+        },
+        {
+          "mes": 3,
+          "nombre": "Mar",
+          "n": 5,
+          "mediana": 70.2,
+          "p25": 66.3,
+          "p75": 135.7,
+          "origen": "El Niño"
+        },
+        {
+          "mes": 4,
+          "nombre": "Abr",
+          "n": 3,
+          "mediana": 86.5,
+          "p25": 81.15,
+          "p75": 106.95,
+          "origen": "El Niño"
+        }
+      ],
+      "total_3_meses": {
+        "horizonte_meses": 3,
+        "meses": [
+          11,
+          12,
+          1
+        ],
+        "mediana": 363.9,
+        "p10": 269.6,
+        "p90": 470.6
+      },
+      "total_6_meses": {
+        "horizonte_meses": 6,
+        "meses": [
+          11,
+          12,
+          1,
+          2,
+          3,
+          4
+        ],
+        "mediana": 725.9999999999999,
+        "p10": 557.6800000000001,
+        "p90": 1018.3800000000003
+      }
+    },
+    "Neutro": {
+      "meses": [
+        {
+          "mes": 11,
+          "nombre": "Nov",
+          "n": 5,
+          "mediana": 82.4,
+          "p25": 76.7,
+          "p75": 105.6,
+          "origen": "Neutro"
+        },
+        {
+          "mes": 12,
+          "nombre": "Dic",
+          "n": 5,
+          "mediana": 124.5,
+          "p25": 95.7,
+          "p75": 152.2,
+          "origen": "Neutro"
+        },
+        {
+          "mes": 1,
+          "nombre": "Ene",
+          "n": 5,
+          "mediana": 65.8,
+          "p25": 44.5,
+          "p75": 103.2,
+          "origen": "Neutro"
+        },
+        {
+          "mes": 2,
+          "nombre": "Feb",
+          "n": 7,
+          "mediana": 84.2,
+          "p25": 54.95,
+          "p75": 108.45,
+          "origen": "Neutro"
+        },
+        {
+          "mes": 3,
+          "nombre": "Mar",
+          "n": 11,
+          "mediana": 123.2,
+          "p25": 96.2,
+          "p75": 152.3,
+          "origen": "Neutro"
+        },
+        {
+          "mes": 4,
+          "nombre": "Abr",
+          "n": 16,
+          "mediana": 50.6,
+          "p25": 30.5,
+          "p75": 67.375,
+          "origen": "Neutro"
+        }
+      ],
+      "total_3_meses": {
+        "horizonte_meses": 3,
+        "meses": [
+          11,
+          12,
+          1
+        ],
+        "mediana": 298.5,
+        "p10": 212.1,
+        "p90": 466.4
+      },
+      "total_6_meses": {
+        "horizonte_meses": 6,
+        "meses": [
+          11,
+          12,
+          1,
+          2,
+          3,
+          4
+        ],
+        "mediana": 580.3,
+        "p10": 446.97999999999996,
+        "p90": 758.9000000000001
+      }
+    },
+    "La Niña": {
+      "meses": [
+        {
+          "mes": 11,
+          "nombre": "Nov",
+          "n": 10,
+          "mediana": 79.45,
+          "p25": 53.1,
+          "p75": 143.975,
+          "origen": "La Niña"
+        },
+        {
+          "mes": 12,
+          "nombre": "Dic",
+          "n": 10,
+          "mediana": 85.85,
+          "p25": 72.1,
+          "p75": 116.275,
+          "origen": "La Niña"
+        },
+        {
+          "mes": 1,
+          "nombre": "Ene",
+          "n": 11,
+          "mediana": 150.8,
+          "p25": 132.8,
+          "p75": 185.25,
+          "origen": "La Niña"
+        },
+        {
+          "mes": 2,
+          "nombre": "Feb",
+          "n": 10,
+          "mediana": 94.6,
+          "p25": 68.45,
+          "p75": 128.0,
+          "origen": "La Niña"
+        },
+        {
+          "mes": 3,
+          "nombre": "Mar",
+          "n": 8,
+          "mediana": 73.35,
+          "p25": 48.425,
+          "p75": 111.35,
+          "origen": "La Niña"
+        },
+        {
+          "mes": 4,
+          "nombre": "Abr",
+          "n": 5,
+          "mediana": 31.1,
+          "p25": 7.8,
+          "p75": 39.2,
+          "origen": "La Niña"
+        }
+      ],
+      "total_3_meses": {
+        "horizonte_meses": 3,
+        "meses": [
+          11,
+          12,
+          1
+        ],
+        "mediana": 337.4,
+        "p10": 252.6,
+        "p90": 426.0
+      },
+      "total_6_meses": {
+        "horizonte_meses": 6,
+        "meses": [
+          11,
+          12,
+          1,
+          2,
+          3,
+          4
+        ],
+        "mediana": 552.5,
+        "p10": 424.70000000000005,
+        "p90": 689.2200000000001
+      }
+    }
+  },
+  "interpretacion": "Se usa la distribución mensual observada 2000–2023 condicionada a la fase ONI del mes; las tres fases se publican como escenarios alternativos, no como anticipación de la fase futura.",
+  "limitaciones": [
+    "Sin verificación de habilidad predictiva ni modelo de persistencia ENSO.",
+    "No reemplaza pronósticos oficiales de NOAA CPC, SMN ni IRI.",
+    "La estación es puntual y no corrige cambios de instrumento o exposición."
+  ],
+  "solucion_a_predicciones_3_6_meses": "El sitio ya no ofrece una promesa de predicción: ofrece bandas condicionales 3–6 meses, reproducibles y etiquetadas como planificación."
+}

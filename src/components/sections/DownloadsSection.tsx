@@ -12,7 +12,7 @@ export default function DownloadsSection() {
       url: "https://docs.google.com/document/d/11dXRoOLjMCFvs1rITCMewpi3_DfsOlHDD8drtrgiccY/edit?usp=sharing",
     },
     {
-      title: "Codigo del Prototipo",
+      title: "Código del Prototipo",
       desc: "Archivo .INO para Arduino/ESP32.",
       icon: Code,
       color: "bg-eco-600",
@@ -21,7 +21,7 @@ export default function DownloadsSection() {
     },
     {
       title: "Informe ENSO (Externo)",
-      desc: "Diagnostico oficial de NOAA/IRI.",
+      desc: "Diagnóstico oficial de NOAA/IRI.",
       icon: BookOpen,
       color: "bg-purple-600",
       hoverColor: "hover:bg-purple-700",
@@ -29,7 +29,7 @@ export default function DownloadsSection() {
     },
     {
       title: "Mapa de Cuencas",
-      desc: "Recurso cartografico de Cordoba.",
+      desc: "Recurso cartografico de Córdoba.",
       icon: Map,
       color: "bg-white/20",
       hoverColor: "",
@@ -43,14 +43,14 @@ export default function DownloadsSection() {
         <SectionHeading icon={Download} title="Datos y Recursos Abiertos" />
         <p className="text-white/70 leading-relaxed mb-10 max-w-4xl">
           En el espiritu de la ciencia abierta de la NASA, compartimos todos
-          nuestros datos, metodologias y resultados para que otros
+          nuestros datos, metodologías y resultados para que otros
           investigadores puedan replicar y mejorar nuestro trabajo.
         </p>
 
         <div className="glass-card overflow-hidden p-8">
           <div className="text-center border-b border-white/10 pb-6 mb-8">
             <h3 className="text-3xl font-bold text-white">
-              El Fin de los Ninos
+              El Fin de los Niños
             </h3>
             <p className="text-lg text-white/50 mt-2">
               Recursos y Descargas del Proyecto

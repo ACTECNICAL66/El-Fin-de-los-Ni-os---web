@@ -1,0 +1,13 @@
+{
+  "indice": "Oceanic Niño Index (ONI)",
+  "region": "Niño 3.4 (5°N–5°S, 120°–170°W)",
+  "definicion": "Media móvil de tres meses de anomalías de temperatura superficial del mar ERSSTv5, con umbrales de ±0.5 °C; bases centradas de 30 años actualizadas cada cinco años.",
+  "fuente": "NOAA Climate Prediction Center",
+  "url": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+  "url_definicion": "https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php",
+  "url_metodologia": "https://www.cpc.ncep.noaa.gov/products/precip/CWlink/ENSO/composites/readme.shtml",
+  "archivo_local": "public/data/oni_ascii_cpc_1998_2026.txt",
+  "extracto": "1998–ASO 2026; extracto exacto del archivo ASCII oficial, conservando SEAS, YR, TOTAL y ANOM",
+  "fecha_consulta": "2026-11-14",
+  "advertencia": "Los valores ONI recientes pueden revisarse durante los dos meses posteriores a su publicación; ASO 2026 es observación preliminar, no pronóstico."
+}

@@ -1,0 +1,28 @@
+{
+  "codigo": "CC",
+  "variable": "precipitacion",
+  "estacion": {
+    "estacion": "Observatorio Córdoba",
+    "fuente": "Canziani, Lakkis & Yuchechen (2025), Zenodo 15013403 — Córdoba original data",
+    "doi": "https://doi.org/10.5281/zenodo.15013403",
+    "latitud": "-31.3",
+    "longitud": "-64.2",
+    "altitud_m": "425"
+  },
+  "anios_en_comun": 24,
+  "periodo": [
+    2000,
+    2023
+  ],
+  "correlacion_pearson": 0.7051489884690348,
+  "correlacion_spearman": 0.7606001484435543,
+  "sesgo_medio_local_menos_nasa": -34.05333333333335,
+  "error_absoluto_medio": 104.87583333333335,
+  "rmse": 127.87023005114732,
+  "pendiente_sen_local_por_decada": -59.5571428571429,
+  "pendiente_sen_nasa_por_decada": -125.12515151515147,
+  "coincide_signo_tendencia": true,
+  "mann_kendall_p_local": 0.1969722261024322,
+  "q_bh_local": 0.1969722261024322,
+  "advertencia": "Contraste punto–grilla descriptivo; no prueba significancia de la diferencia ni reemplaza calibración instrumental."
+}

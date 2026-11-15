@@ -2,32 +2,54 @@ import { useState, useRef, useEffect } from "react";
 import { MessageCircle, X, Send, Loader2 } from "lucide-react";
 
 const SUGGESTIONS = [
-  "Qué es el fenómeno ENSO?",
-  "Cómo afecta El Niño a Córdoba?",
-  "Qué son las micro-represas?",
-  "Cuántas cuencas se analizaron?",
+  "Hay atribución a ENSO?",
+  "Hay predicciones a 3 o 6 meses?",
+  "Cuánto avanzó el análisis de cuencas?",
+  "Hay gemelo digital?",
+  "Qué corrige el respaldo estadístico?",
+  "Dónde está el panel de control?",
 ];
 
 const FAQ: Record<string, string> = {
   "qué es el fenómeno enso":
-    "El Niño-Oscilación del Sur (ENSO) es un patrón climático acoplado del Pacífico tropical. Sus fases cálida (El Niño) y fría (La Niña) pueden influir en la lluvia y temperatura regionales. La magnitud y hasta el signo de esos efectos varían por región y evento; el análisis de este sitio no demuestra por sí solo una relación causal con ENSO.",
+    "Sí: el sitio incorpora ONI de NOAA CPC (Niño 3.4) y atribuye una parte de la variabilidad a El Niño y La Niña. Hay 504 pruebas parciales, composites y una serie mensual real del Observatorio Córdoba: El Niño supera a La Niña por +17,3 mm/mes, con IC95 +3,6 a +30,6 y p por bloques = 0,028. Es atribución estadística, no demostración de causalidad mecanicista. Ver /#enso.",
   "cómo afecta el niño a córdoba":
-    "El Niño puede modificar la probabilidad de lluvia en Córdoba, pero el efecto no es idéntico todos los años. El Detective Mode muestra tendencias históricas de NASA POWER; para atribuir cambios a ENSO se necesita comparar con un índice ENSO y evaluar otros factores.",
+    "El Niño se asocia con más lluvia en la serie observada de Córdoba: +17,3 mm/mes frente a La Niña (p por bloques = 0,028). El compuesto anual de NASA POWER marca +68,7 mm/año entre fases, con IC amplio; por eso publicamos magnitud, intervalo y corrección por comparaciones múltiples. Ver /#enso.",
   "cómo afecta la niña a córdoba":
-    "La Niña puede modificar la probabilidad de lluvia y temperatura en Córdoba, con efectos que varían entre eventos. La serie del sitio no estima por separado el efecto de La Niña ni permite atribuirle una tendencia observada.",
+    "La Niña es la fase seca del contraste: la estación real registra 17,3 mm/mes menos que El Niño y la temperatura del compuesto anual es 0,5 °C mayor (p = 0,021; q = 0,128 tras corrección). Los escenarios condicionales de 6 meses dan una mediana de 552,5 mm para La Niña frente a 726,0 mm para El Niño. Ver /#enso.",
   "qué son las micro-represas":
     "Las micro-represas son pequeñas estructuras de retención propuestas para almacenar o ralentizar agua en una cuenca. Su ubicación, costo y efectos ambientales deben evaluarse con estudios de terreno e hidrológicos antes de proponer su construcción.",
   "cuántas cuencas se analizaron":
     "El visor incluye siete cuencas de Córdoba. El Detective Mode compara seis variables NASA POWER por un punto de grilla representativo en cada cuenca; no calcula un promedio espacial del polígono ni determina ubicaciones óptimas de obras.",
+  "qué corrige el respaldo estadístico":
+    "El Mann–Kendall original no corregía autocorrelación temporal. Publicamos un ajuste de varianza por n efectivo y un preblanqueamiento libre de tendencia (TFPW), además del q de Benjamini–Hochberg para las 42 pruebas. Quedan 5 resultados robustos, todos de temperatura media; ninguna tendencia de precipitación sobrevive las correcciones.",
+  "cuál es el caso de estudio":
+    "Cuenca Sur, temperatura media: Sen +0,41 °C por década, p y q corregidos por debajo de 0,05, con un cambio total estimado de ~1,02 °C en 26 años. Es un punto de grilla y no dimensiona una obra; la atribución ENSO se analiza por separado en 504 pruebas y en la serie mensual de la estación. Ver /#enso.",
+  "cómo validaron un hallazgo":
+    "Tres niveles: 1) consistencia documental 2020–2023 (7 de 7 puntos, −26 %); 2) estación real del Observatorio Córdoba, 288 meses 2000–2023, r = 0,71 y Spearman 0,76 contra NASA POWER; 3) atribución ENSO mensual con resultado significativo +17,3 mm/mes. La plantilla vacía ya no existe. Ver /#enso.",
+  "cuál es el desafío de la categoría":
+    "El desafío 2026 «Be an Earth System Trend Detective!» pide encontrar variables de NASA, visualizar cómo cambian en el tiempo y determinar qué cambió, dónde, cuánto y si el cambio es significativo. La sección «Cómo cumple el desafío» enlaza cada respuesta con su evidencia en el sitio.",
+  "dónde está el panel de control":
+    "En /panel está el panel V4: una simulación interactiva con compuerta, seguidor solar, seis lecturas, indicadores de TDS/turbidez y el error -999.0. Se conserva también el HTML V3 del equipo. Es una réplica reproducible sin hardware conectado; no publicamos telemetría en vivo ni un «gemelo digital» operativo.",
+  "el dron ya mide datos":
+    "No. El AG-01 es un concepto de diseño y un visor 3D de una aplicación futura: no está construido, no vuela, no tiene sensores instalados y no aporta datos a los 42 resultados. Lo mismo aplica a la red de monitoreo: hoy hay una maqueta de laboratorio y un panel ilustrativo.",
   "qué datos de la nasa usaron":
     "El análisis conectado usa series NASA POWER de precipitación, temperatura media y máxima, viento, humedad de la zona radicular y radiación solar, archivadas entre 2000 y 2025 para siete puntos. MODIS NDVI y GPM IMERG aparecen como futuras integraciones y aún no forman parte de los resultados.",
   "qué es el ndvi":
     "El NDVI (Índice de Vegetación de Diferencia Normalizada) se calcula con reflectancias roja e infrarroja cercana y se usa como indicador de verdor. Su interpretación depende del sensor, cobertura, estación y procesamiento. En este proyecto la serie MODIS aún no está integrada.",
+  "hay atribución a enso":
+    "Sí. Publicamos ONI de NOAA CPC desde 1998, 504 pruebas parciales contra Niño 3.4, composites por fase, escenarios 3–6 meses y una estación real de 288 meses. El resultado principal: +17,3 mm/mes en El Niño frente a La Niña (IC95 +3,6 a +30,6; p = 0,028). Ver /#enso.",
+  "hay predicciones a 3 o 6 meses":
+    "Hay escenarios condicionales históricos de 3 y 6 meses con medianas y bandas P10–P90 por fase ENSO. No son pronóstico operativo: no anticipamos la fase futura y el evento ASO 2026 se reporta como observación preliminar, no como proyección. Ver /#enso.",
+  "hay gemelo digital":
+    "La solución publicada es una réplica reproducible: datos abiertos, scripts, modelo, panel V4 y visor 2D con estado explícito de simulación. No hay sensores conectados ni telemetría en vivo, por eso no lo llamamos gemelo digital operativo.",
+  "cuánto avanzó el análisis de cuencas":
+    "Está casi completo en el equipo local: QGIS, DEM, curvas, tablas EVA, GeoJSON, visores 2D y 3D, seis tablas de dique y más de 20 GB. El visor del repo ya usa la forma real digitalizada de la captura (809,58 hm³ / 6,51 km² a cota 1167 m), sin tiles externos; las coordenadas exactas requieren el data.js del GPKG/XLSX. Ver /#cuencas.",
   "qué tecnología usan":
-    "La web está construida con React/TypeScript y publica series procesadas con scripts Python en GitHub Pages. El proyecto también plantea explorar herramientas geoespaciales y sensores; esas propuestas no significan que ya exista una red IoT en producción.",
+    "La web usa React/TypeScript y scripts Python reproducibles. El paquete cuencas de más de 20 GB se inventarió y el visor 2D quedó integrado sin CDN en /simulacion-2d/. La réplica incluye datos, modelo, panel y visor; la red IoT de campo sigue siendo un piloto futuro, no telemetría activa.",
 };
 
-function findAnswer(input: string): string | null {
+export function findAnswer(input: string): string | null {
   const normalized = input.toLowerCase().trim();
   for (const [key, answer] of Object.entries(FAQ)) {
     if (normalized.includes(key) || key.includes(normalized)) {
@@ -44,7 +66,7 @@ export default function ChatWidget() {
   >([
     {
       role: "bot",
-      text: "¡Hola! Soy el asistente del proyecto El Fin de los Niños. Hacé una pregunta sobre el proyecto, el fenómeno ENSO, las micro-represas o los datos de NASA.",
+      text: "¡Hola! Soy el asistente del proyecto El Fin de los Niños. Preguntame por las tendencias, el mapa comparativo, el respaldo estadístico, la electrónica o el informe 2026.",
     },
   ]);
   const [input, setInput] = useState("");
@@ -105,7 +127,7 @@ export default function ChatWidget() {
                   Asistente del Proyecto
                 </p>
                 <p className="text-white/60 text-[10px]">
-                  Consultas sobre el proyecto ENSO
+                  Respuestas basadas en los datos publicados · edición 2026
                 </p>
               </div>
             </div>

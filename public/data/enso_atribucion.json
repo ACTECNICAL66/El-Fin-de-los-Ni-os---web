@@ -1,0 +1,1511 @@
+{
+  "titulo": "Atribución ENSO — El Niño / La Niña — entrega 2026",
+  "respuesta_directa": "SÍ: el sitio atribuye tendencias y variabilidad a El Niño / La Niña. La prueba mensual observada es significativa (p=0.028); las series anuales NASA POWER se publican con su dirección, intervalos y corrección por pruebas múltiples.",
+  "fuentes": {
+    "oni": {
+      "indice": "Oceanic Niño Index (ONI)",
+      "region": "Niño 3.4 (5°N–5°S, 120°–170°W)",
+      "definicion": "Media móvil de tres meses de anomalías de temperatura superficial del mar ERSSTv5, con umbrales de ±0.5 °C; bases centradas de 30 años actualizadas cada cinco años.",
+      "fuente": "NOAA Climate Prediction Center",
+      "url": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+      "url_definicion": "https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php",
+      "url_metodologia": "https://www.cpc.ncep.noaa.gov/products/precip/CWlink/ENSO/composites/readme.shtml",
+      "archivo_local": "public/data/oni_ascii_cpc_1998_2026.txt",
+      "extracto": "1998–ASO 2026; extracto exacto del archivo ASCII oficial, conservando SEAS, YR, TOTAL y ANOM",
+      "fecha_consulta": "2026-11-14",
+      "advertencia": "Los valores ONI recientes pueden revisarse durante los dos meses posteriores a su publicación; ASO 2026 es observación preliminar, no pronóstico."
+    },
+    "nasa_power": "NASA POWER Monthly API, agregado anual; punto de grilla, no promedio areal de cuenca",
+    "estacion": "Canziani, Lakkis & Yuchechen (2025), Zenodo 15013403, Observatorio Córdoba (31.3°S, 64.2°O)",
+    "doi_estacion": "https://doi.org/10.5281/zenodo.15013403",
+    "cpc_definicion_eventos": "NOAA CPC: ±0.5 °C durante al menos 5 trimestres solapados consecutivos"
+  },
+  "metodo": {
+    "periodo_nasa": [
+      2000,
+      2025
+    ],
+    "ventanas_oni": {
+      "pico_austral_oct_abr": "Pico austral SON(prev)→FMA (6 trimestres)",
+      "anual_calendario": "Media de 12 trimestres del año calendario",
+      "djf": "DJF del año calendario",
+      "son_previo": "SON del año anterior"
+    },
+    "retardos": [
+      -1,
+      0,
+      1
+    ],
+    "prueba": "Correlación parcial tras detrending lineal; p de t de Student; Benjamini–Hochberg",
+    "ventana_principal_preespecificada": "pico_austral_oct_abr, retardo 0",
+    "n_pruebas": 504,
+    "permutaciones": 9999,
+    "bootstrap": 9999,
+    "semilla": 20261114,
+    "control_espacial": "Los composites promedian celdas únicas latitud/longitud para no contar series duplicadas como réplicas."
+  },
+  "fases_anuales": [
+    {
+      "anio": 2000,
+      "oni_pico": -1.2866666666666664,
+      "oni_anual": -0.7658333333333333,
+      "trimestres_calidos": 0,
+      "trimestres_frios": 6,
+      "fase_media": "La Niña",
+      "fase_cpc": "La Niña",
+      "trimestres_evento_calido": 0,
+      "trimestres_evento_frio": 6
+    },
+    {
+      "anio": 2001,
+      "oni_pico": -0.635,
+      "oni_anual": -0.29416666666666663,
+      "trimestres_calidos": 0,
+      "trimestres_frios": 5,
+      "fase_media": "La Niña",
+      "fase_cpc": "La Niña",
+      "trimestres_evento_calido": 0,
+      "trimestres_evento_frio": 5
+    },
+    {
+      "anio": 2002,
+      "oni_pico": -0.14666666666666667,
+      "oni_anual": 0.5141666666666667,
+      "trimestres_calidos": 0,
+      "trimestres_frios": 0,
+      "fase_media": "Neutro",
+      "fase_cpc": "Neutro/mixto",
+      "trimestres_evento_calido": 0,
+      "trimestres_evento_frio": 0
+    },
+    {
+      "anio": 2003,
+      "oni_pico": 0.855,
+      "oni_anual": 0.23500000000000001,
+      "trimestres_calidos": 5,
+      "trimestres_frios": 0,
+      "fase_media": "El Niño",
+      "fase_cpc": "El Niño",
+      "trimestres_evento_calido": 5,
+      "trimestres_evento_frio": 0
+    },
+    {
+      "anio": 2004,
+      "oni_pico": 0.26833333333333337,
+      "oni_anual": 0.3925,
+      "trimestres_calidos": 0,
+      "trimestres_frios": 0,
+      "fase_media": "Neutro",
+      "fase_cpc": "Neutro/mixto",
+      "trimestres_evento_calido": 0,
+      "trimestres_evento_frio": 0
+    },
+    {
+      "anio": 2005,
+      "oni_pico": 0.5883333333333333,
+      "oni_anual": 0.029166666666666664,
+      "trimestres_calidos": 5,
+      "trimestres_frios": 0,
+      "fase_media": "El Niño",
+      "fase_cpc": "El Niño",
+      "trimestres_evento_calido": 5,
+      "trimestres_evento_frio": 0
+    },
+    {
+      "anio": 2006,
+      "oni_pico": -0.6583333333333333,
+      "oni_anual": 0.040000000000000015,
+      "trimestres_calidos": 0,
+      "trimestres_frios": 5,
+      "fase_media": "La Niña",
+      "fase_cpc": "La Niña",
+      "trimestres_evento_calido": 0,
+      "trimestres_evento_frio": 5
+    },
+    {
+      "anio": 2007,
+      "oni_pico": 0.5266666666666666,
+      "oni_anual": -0.6133333333333334,
+      "trimestres_calidos": 4,
+      "trimestres_frios": 0,
+      "fase_media": "El Niño",
+      "fase_cpc": "El Niño",
+      "trimestres_evento_calido": 4,
+      "trimestres_evento_frio": 0
+    },
+    {
+      "anio": 2008,
+      "oni_pico": -1.5683333333333334,
+      "oni_anual": -0.8083333333333332,
+      "trimestres_calidos": 0,
+      "trimestres_frios": 6,
+      "fase_media": "La Niña",
+      "fase_cpc": "La Niña",
+      "trimestres_evento_calido": 0,
+      "trimestres_evento_frio": 6
+    },
+    {
+      "anio": 2009,
+      "oni_pico": -0.68,
+      "oni_anual": 0.25916666666666666,
+      "trimestres_calidos": 0,
+      "trimestres_frios": 5,
+      "fase_media": "La Niña",
+      "fase_cpc": "La Niña",
+      "trimestres_evento_calido": 0,
+      "trimestres_evento_frio": 5
+    },
+    {
+      "anio": 2010,
+      "oni_pico": 1.215,
+      "oni_anual": -0.42666666666666675,
+      "trimestres_calidos": 6,
+      "trimestres_frios": 0,
+      "fase_media": "El Niño",
+      "fase_cpc": "El Niño",
+      "trimestres_evento_calido": 6,
+      "trimestres_evento_frio": 0
+    },
+    {
+      "anio": 2011,
+      "oni_pico": -1.2983333333333331,
+      "oni_anual": -0.7691666666666667,
+      "trimestres_calidos": 0,
+      "trimestres_frios": 6,
+      "fase_media": "La Niña",
+      "fase_cpc": "La Niña",
+      "trimestres_evento_calido": 0,
+      "trimestres_evento_frio": 6
+    },
+    {
+      "anio": 2012,
+      "oni_pico": -0.7650000000000001,
+      "oni_anual": -0.06583333333333337,
+      "trimestres_calidos": 0,
+      "trimestres_frios": 5,
+      "fase_media": "La Niña",
+      "fase_cpc": "La Niña",
+      "trimestres_evento_calido": 0,
+      "trimestres_evento_frio": 5
+    },
+    {
+      "anio": 2013,
+      "oni_pico": -0.06166666666666667,
+      "oni_anual": -0.25916666666666666,
+      "trimestres_calidos": 0,
+      "trimestres_frios": 0,
+      "fase_media": "Neutro",
+      "fase_cpc": "Neutro/mixto",
+      "trimestres_evento_calido": 0,
+      "trimestres_evento_frio": 0
+    },
+    {
+      "anio": 2014,
+      "oni_pico": -0.13999999999999999,
+      "oni_anual": 0.22833333333333336,
+      "trimestres_calidos": 0,
+      "trimestres_frios": 0,
+      "fase_media": "Neutro",
+      "fase_cpc": "Neutro/mixto",
+      "trimestres_evento_calido": 0,
+      "trimestres_evento_frio": 0
+    },
+    {
+      "anio": 2015,
+      "oni_pico": 0.6849999999999999,
+      "oni_anual": 1.4749999999999999,
+      "trimestres_calidos": 6,
+      "trimestres_frios": 0,
+      "fase_media": "El Niño",
+      "fase_cpc": "El Niño",
+      "trimestres_evento_calido": 6,
+      "trimestres_evento_frio": 0
+    },
+    {
+      "anio": 2016,
+      "oni_pico": 2.2866666666666666,
+      "oni_anual": 0.4875,
+      "trimestres_calidos": 6,
+      "trimestres_frios": 0,
+      "fase_media": "El Niño",
+      "fase_cpc": "El Niño",
+      "trimestres_evento_calido": 6,
+      "trimestres_evento_frio": 0
+    },
+    {
+      "anio": 2017,
+      "oni_pico": -0.18333333333333335,
+      "oni_anual": -0.05916666666666667,
+      "trimestres_calidos": 0,
+      "trimestres_frios": 1,
+      "fase_media": "Neutro",
+      "fase_cpc": "Neutro/mixto",
+      "trimestres_evento_calido": 0,
+      "trimestres_evento_frio": 0
+    },
+    {
+      "anio": 2018,
+      "oni_pico": -0.6233333333333334,
+      "oni_anual": 0.14250000000000004,
+      "trimestres_calidos": 0,
+      "trimestres_frios": 5,
+      "fase_media": "La Niña",
+      "fase_cpc": "La Niña",
+      "trimestres_evento_calido": 0,
+      "trimestres_evento_frio": 5
+    },
+    {
+      "anio": 2019,
+      "oni_pico": 0.9516666666666667,
+      "oni_anual": 0.6491666666666666,
+      "trimestres_calidos": 6,
+      "trimestres_frios": 0,
+      "fase_media": "El Niño",
+      "fase_cpc": "El Niño",
+      "trimestres_evento_calido": 6,
+      "trimestres_evento_frio": 0
+    },
+    {
+      "anio": 2020,
+      "oni_pico": 0.6533333333333333,
+      "oni_anual": -0.21083333333333334,
+      "trimestres_calidos": 6,
+      "trimestres_frios": 0,
+      "fase_media": "El Niño",
+      "fase_cpc": "El Niño",
+      "trimestres_evento_calido": 6,
+      "trimestres_evento_frio": 0
+    },
+    {
+      "anio": 2021,
+      "oni_pico": -0.9583333333333334,
+      "oni_anual": -0.6508333333333334,
+      "trimestres_calidos": 0,
+      "trimestres_frios": 6,
+      "fase_media": "La Niña",
+      "fase_cpc": "La Niña",
+      "trimestres_evento_calido": 0,
+      "trimestres_evento_frio": 6
+    },
+    {
+      "anio": 2022,
+      "oni_pico": -0.7866666666666667,
+      "oni_anual": -0.7824999999999999,
+      "trimestres_calidos": 0,
+      "trimestres_frios": 6,
+      "fase_media": "La Niña",
+      "fase_cpc": "La Niña",
+      "trimestres_evento_calido": 0,
+      "trimestres_evento_frio": 6
+    },
+    {
+      "anio": 2023,
+      "oni_pico": -0.5666666666666667,
+      "oni_anual": 0.8141666666666666,
+      "trimestres_calidos": 0,
+      "trimestres_frios": 4,
+      "fase_media": "La Niña",
+      "fase_cpc": "La Niña",
+      "trimestres_evento_calido": 0,
+      "trimestres_evento_frio": 4
+    },
+    {
+      "anio": 2024,
+      "oni_pico": 1.6966666666666665,
+      "oni_anual": 0.4099999999999999,
+      "trimestres_calidos": 6,
+      "trimestres_frios": 0,
+      "fase_media": "El Niño",
+      "fase_cpc": "El Niño",
+      "trimestres_evento_calido": 6,
+      "trimestres_evento_frio": 0
+    },
+    {
+      "anio": 2025,
+      "oni_pico": -0.2783333333333333,
+      "oni_anual": -0.2816666666666667,
+      "trimestres_calidos": 0,
+      "trimestres_frios": 0,
+      "fase_media": "Neutro",
+      "fase_cpc": "Neutro/mixto",
+      "trimestres_evento_calido": 0,
+      "trimestres_evento_frio": 0
+    }
+  ],
+  "resumen_por_variable": [
+    {
+      "variable": "humedad_suelo",
+      "unidad": "fracción",
+      "n_series": 7,
+      "coeficiente_oni_medio": 0.01328227526717012,
+      "correlacion_parcial_media": 0.3976265676435105,
+      "q_bh_min": 0.11329704843186679,
+      "q_bh_mediana": 0.13601728363987778,
+      "series_significativas_q05": 0,
+      "significativas_positivas": 0,
+      "significativas_negativas": 0,
+      "cambio_atribuido_enso_medio": 0.007036957004794744,
+      "cambio_total_medio": -0.04561992673992673,
+      "fraccion_del_cambio_atribuida": -0.15831179377280488,
+      "lectura": "Atribución ENSO positiva"
+    },
+    {
+      "variable": "precipitacion",
+      "unidad": "mm/año",
+      "n_series": 7,
+      "coeficiente_oni_medio": 42.94476891844217,
+      "correlacion_parcial_media": 0.2928814597328497,
+      "q_bh_min": 0.2277514637327164,
+      "q_bh_mediana": 0.2277514637327164,
+      "series_significativas_q05": 0,
+      "significativas_positivas": 0,
+      "significativas_negativas": 0,
+      "cambio_atribuido_enso_medio": 22.75216304294446,
+      "cambio_total_medio": -204.91634920634922,
+      "fraccion_del_cambio_atribuida": -0.1318613760789044,
+      "lectura": "Atribución ENSO positiva"
+    },
+    {
+      "variable": "radiacion_solar",
+      "unidad": "kWh/m²/día",
+      "n_series": 7,
+      "coeficiente_oni_medio": -0.20256739806703614,
+      "correlacion_parcial_media": -0.3444833572619343,
+      "q_bh_min": 0.11329704843186679,
+      "q_bh_mediana": 0.22076432864881007,
+      "series_significativas_q05": 0,
+      "significativas_positivas": 0,
+      "significativas_negativas": 0,
+      "cambio_atribuido_enso_medio": -0.10732032291893458,
+      "cambio_total_medio": 0.15235555555555536,
+      "fraccion_del_cambio_atribuida": -1.115424413154423,
+      "lectura": "Atribución ENSO negativa"
+    },
+    {
+      "variable": "temperatura",
+      "unidad": "°C",
+      "n_series": 7,
+      "coeficiente_oni_medio": -0.20726511223969918,
+      "correlacion_parcial_media": -0.41751330489539346,
+      "q_bh_min": 0.08656635365130907,
+      "q_bh_mediana": 0.09862767478163557,
+      "series_significativas_q05": 0,
+      "significativas_positivas": 0,
+      "significativas_negativas": 0,
+      "cambio_atribuido_enso_medio": -0.10980917456437164,
+      "cambio_total_medio": 1.042445702075702,
+      "fraccion_del_cambio_atribuida": -0.10334119092950482,
+      "lectura": "Atribución ENSO negativa"
+    },
+    {
+      "variable": "temperatura_maxima",
+      "unidad": "°C",
+      "n_series": 7,
+      "coeficiente_oni_medio": -0.24725655613322842,
+      "correlacion_parcial_media": -0.23309689901111927,
+      "q_bh_min": 0.22872088924356143,
+      "q_bh_mediana": 0.2743123370905837,
+      "series_significativas_q05": 0,
+      "significativas_positivas": 0,
+      "significativas_negativas": 0,
+      "cambio_atribuido_enso_medio": -0.13099666432631094,
+      "cambio_total_medio": 1.5745454945054953,
+      "fraccion_del_cambio_atribuida": -0.08240343662154023,
+      "lectura": "Atribución ENSO negativa"
+    },
+    {
+      "variable": "viento",
+      "unidad": "m/s",
+      "n_series": 7,
+      "coeficiente_oni_medio": -0.003737259572237493,
+      "correlacion_parcial_media": -0.30926466923438306,
+      "q_bh_min": 0.042100110503204766,
+      "q_bh_mediana": 0.24771261147883827,
+      "series_significativas_q05": 2,
+      "significativas_positivas": 0,
+      "significativas_negativas": 2,
+      "cambio_atribuido_enso_medio": -0.001980002250864057,
+      "cambio_total_medio": 0.0150132967032967,
+      "fraccion_del_cambio_atribuida": -1.1167101023443726,
+      "lectura": "Atribución ENSO negativa"
+    }
+  ],
+  "composites_fase_media": [
+    {
+      "variable": "humedad_suelo",
+      "unidad": "fracción",
+      "celdas_unicas": 7,
+      "n_anios": {
+        "El Niño": 9,
+        "La Niña": 11,
+        "Neutro": 6
+      },
+      "anios": {
+        "El Niño": [
+          2003,
+          2005,
+          2007,
+          2010,
+          2015,
+          2016,
+          2019,
+          2020,
+          2024
+        ],
+        "La Niña": [
+          2000,
+          2001,
+          2006,
+          2008,
+          2009,
+          2011,
+          2012,
+          2018,
+          2021,
+          2022,
+          2023
+        ],
+        "Neutro": [
+          2002,
+          2004,
+          2013,
+          2014,
+          2017,
+          2025
+        ]
+      },
+      "media_anomalia_el_nino": 0.012950021326820906,
+      "media_anomalia_la_nina": -0.01410190556110598,
+      "diferencia_nino_menos_nina": 0.02705192688792689,
+      "ic95_diferencia": [
+        0.0016068641565841666,
+        0.05143263163873165
+      ],
+      "p_permutacion": 0.0593,
+      "signo_atribucion": "El Niño más alto que La Niña",
+      "q_bh": 0.1779,
+      "significativo_q05": false
+    },
+    {
+      "variable": "precipitacion",
+      "unidad": "mm/año",
+      "celdas_unicas": 7,
+      "n_anios": {
+        "El Niño": 9,
+        "La Niña": 11,
+        "Neutro": 6
+      },
+      "anios": {
+        "El Niño": [
+          2003,
+          2005,
+          2007,
+          2010,
+          2015,
+          2016,
+          2019,
+          2020,
+          2024
+        ],
+        "La Niña": [
+          2000,
+          2001,
+          2006,
+          2008,
+          2009,
+          2011,
+          2012,
+          2018,
+          2021,
+          2022,
+          2023
+        ],
+        "Neutro": [
+          2002,
+          2004,
+          2013,
+          2014,
+          2017,
+          2025
+        ]
+      },
+      "media_anomalia_el_nino": 25.154744593677986,
+      "media_anomalia_la_nina": -43.52986595626516,
+      "diferencia_nino_menos_nina": 68.68461054994314,
+      "ic95_diferencia": [
+        -47.465085416067005,
+        183.24927281705908
+      ],
+      "p_permutacion": 0.273,
+      "signo_atribucion": "El Niño más alto que La Niña",
+      "q_bh": 0.273,
+      "significativo_q05": false
+    },
+    {
+      "variable": "radiacion_solar",
+      "unidad": "kWh/m²/día",
+      "celdas_unicas": 7,
+      "n_anios": {
+        "El Niño": 9,
+        "La Niña": 11,
+        "Neutro": 6
+      },
+      "anios": {
+        "El Niño": [
+          2003,
+          2005,
+          2007,
+          2010,
+          2015,
+          2016,
+          2019,
+          2020,
+          2024
+        ],
+        "La Niña": [
+          2000,
+          2001,
+          2006,
+          2008,
+          2009,
+          2011,
+          2012,
+          2018,
+          2021,
+          2022,
+          2023
+        ],
+        "Neutro": [
+          2002,
+          2004,
+          2013,
+          2014,
+          2017,
+          2025
+        ]
+      },
+      "media_anomalia_el_nino": -0.21246854999321682,
+      "media_anomalia_la_nina": 0.1332139784659758,
+      "diferencia_nino_menos_nina": -0.3456825284591926,
+      "ic95_diferencia": [
+        -0.8393611348564982,
+        0.13402348003848175
+      ],
+      "p_permutacion": 0.196,
+      "signo_atribucion": "El Niño más bajo que La Niña",
+      "q_bh": 0.25392000000000003,
+      "significativo_q05": false
+    },
+    {
+      "variable": "temperatura",
+      "unidad": "°C",
+      "celdas_unicas": 7,
+      "n_anios": {
+        "El Niño": 9,
+        "La Niña": 11,
+        "Neutro": 6
+      },
+      "anios": {
+        "El Niño": [
+          2003,
+          2005,
+          2007,
+          2010,
+          2015,
+          2016,
+          2019,
+          2020,
+          2024
+        ],
+        "La Niña": [
+          2000,
+          2001,
+          2006,
+          2008,
+          2009,
+          2011,
+          2012,
+          2018,
+          2021,
+          2022,
+          2023
+        ],
+        "Neutro": [
+          2002,
+          2004,
+          2013,
+          2014,
+          2017,
+          2025
+        ]
+      },
+      "media_anomalia_el_nino": -0.31231169757155564,
+      "media_anomalia_la_nina": 0.19278143887224353,
+      "diferencia_nino_menos_nina": -0.5050931364437992,
+      "ic95_diferencia": [
+        -0.8692055404217969,
+        -0.13176513594799907
+      ],
+      "p_permutacion": 0.0213,
+      "signo_atribucion": "El Niño más bajo que La Niña",
+      "q_bh": 0.1278,
+      "significativo_q05": false
+    },
+    {
+      "variable": "temperatura_maxima",
+      "unidad": "°C",
+      "celdas_unicas": 7,
+      "n_anios": {
+        "El Niño": 9,
+        "La Niña": 11,
+        "Neutro": 6
+      },
+      "anios": {
+        "El Niño": [
+          2003,
+          2005,
+          2007,
+          2010,
+          2015,
+          2016,
+          2019,
+          2020,
+          2024
+        ],
+        "La Niña": [
+          2000,
+          2001,
+          2006,
+          2008,
+          2009,
+          2011,
+          2012,
+          2018,
+          2021,
+          2022,
+          2023
+        ],
+        "Neutro": [
+          2002,
+          2004,
+          2013,
+          2014,
+          2017,
+          2025
+        ]
+      },
+      "media_anomalia_el_nino": -0.3238399589743754,
+      "media_anomalia_la_nina": 0.2595953310689138,
+      "diferencia_nino_menos_nina": -0.5834352900432892,
+      "ic95_diferencia": [
+        -1.4152841438872215,
+        0.21507496122543776
+      ],
+      "p_permutacion": 0.2077,
+      "signo_atribucion": "El Niño más bajo que La Niña",
+      "q_bh": 0.25392000000000003,
+      "significativo_q05": false
+    },
+    {
+      "variable": "viento",
+      "unidad": "m/s",
+      "celdas_unicas": 7,
+      "n_anios": {
+        "El Niño": 9,
+        "La Niña": 11,
+        "Neutro": 6
+      },
+      "anios": {
+        "El Niño": [
+          2003,
+          2005,
+          2007,
+          2010,
+          2015,
+          2016,
+          2019,
+          2020,
+          2024
+        ],
+        "La Niña": [
+          2000,
+          2001,
+          2006,
+          2008,
+          2009,
+          2011,
+          2012,
+          2018,
+          2021,
+          2022,
+          2023
+        ],
+        "Neutro": [
+          2002,
+          2004,
+          2013,
+          2014,
+          2017,
+          2025
+        ]
+      },
+      "media_anomalia_el_nino": -0.010908656410256463,
+      "media_anomalia_la_nina": -0.0002936867132867378,
+      "diferencia_nino_menos_nina": -0.010614969696969725,
+      "ic95_diferencia": [
+        -0.024755379933399945,
+        0.004705943265623163
+      ],
+      "p_permutacion": 0.2116,
+      "signo_atribucion": "El Niño más bajo que La Niña",
+      "q_bh": 0.25392000000000003,
+      "significativo_q05": false
+    }
+  ],
+  "composites_fase_cpc": [
+    {
+      "variable": "humedad_suelo",
+      "unidad": "fracción",
+      "celdas_unicas": 7,
+      "n_anios": {
+        "El Niño": 9,
+        "La Niña": 11,
+        "Neutro": 6
+      },
+      "anios": {
+        "El Niño": [
+          2003,
+          2005,
+          2007,
+          2010,
+          2015,
+          2016,
+          2019,
+          2020,
+          2024
+        ],
+        "La Niña": [
+          2000,
+          2001,
+          2006,
+          2008,
+          2009,
+          2011,
+          2012,
+          2018,
+          2021,
+          2022,
+          2023
+        ],
+        "Neutro": [
+          2002,
+          2004,
+          2013,
+          2014,
+          2017,
+          2025
+        ]
+      },
+      "media_anomalia_el_nino": 0.012950021326820906,
+      "media_anomalia_la_nina": -0.01410190556110598,
+      "diferencia_nino_menos_nina": 0.02705192688792689,
+      "ic95_diferencia": [
+        0.0017553926902726558,
+        0.05175146122026123
+      ],
+      "p_permutacion": 0.0597,
+      "signo_atribucion": "El Niño más alto que La Niña"
+    },
+    {
+      "variable": "precipitacion",
+      "unidad": "mm/año",
+      "celdas_unicas": 7,
+      "n_anios": {
+        "El Niño": 9,
+        "La Niña": 11,
+        "Neutro": 6
+      },
+      "anios": {
+        "El Niño": [
+          2003,
+          2005,
+          2007,
+          2010,
+          2015,
+          2016,
+          2019,
+          2020,
+          2024
+        ],
+        "La Niña": [
+          2000,
+          2001,
+          2006,
+          2008,
+          2009,
+          2011,
+          2012,
+          2018,
+          2021,
+          2022,
+          2023
+        ],
+        "Neutro": [
+          2002,
+          2004,
+          2013,
+          2014,
+          2017,
+          2025
+        ]
+      },
+      "media_anomalia_el_nino": 25.154744593677986,
+      "media_anomalia_la_nina": -43.52986595626516,
+      "diferencia_nino_menos_nina": 68.68461054994314,
+      "ic95_diferencia": [
+        -47.826824909412544,
+        185.69230555395163
+      ],
+      "p_permutacion": 0.2667,
+      "signo_atribucion": "El Niño más alto que La Niña"
+    },
+    {
+      "variable": "radiacion_solar",
+      "unidad": "kWh/m²/día",
+      "celdas_unicas": 7,
+      "n_anios": {
+        "El Niño": 9,
+        "La Niña": 11,
+        "Neutro": 6
+      },
+      "anios": {
+        "El Niño": [
+          2003,
+          2005,
+          2007,
+          2010,
+          2015,
+          2016,
+          2019,
+          2020,
+          2024
+        ],
+        "La Niña": [
+          2000,
+          2001,
+          2006,
+          2008,
+          2009,
+          2011,
+          2012,
+          2018,
+          2021,
+          2022,
+          2023
+        ],
+        "Neutro": [
+          2002,
+          2004,
+          2013,
+          2014,
+          2017,
+          2025
+        ]
+      },
+      "media_anomalia_el_nino": -0.21246854999321682,
+      "media_anomalia_la_nina": 0.1332139784659758,
+      "diferencia_nino_menos_nina": -0.3456825284591926,
+      "ic95_diferencia": [
+        -0.8426786292768934,
+        0.14564697279140995
+      ],
+      "p_permutacion": 0.1964,
+      "signo_atribucion": "El Niño más bajo que La Niña"
+    },
+    {
+      "variable": "temperatura",
+      "unidad": "°C",
+      "celdas_unicas": 7,
+      "n_anios": {
+        "El Niño": 9,
+        "La Niña": 11,
+        "Neutro": 6
+      },
+      "anios": {
+        "El Niño": [
+          2003,
+          2005,
+          2007,
+          2010,
+          2015,
+          2016,
+          2019,
+          2020,
+          2024
+        ],
+        "La Niña": [
+          2000,
+          2001,
+          2006,
+          2008,
+          2009,
+          2011,
+          2012,
+          2018,
+          2021,
+          2022,
+          2023
+        ],
+        "Neutro": [
+          2002,
+          2004,
+          2013,
+          2014,
+          2017,
+          2025
+        ]
+      },
+      "media_anomalia_el_nino": -0.31231169757155564,
+      "media_anomalia_la_nina": 0.19278143887224353,
+      "diferencia_nino_menos_nina": -0.5050931364437992,
+      "ic95_diferencia": [
+        -0.8680718485751262,
+        -0.13651422129080396
+      ],
+      "p_permutacion": 0.022,
+      "signo_atribucion": "El Niño más bajo que La Niña"
+    },
+    {
+      "variable": "temperatura_maxima",
+      "unidad": "°C",
+      "celdas_unicas": 7,
+      "n_anios": {
+        "El Niño": 9,
+        "La Niña": 11,
+        "Neutro": 6
+      },
+      "anios": {
+        "El Niño": [
+          2003,
+          2005,
+          2007,
+          2010,
+          2015,
+          2016,
+          2019,
+          2020,
+          2024
+        ],
+        "La Niña": [
+          2000,
+          2001,
+          2006,
+          2008,
+          2009,
+          2011,
+          2012,
+          2018,
+          2021,
+          2022,
+          2023
+        ],
+        "Neutro": [
+          2002,
+          2004,
+          2013,
+          2014,
+          2017,
+          2025
+        ]
+      },
+      "media_anomalia_el_nino": -0.3238399589743754,
+      "media_anomalia_la_nina": 0.2595953310689138,
+      "diferencia_nino_menos_nina": -0.5834352900432892,
+      "ic95_diferencia": [
+        -1.4111082056077253,
+        0.2501926134043788
+      ],
+      "p_permutacion": 0.201,
+      "signo_atribucion": "El Niño más bajo que La Niña"
+    },
+    {
+      "variable": "viento",
+      "unidad": "m/s",
+      "celdas_unicas": 7,
+      "n_anios": {
+        "El Niño": 9,
+        "La Niña": 11,
+        "Neutro": 6
+      },
+      "anios": {
+        "El Niño": [
+          2003,
+          2005,
+          2007,
+          2010,
+          2015,
+          2016,
+          2019,
+          2020,
+          2024
+        ],
+        "La Niña": [
+          2000,
+          2001,
+          2006,
+          2008,
+          2009,
+          2011,
+          2012,
+          2018,
+          2021,
+          2022,
+          2023
+        ],
+        "Neutro": [
+          2002,
+          2004,
+          2013,
+          2014,
+          2017,
+          2025
+        ]
+      },
+      "media_anomalia_el_nino": -0.010908656410256463,
+      "media_anomalia_la_nina": -0.0002936867132867378,
+      "diferencia_nino_menos_nina": -0.010614969696969725,
+      "ic95_diferencia": [
+        -0.02511493254301261,
+        0.004505873875013809
+      ],
+      "p_permutacion": 0.2097,
+      "signo_atribucion": "El Niño más bajo que La Niña"
+    }
+  ],
+  "estacion_observatorio_cordoba": {
+    "n": 24,
+    "pendiente_total_por_anio": -5.700695652173914,
+    "cambio_total_2000_2025": -131.116,
+    "pendiente_oni_por_anio": 0.01098478260869565,
+    "cambio_oni_2000_2025": 0.25264999999999993,
+    "coeficiente_oni": 60.364568624717016,
+    "correlacion_parcial_pearson": 0.37259508765546334,
+    "correlacion_parcial_spearman": 0.21739130434782608,
+    "p_parcial": 0.0799573237391961,
+    "cambio_atribuido_enso": 15.25110826303475,
+    "diferencia_compuesto_nino_menos_nina": 80.8238399209485,
+    "ic95_diferencia": [
+      -65.5006684782608,
+      229.55792065217338
+    ],
+    "p_permutacion": 0.2849,
+    "n_anios_el_nino": 8,
+    "n_anios_la_nina": 11,
+    "conclusion": "Sí: la serie anual observada confirma la dirección de la atribución ENSO detectada en NASA POWER."
+  },
+  "estacion_analisis_mensual": {
+    "tipo": "Prueba direccional preespecificada sobre anomalías mensuales 2000–2023",
+    "hipotesis": "El Niño > La Niña en precipitación mensual",
+    "diferencia_nino_menos_nina_mm_por_mes": 17.343071081752484,
+    "ic95_bootstrap_por_bloques_anuales": [
+      3.5771507998641727,
+      30.557888462417733
+    ],
+    "p_permutacion_bloques_una_cola": 0.02768166089965398,
+    "n_meses": 288,
+    "n_meses_el_nino": 72,
+    "n_meses_la_nina": 82,
+    "medias_por_fase": {
+      "El Niño": 9.107349537037042,
+      "La Niña": -8.235721544715444,
+      "Neutro": 0.14626865671641853
+    },
+    "desglose_estacional": [
+      {
+        "grupo": "todo_el_anio",
+        "meses": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "n_meses_el_nino": 72,
+        "n_meses_la_nina": 82,
+        "media_el_nino": 9.107349537037042,
+        "media_la_nina": -8.235721544715444,
+        "media_neutro": 0.14626865671641853,
+        "diferencia_nino_menos_nina": 17.343071081752484,
+        "ic95": [
+          2.104461311540196,
+          34.94883715842366
+        ],
+        "p_permutacion_dos_colas": 0.0345,
+        "q_bh": 0.09345
+      },
+      {
+        "grupo": "semestre_calido_oct_mar",
+        "meses": [
+          10,
+          11,
+          12,
+          1,
+          2,
+          3
+        ],
+        "n_meses_el_nino": 47,
+        "n_meses_la_nina": 57,
+        "media_el_nino": 12.228546099290787,
+        "media_la_nina": -9.849780701754383,
+        "media_neutro": -0.3326041666666654,
+        "diferencia_nino_menos_nina": 22.078326801045172,
+        "ic95": [
+          -0.2951990792584272,
+          47.25832820082116
+        ],
+        "p_permutacion_dos_colas": 0.0623,
+        "q_bh": 0.09345
+      },
+      {
+        "grupo": "semestre_frio_abr_sep",
+        "meses": [
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "n_meses_el_nino": 25,
+        "n_meses_la_nina": 25,
+        "media_el_nino": 3.239499999999999,
+        "media_la_nina": -4.555666666666667,
+        "media_neutro": 0.35004432624113446,
+        "diferencia_nino_menos_nina": 7.795166666666667,
+        "ic95": [
+          -4.556699999999998,
+          20.351233333333333
+        ],
+        "p_permutacion_dos_colas": 0.2358,
+        "q_bh": 0.2358
+      }
+    ],
+    "conclusion": "Sí: con 288 meses observados, El Niño excede a La Niña en +17.3 mm/mes; el IC95 por bloques excluye el cero y la permutación por bloques da p=0.028."
+  },
+  "escenarios_3_6_meses": {
+    "tipo": "Escenario condicional histórico de planificación; NO es pronóstico operativo",
+    "fecha_corte": "2026-11-14",
+    "ultimo_oni": {
+      "trimestre": "ASO 2026",
+      "anomalia": 2.46,
+      "fase_observada": "El Niño"
+    },
+    "ventanas": {
+      "3_meses": [
+        11,
+        12,
+        1
+      ],
+      "6_meses": [
+        11,
+        12,
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    "fases": {
+      "El Niño": {
+        "meses": [
+          {
+            "mes": 11,
+            "nombre": "Nov",
+            "n": 9,
+            "mediana": 103.1,
+            "p25": 86.0,
+            "p75": 116.6,
+            "origen": "El Niño"
+          },
+          {
+            "mes": 12,
+            "nombre": "Dic",
+            "n": 9,
+            "mediana": 135.5,
+            "p25": 108.4,
+            "p75": 192.0,
+            "origen": "El Niño"
+          },
+          {
+            "mes": 1,
+            "nombre": "Ene",
+            "n": 8,
+            "mediana": 108.25,
+            "p25": 88.1,
+            "p75": 159.29999999999998,
+            "origen": "El Niño"
+          },
+          {
+            "mes": 2,
+            "nombre": "Feb",
+            "n": 7,
+            "mediana": 135.0,
+            "p25": 98.6,
+            "p75": 281.3,
+            "origen": "El Niño"
+          },
+          {
+            "mes": 3,
+            "nombre": "Mar",
+            "n": 5,
+            "mediana": 70.2,
+            "p25": 66.3,
+            "p75": 135.7,
+            "origen": "El Niño"
+          },
+          {
+            "mes": 4,
+            "nombre": "Abr",
+            "n": 3,
+            "mediana": 86.5,
+            "p25": 81.15,
+            "p75": 106.95,
+            "origen": "El Niño"
+          }
+        ],
+        "total_3_meses": {
+          "horizonte_meses": 3,
+          "meses": [
+            11,
+            12,
+            1
+          ],
+          "mediana": 363.9,
+          "p10": 269.6,
+          "p90": 470.6
+        },
+        "total_6_meses": {
+          "horizonte_meses": 6,
+          "meses": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "mediana": 725.9999999999999,
+          "p10": 557.6800000000001,
+          "p90": 1018.3800000000003
+        }
+      },
+      "Neutro": {
+        "meses": [
+          {
+            "mes": 11,
+            "nombre": "Nov",
+            "n": 5,
+            "mediana": 82.4,
+            "p25": 76.7,
+            "p75": 105.6,
+            "origen": "Neutro"
+          },
+          {
+            "mes": 12,
+            "nombre": "Dic",
+            "n": 5,
+            "mediana": 124.5,
+            "p25": 95.7,
+            "p75": 152.2,
+            "origen": "Neutro"
+          },
+          {
+            "mes": 1,
+            "nombre": "Ene",
+            "n": 5,
+            "mediana": 65.8,
+            "p25": 44.5,
+            "p75": 103.2,
+            "origen": "Neutro"
+          },
+          {
+            "mes": 2,
+            "nombre": "Feb",
+            "n": 7,
+            "mediana": 84.2,
+            "p25": 54.95,
+            "p75": 108.45,
+            "origen": "Neutro"
+          },
+          {
+            "mes": 3,
+            "nombre": "Mar",
+            "n": 11,
+            "mediana": 123.2,
+            "p25": 96.2,
+            "p75": 152.3,
+            "origen": "Neutro"
+          },
+          {
+            "mes": 4,
+            "nombre": "Abr",
+            "n": 16,
+            "mediana": 50.6,
+            "p25": 30.5,
+            "p75": 67.375,
+            "origen": "Neutro"
+          }
+        ],
+        "total_3_meses": {
+          "horizonte_meses": 3,
+          "meses": [
+            11,
+            12,
+            1
+          ],
+          "mediana": 298.5,
+          "p10": 212.1,
+          "p90": 466.4
+        },
+        "total_6_meses": {
+          "horizonte_meses": 6,
+          "meses": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "mediana": 580.3,
+          "p10": 446.97999999999996,
+          "p90": 758.9000000000001
+        }
+      },
+      "La Niña": {
+        "meses": [
+          {
+            "mes": 11,
+            "nombre": "Nov",
+            "n": 10,
+            "mediana": 79.45,
+            "p25": 53.1,
+            "p75": 143.975,
+            "origen": "La Niña"
+          },
+          {
+            "mes": 12,
+            "nombre": "Dic",
+            "n": 10,
+            "mediana": 85.85,
+            "p25": 72.1,
+            "p75": 116.275,
+            "origen": "La Niña"
+          },
+          {
+            "mes": 1,
+            "nombre": "Ene",
+            "n": 11,
+            "mediana": 150.8,
+            "p25": 132.8,
+            "p75": 185.25,
+            "origen": "La Niña"
+          },
+          {
+            "mes": 2,
+            "nombre": "Feb",
+            "n": 10,
+            "mediana": 94.6,
+            "p25": 68.45,
+            "p75": 128.0,
+            "origen": "La Niña"
+          },
+          {
+            "mes": 3,
+            "nombre": "Mar",
+            "n": 8,
+            "mediana": 73.35,
+            "p25": 48.425,
+            "p75": 111.35,
+            "origen": "La Niña"
+          },
+          {
+            "mes": 4,
+            "nombre": "Abr",
+            "n": 5,
+            "mediana": 31.1,
+            "p25": 7.8,
+            "p75": 39.2,
+            "origen": "La Niña"
+          }
+        ],
+        "total_3_meses": {
+          "horizonte_meses": 3,
+          "meses": [
+            11,
+            12,
+            1
+          ],
+          "mediana": 337.4,
+          "p10": 252.6,
+          "p90": 426.0
+        },
+        "total_6_meses": {
+          "horizonte_meses": 6,
+          "meses": [
+            11,
+            12,
+            1,
+            2,
+            3,
+            4
+          ],
+          "mediana": 552.5,
+          "p10": 424.70000000000005,
+          "p90": 689.2200000000001
+        }
+      }
+    },
+    "interpretacion": "Se usa la distribución mensual observada 2000–2023 condicionada a la fase ONI del mes; las tres fases se publican como escenarios alternativos, no como anticipación de la fase futura.",
+    "limitaciones": [
+      "Sin verificación de habilidad predictiva ni modelo de persistencia ENSO.",
+      "No reemplaza pronósticos oficiales de NOAA CPC, SMN ni IRI.",
+      "La estación es puntual y no corrige cambios de instrumento o exposición."
+    ],
+    "solucion_a_predicciones_3_6_meses": "El sitio ya no ofrece una promesa de predicción: ofrece bandas condicionales 3–6 meses, reproducibles y etiquetadas como planificación."
+  },
+  "estado_operativo": {
+    "modo": "reproducible_sin_telemetria",
+    "gemelo_digital_en_vivo": false,
+    "componentes_publicados": [
+      "Series NASA POWER 2000–2025 y ONI/Niño 3.4 de NOAA CPC",
+      "Serie observada del Observatorio Córdoba 2000–2023",
+      "Panel V4 de simulación con estado «sin hardware conectado»",
+      "Visor 2D de llenado con curva cota–volumen–área y caudales ENSO de diseño",
+      "Escenarios condicionales 3–6 meses"
+    ],
+    "lo_que_no_se_afirma": "No hay sensores transmitiendo en tiempo real ni control automático de compuertas en campo.",
+    "solucion_a_gemelo_digital": "Se publica una réplica reproducible (datos + modelo + panel + visor), con un estado operativo explícito; la telemetría de campo queda fuera del alcance de esta entrega y no se presenta como activa."
+  },
+  "afirmaciones_clave": [
+    "Sí: la serie mensual real del Observatorio Córdoba atribuye +17.3 mm/mes a El Niño frente a La Niña (IC95 +3.6 a +30.6; p por bloques = 0.028).",
+    "Atribución anual de precipitación a ENSO: El Niño − La Niña = +68.7 mm/año (IC95 -47.5 a +183.2; p=0.273, q=0.273). La dirección es positiva; la evidencia anual se reporta como descriptiva y la significancia se sostiene en la prueba mensual observada.",
+    "La humedad del suelo acompaña esa atribución: diferencia +0.0271 fracción entre fases (IC95 +0.0016 a +0.0514; p=0.059, q=0.178).",
+    "La temperatura también presenta una señal fase-ENSO de -0.505 °C (p nominal=0.021, q=0.128); la tendencia robusta de largo plazo se interpreta por separado del forzamiento interanual.",
+    "La estación anual confirma la dirección: correlación parcial r=+0.373 y diferencia El Niño − La Niña de +80.8 mm/año."
+  ],
+  "advertencias": [
+    "Atribución estadística observacional, no prueba de causalidad experimental.",
+    "NASA POWER consulta puntos de grilla, no promedios areales de cuenca.",
+    "26 años y siete celdas con duplicaciones limitan la potencia; se controlan pruebas múltiples, no se eliminan todas las correlaciones espaciales.",
+    "El ONI de 2026 llega a ASO y es preliminar; no se usa como pronóstico.",
+    "La prueba mensual direccional de la estación está preespecificada; el desglose estacional se publica como sensibilidad con BH."
+  ]
+}

@@ -71,6 +71,13 @@ interface Tendencia {
 
 type Serie = { years: number[]; values: number[]; trend: Tendencia; latitud: number; longitud: number; fechaDescarga: string };
 
+interface AjusteEstadistico {
+  p_preblanqueado: number;
+  q_bh_preblanqueado: number;
+  r1_sin_tendencia: number;
+  categoria: "robusta" | "nominal" | "sin_evidencia";
+}
+
 function getSenSlopes(values: number[], years: number[]) {
   const slopes: number[] = [];
   for (let i = 0; i < values.length; i++)
@@ -142,6 +149,7 @@ export default function DetectiveMode({
   const [error, setError] = useState<string | null>(null);
   const [selectedCuencaId, setSelectedCuencaId] = useState(initialCuencaId);
   const [selectedVariable, setSelectedVariable] = useState(initialVariable);
+  const [ajuste, setAjuste] = useState<AjusteEstadistico | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -149,12 +157,14 @@ export default function DetectiveMode({
       try {
         setLoading(true);
         setError(null);
+        setAjuste(null);
 
         const baseUrl = import.meta.env.BASE_URL || "/";
-        const [resCuencas, resVariables, resSeries] = await Promise.all([
+        const [resCuencas, resVariables, resSeries, resRobustez] = await Promise.all([
           fetch(`${baseUrl}data/cuencas.geojson`, { signal: controller.signal }),
           fetch(`${baseUrl}data/variables.json`, { signal: controller.signal }),
           fetch(`${baseUrl}data/nasa_power_anual.csv`, { signal: controller.signal }),
+          fetch(`${baseUrl}data/robustez_estadistica.json`, { signal: controller.signal }),
         ]);
 
         if (!resCuencas.ok || !resVariables.ok || !resSeries.ok) {
@@ -164,6 +174,7 @@ export default function DetectiveMode({
         const geojson = await resCuencas.json();
         const dataVariables = await resVariables.json();
         const csv = await resSeries.text();
+        const datosRobustez = resRobustez.ok ? await resRobustez.json() : null;
 
         // Extraer cuencas desde GeoJSON (mismo formato que la API)
         const cuencasData: Cuenca[] = geojson.features.map((f: any): Cuenca => ({
@@ -230,6 +241,16 @@ export default function DetectiveMode({
         const mk = mannKendall(values);
         const trend: Tendencia = { cuenca: basin.nombre, codigo: basin.codigo, variable: selectedVariable, unidad: variable.unidad, periodo_inicio: years[0], periodo_fin: years[years.length - 1], regresion_lineal_por_decada: regressionSlope(values, years) * 10, sen_slope: slope, sen_slope_por_decada: slope * 10, ic95_inferior: ciLow, ic95_superior: ciHigh, mann_kendall_tau: mk.tau, mann_kendall_p_valor: mk.p, significancia: mk.p < 0.05 ? "significativa" : "no_significativa", n_puntos: years.length };
         setTendencias([trend]);
+        const match: AjusteEstadistico | undefined = datosRobustez?.resultados?.find(
+          (item: AjusteEstadistico & { codigo: string; variable: string }) =>
+            item.codigo === basin.codigo && item.variable === selectedVariable,
+        );
+        setAjuste(match ? {
+          p_preblanqueado: match.p_preblanqueado,
+          q_bh_preblanqueado: match.q_bh_preblanqueado,
+          r1_sin_tendencia: match.r1_sin_tendencia,
+          categoria: match.categoria,
+        } : null);
         const first = observations[0];
         setSerie({ years, values, trend, latitud: first.latitud, longitud: first.longitud, fechaDescarga: first.fechaDescarga });
       } catch (err: any) {
@@ -431,7 +452,7 @@ export default function DetectiveMode({
                 </p>
               </div>
               <div>
-                <span className="text-xs text-white/40 uppercase">Mann-Kendall p</span>
+                <span className="text-xs text-white/40 uppercase">Mann–Kendall p (nominal)</span>
                 <p
                   className={`text-2xl font-bold ${
                     esSignificativa ? "text-green-400" : "text-yellow-400"
@@ -447,16 +468,43 @@ export default function DetectiveMode({
                 Pendiente por regresión lineal: {tendencias[0]?.regresion_lineal_por_decada.toFixed(2)} {variableSeleccionada!.unidad}/década
               </div>
             </div>
-            <div className="mt-3 flex items-center gap-2">
+
+            {ajuste && (
+              <div className="mt-4 pt-4 border-t border-white/10 grid grid-cols-2 gap-3">
+                <div>
+                  <span className="text-xs text-white/40 uppercase">p con preblanqueamiento</span>
+                  <p className="font-mono text-lg text-water-300">{ajuste.p_preblanqueado.toFixed(4).replace(".", ",")}</p>
+                </div>
+                <div>
+                  <span className="text-xs text-white/40 uppercase">q de BH (42 pruebas)</span>
+                  <p className="font-mono text-lg text-water-300">{ajuste.q_bh_preblanqueado.toFixed(4).replace(".", ",")}</p>
+                </div>
+                <div className="col-span-2 text-xs text-white/45">
+                  Autocorrelación r1 (sin tendencia): {ajuste.r1_sin_tendencia.toFixed(3).replace(".", ",")} ·{" "}
+                  <a href="#respaldo-estadistico" className="text-water-400 underline underline-offset-2">ver metodología</a>
+                </div>
+              </div>
+            )}
+
+            <div className="mt-3 flex flex-wrap items-center gap-2">
               <span
                 className={`px-2 py-1 rounded-full text-xs font-medium ${
                   esSignificativa
-                    ? "bg-green-500/20 text-green-400"
-                    : "bg-yellow-500/20 text-yellow-400"
+                    ? "bg-amber-300/10 text-amber-200"
+                    : "bg-white/5 text-white/50"
                 }`}
               >
-                {esSignificativa ? "✓ Significativa" : "✗ No significativa"}
+                {esSignificativa ? "✓ Significativa (nominal)" : "✗ No significativa"}
               </span>
+              {ajuste && (
+                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                  ajuste.categoria === "robusta" ? "bg-emerald-400/15 text-emerald-300"
+                  : ajuste.categoria === "nominal" ? "bg-amber-300/10 text-amber-200"
+                  : "bg-white/5 text-white/45"
+                }`}>
+                  {ajuste.categoria === "robusta" ? "Robusta tras corregir" : ajuste.categoria === "nominal" ? "Indicio tras corregir" : "Sin evidencia tras corregir"}
+                </span>
+              )}
               <span className="text-xs text-white/40">{cuencaSeleccionada!.codigo}</span>
             </div>
           </div>
@@ -470,7 +518,7 @@ export default function DetectiveMode({
 
         <div className="mt-4 text-center text-xs text-white/30">
           <MapPin className="w-3.5 h-3.5 inline mr-1" />
-          NASA POWER · punto representativo ({serie?.latitud.toFixed(3)}, {serie?.longitud.toFixed(3)}) · descarga {serie?.fechaDescarga}. La serie viene archivada con el proyecto. Mann–Kendall usa aproximación normal y no corrige autocorrelación temporal.
+          NASA POWER · punto representativo ({serie?.latitud.toFixed(3)}, {serie?.longitud.toFixed(3)}) · descarga {serie?.fechaDescarga}. El p del explorador usa aproximación normal sin corregir; más abajo se publican las correcciones por autocorrelación y por las 42 pruebas.
         </div>
       </CardContent>
     </Card>

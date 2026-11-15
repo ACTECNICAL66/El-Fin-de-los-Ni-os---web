@@ -42,6 +42,29 @@ jobs:
           test -s ./dist/public/data/variables.json
           test -s ./dist/public/data/nasa_power_anual.csv
           test -s ./dist/public/data/trend_results.csv
+          test -s ./dist/public/data/robustez_estadistica.json
+          test -s ./dist/public/data/robustez_estadistica.csv
+          test -s ./dist/public/data/oni_ascii_cpc_1998_2026.txt
+          test -s ./dist/public/data/oni_cpc_fuente.json
+          test -s ./dist/public/data/estacion_cordoba_observatorio_mensual.csv
+          test -s ./dist/public/data/validacion_local_cordoba.csv
+          test -s ./dist/public/data/validacion_estacion_cordoba.json
+          test -s ./dist/public/data/enso_atribucion.json
+          test -s ./dist/public/data/enso_atribucion.csv
+          test -s ./dist/public/data/enso_fases_anuales.csv
+          test -s ./dist/public/data/enso_mensual_estacion.json
+          test -s ./dist/public/data/escenarios_enso_3_6_meses.json
+          test -s ./dist/public/data/inventario_cuencas.json
+          test -s ./dist/public/data/captura_cuencas_general.png
+          test -s ./dist/public/data/captura_cuenca1.png
+          test -s ./dist/public/data/captura_simulacion_cuenca1_real.png
+          test -s ./dist/public/simulacion-2d/index.html
+          test -s ./dist/public/simulacion-2d/data/data.js
+          test -s ./dist/public/simulacion-2d/data/contorno_cuenca.json
+          test -s ./dist/public/simulacion-2d/data/mapa_cuenca_real.png
+          test -s ./dist/public/simulacion-2d/vendor/leaflet.js
+          test -s ./dist/public/simulacion-2d/vendor/chart.umd.min.js
+          test -s ./dist/public/panel/PaneldeControlV3.html
           test -s ./dist/public/drone/index.html
       - name: Setup Pages
         uses: actions/configure-pages@v4

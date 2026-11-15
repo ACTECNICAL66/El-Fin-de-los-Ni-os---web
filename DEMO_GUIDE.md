@@ -58,38 +58,59 @@ Abrir `http://localhost:3000` en el navegador.
 
 ### Significancia Estadística
 - **p < 0.05**: evidencia estadística de una tendencia bajo los supuestos del test; no prueba causalidad.
-- La implementación web usa aproximación normal y no corrige autocorrelación temporal.
-- El intervalo de Sen es aproximado y tampoco ajusta autocorrelación.
+- El explorador calcula un p nominal con aproximación normal, sin corregir autocorrelación. La sección **Respaldo estadístico** publica además el p con varianza por n efectivo, el p con preblanqueamiento libre de tendencia (TFPW), el q de Benjamini–Hochberg para las 42 pruebas y el umbral de Bonferroni.
+- El intervalo de Sen del CSV original es aproximado y no ajusta autocorrelación; se muestra con esa salvedad.
+- Tras las correcciones sobreviven 5 resultados (todos de temperatura media) y **ninguna tendencia de precipitación**. Eso no contradice la atribución ENSO: son preguntas distintas. La sección `/#enso` publica 504 pruebas ONI / Niño 3.4 y una diferencia mensual significativa de +17,3 mm/mes entre El Niño y La Niña.
 
 ## Resultados para presentar
 
-Los resultados publicados se recalculan desde `public/data/nasa_power_anual.csv`. El punto guardado es el centro de la caja envolvente del polígono; NASA POWER devuelve la celda de grilla asociada a esa ubicación. No equivale a un promedio espacial de toda la cuenca. Antes de exponerlos, explica que el test usa una aproximación normal sin corrección de autocorrelación.
+Los resultados nominales se recalculan desde `public/data/nasa_power_anual.csv`; las correcciones se publican en `public/data/robustez_estadistica.json` y el mapa comparativo los consume directamente. El punto guardado es el centro de la caja envolvente del polígono; NASA POWER devuelve la celda de grilla asociada a esa ubicación. No equivale a un promedio espacial de toda la cuenca: por eso el mapa dibuja **puntos** y los polígonos solo como contorno, sin relleno.
 
-## Guion sugerido para la presentación (5 minutos)
+Antes de exponer un número, aclarar tres cosas: (1) el p del explorador es nominal, (2) las 42 pruebas y la autocorrelación cambian el veredicto, (3) 7 grupos de series son idénticos por compartir celda y no deben contarse como réplicas.
 
-1. **Problema (45 s):** explicar por qué detectar cambios de lluvia y temperatura en las cuencas de Córdoba ayuda a formular preguntas sobre disponibilidad de agua y adaptación.
-2. **Pregunta (30 s):** mostrar una cuenca y preguntar si la lluvia o la temperatura anual exhiben una tendencia entre 2000 y 2025.
-3. **Evidencia (90 s):** seleccionar la cuenca y la variable; recorrer observaciones anuales, pendiente de Sen, regresión lineal, intervalo aproximado y Mann–Kendall. Leer el valor p junto con la magnitud y el intervalo, sin confundir significancia con causalidad.
-4. **Sistema Tierra (60 s):** relacionar lluvia y temperatura con el ciclo del agua y el balance de energía; presentar las relaciones como contexto científico, no como causas demostradas por esta serie.
-5. **Límites y siguiente paso (45 s):** señalar que cada polígono se aproxima con un punto de grilla, que el test no corrige autocorrelación y que NDVI/GPM siguen pendientes de integración.
-6. **Cierre (30 s):** proponer validar el patrón con mediciones locales y luego integrar datos espaciales para evaluar si el hallazgo se sostiene a escala de toda la cuenca.
+## Guion sugerido para la presentación (7 minutos, entrega 2026)
+
+1. **Problema (45 s):** por qué detectar cambios de lluvia y temperatura en Córdoba ayuda a formular preguntas sobre disponibilidad de agua.
+2. **Pregunta (30 s):** ¿exhibe tendencia una variable en un punto de cuenca entre 2000 y 2025?
+3. **Evidencia (90 s):** Detective Mode: observaciones anuales, pendiente de Sen, regresión, IC aproximado, p nominal y, debajo, p corregido y q de BH.
+4. **Mapa comparativo (60 s):** elegir variable; mostrar que cada marcador es una celda de grilla, que la flecha indica sube/baja y que el anillo distingue un resultado robusto de un indicio nominal. Recorrer la matriz 7 × 6.
+5. **Respaldo estadístico (90 s):** explicar la autocorrelación (r1 mediana 0,215), el 88,4 % de probabilidad de al menos un falso positivo con 42 pruebas, Bonferroni, BH y el embudo de 23 → 5 resultados. Mostrar la sequía 2020–2023 documentada (−26 % promedio) y la estación real del Observatorio Córdoba (288 meses, r = 0,71).
+6. **Cuencas y ENSO (75 s):** en `/#cuencas` mostrar el inventario de QGIS/DEM/EVA y abrir el visor 2D; señalar que el polígono y el límite se digitalizaron de la captura real (809,58 hm³ / 6,51 km² a cota 1167 m) y que sólo la georreferenciación es aproximada sin GPKG/XLSX. En `/#enso` mostrar ONI de NOAA CPC, las 504 pruebas, el +17,3 mm/mes con IC95 y p = 0,028, y las bandas condicionales 3–6 meses (no pronóstico).
+7. **Caso concreto y encuadre (60 s):** Cuenca Sur · temperatura media (+0,41 °C/década, robusta) y el contraejemplo de precipitación que deja de ser significativo al corregir. Recorrer las cinco tarjetas del desafío y la lista de alcance verificado: cuencas, ENSO, escenarios y réplica reproducible.
+8. **Electrónica, panel y futuro (75 s):** prototipo ESP32, abrir `/panel` y mover la compuerta o simular el error `-999.0` para mostrar que es una réplica reproducible sin hardware conectado; dron AG-01 como concepto de diseño que hoy no recoge datos; NDVI/GPM y ampliación de la red local como próximos pasos.
+9. **Cierre (30 s):** series, ONI, estación, scripts, panel y visor 2D están publicados; el siguiente paso es ampliar y calibrar la red de campo.
 
 ## Arquitectura Técnica
 
 ### Frontend estático (GitHub Pages)
-- **src/components/sections/DetectiveMode.tsx**: consulta, estadística y gráfico.
-- **src/pages/DetectiveModePage.tsx**: ruta y límite de error visible.
-- **public/data/cuencas.geojson**: polígonos usados para elegir puntos representativos.
+- **src/components/sections/DetectiveMode.tsx**: consulta, estadística, gráfico y p corregido.
+- **src/components/sections/ComparativeMapSection.tsx**: mapa SVG de puntos, leyenda y matriz cuenca × variable.
+- **src/components/sections/StatisticalRigorSection.tsx**: correcciones, validación y tabla de las 42 pruebas.
+- **src/components/sections/CaseStudySection.tsx**: caso robusto + contraejemplo.
+- **src/components/sections/Correccion2026Section.tsx**: cuencas casi completas, visor 2D, atribución ENSO, escenarios y réplica reproducible.
+- **src/components/sections/ChallengeFitSection.tsx**: las cinco preguntas del desafío 2026 y alcance verificado.
+- **src/components/ControlPanelDemo.tsx** y **src/pages/PanelPage.tsx**: panel V4 integrado, con simulación y error -999.0.
+- **src/components/sections/MonitoringTeaserSection.tsx** y **src/pages/Monitoreo.tsx**: electrónica y aplicación de monitoreo.
+- **src/components/sections/FutureTechSection.tsx** y **src/pages/DronePage.tsx**: dron como aplicación futura.
+- **src/lib/analisis.ts**: carga compartida de series, tendencias y robustez.
+- **public/data/cuencas.geojson**: polígonos esquemáticos usados para elegir puntos representativos.
 - **public/data/variables.json**: variables habilitadas y pendientes de integración.
 - **public/data/nasa_power_anual.csv**: observaciones anuales y metadatos de fuente, parámetro, coordenadas y fecha de descarga.
+- **public/data/robustez_estadistica.{json,csv}**: productos corregidos que consume la web.
 
 ### Análisis reproducible offline
 Descarga primero observaciones anuales de NASA POWER para las cuencas del GeoJSON; después calcula pendiente, IC 95 % aproximado y Mann–Kendall:
 ```bash
 python scripts/descargar_nasa_power.py --geojson public/data/cuencas.geojson --output data/nasa_power_anual.csv --public-output public/data/nasa_power_anual.csv
 python scripts/analisis_tendencias.py --input data/nasa_power_anual.csv --output public/data/trend_results.csv
+python scripts/robustez_estadistica.py
+python scripts/preparar_estacion_cordoba.py
+python scripts/validar_con_estacion.py --salida public/data/validacion_estacion_cordoba.json
+python scripts/atribucion_enso.py
+python scripts/digitalizar_captura_cuenca.py  # opcional, requiere OpenCV
+python scripts/generar_demo_2d.py
 ```
-El script descarga seis variables habilitadas para las siete cuencas y guarda parámetro, coordenadas, fuente y fecha de descarga. Luego calcula regresión lineal, pendiente de Sen, IC 95 % aproximado y Mann–Kendall. NDVI y GPM IMERG permanecen en catálogo como futuras integraciones; no se presentan como datos ya analizados.
+El primer script descarga seis variables habilitadas para las siete cuencas y guarda parámetro, coordenadas, fuente y fecha de descarga. El segundo calcula regresión lineal, pendiente de Sen, IC 95 % aproximado y Mann–Kendall nominal. El tercero genera las correcciones por autocorrelación y pruebas múltiples. El cuarto transcribe la serie observada del Observatorio Córdoba; el quinto la contrasta con NASA POWER; el sexto ejecuta las 504 pruebas ENSO y produce composites/escenarios; el séptimo digitaliza la forma real del visor 2D desde la captura y el octavo reconstruye `data.js`, la EVA y los GeoJSON. NDVI y GPM IMERG permanecen en catálogo como futuras integraciones; no se presentan como datos ya analizados.
 
 La fuente es la [API mensual de punto NASA POWER](https://power.larc.nasa.gov/docs/services/api/temporal/monthly/). Para cada polígono se consulta el centro de su caja envolvente. Se conservan años con los 12 meses disponibles: la precipitación mensual (mm/día) se multiplica por los días del mes y se suma para obtener mm/año; las demás variables mensuales se promedian ponderando por días. Parámetros: `PRECTOTCORR`, `T2M`, `T2M_MAX`, `WS2M`, `GWETROOT` y `ALLSKY_SFC_SW_DWN`.
 

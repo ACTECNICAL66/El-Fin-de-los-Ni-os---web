@@ -69,28 +69,31 @@ export const centralizedProjects = [
     },
 ]
 
-// Data sources for technical transparency
+// Fuentes conectadas y fuentes mencionadas como trabajo futuro
 export const dataSources = [
-    { name: "Landsat 8/9", type: "Satélite", url: "https://landsat.gsfc.nasa.gov", description: "Imágenes multiespectrales para cálculo de NDVI y análisis de cobertura vegetal." },
-    { name: "MODIS", type: "Satélite", url: "https://modis.gsfc.nasa.gov", description: "Datos de temperatura de superficie y evapotranspiración para balances hídricos." },
-    { name: "ECOSTRESS", type: "Satélite", url: "https://ecostress.jpl.nasa.gov", description: "Mediciones precisas de estrés hídrico en plantas y transpiración." },
-    { name: "VIIRS", type: "Satélite", url: "https://jpss.gsfc.nasa.gov/viirs.html", description: "Datos de reflectancia para cálculos de índices de sequía (ESI)." },
+    { name: "NASA POWER", type: "Conectada", url: "https://power.larc.nasa.gov", description: "Series mensuales 2000–2025 agregadas a valores anuales para las 42 pruebas de tendencia." },
+    { name: "Informe del proyecto", type: "Documental", url: "https://docs.google.com/document/d/11dXRoOLjMCFvs1rITCMewpi3_DfsOlHDD8drtrgiccY/edit?usp=sharing", description: "Procedimiento QGIS, electrónica de laboratorio, presupuesto y límites; no es una serie instrumental." },
+    { name: "NDVI / MODIS", type: "Pendiente", url: "https://modis.gsfc.nasa.gov", description: "El informe describe un análisis visual en QGIS; la web aún no publica una serie NDVI reproducible." },
+    { name: "GPM IMERG", type: "Pendiente", url: "https://gpm.nasa.gov", description: "Integración futura declarada en public/data/variables.json; no participa en los resultados." },
 ]
 
-// NDVI prediction function
-export function predictNDVI(precipitation: number, temperature: number, phenomenon: 'normal' | 'nino' | 'nina') {
-    const phenomFactor = { nino: 0.08, nina: -0.08, normal: 0 }[phenomenon]
-    const predictedNdvi = Math.max(0.1, Math.min(0.9, 0.55 + phenomFactor + (precipitation - 100) / 500 + (25 - temperature) / 80))
+// Ejemplo didáctico, NO un modelo predictivo validado.
+// En esta copia legacy el parámetro ENSO no altera la fórmula ilustrativa.
+// La atribución ENSO reproducible de la entrega 2026 está en la web activa:
+// ONI de NOAA CPC, 504 pruebas y una estación mensual real (/#enso).
+export function predictNDVI(precipitation: number, temperature: number, _phenomenon: 'normal' | 'nino' | 'nina') {
+    const valorIlustrativo = Math.max(0.1, Math.min(0.9, 0.55 + (precipitation - 100) / 500 + (25 - temperature) / 80))
 
-    let status: string, recommendation: string, color: string
-    if (predictedNdvi > 0.65) {
-        status = 'Saludable'; recommendation = 'Condiciones óptimas. Monitoreo regular recomendado.'; color = 'text-eco-400'
-    } else if (predictedNdvi > 0.4) {
-        status = 'Estrés Leve'; recommendation = 'Riesgo moderado. Considerar riego suplementario.'; color = 'text-yellow-400'
+    let status: string, color: string
+    if (valorIlustrativo > 0.65) {
+        status = 'Saludable (ejemplo)'; color = 'text-eco-400'
+    } else if (valorIlustrativo > 0.4) {
+        status = 'Estrés Leve (ejemplo)'; color = 'text-yellow-400'
     } else {
-        status = 'Estrés Severo'; recommendation = 'Alto riesgo. Medidas de riego urgentes requeridas.'; color = 'text-red-400'
+        status = 'Estrés Severo (ejemplo)'; color = 'text-red-400'
     }
-    return { ndvi: predictedNdvi, status, recommendation, color }
+    const recommendation = 'Fórmula arbitraria sin calibración, sin imágenes satelitales y sin validación. No usar para decidir riego ni dimensionar obras.'
+    return { ndvi: valorIlustrativo, status, recommendation, color }
 }
 
 // Paradigm comparison data
@@ -121,27 +124,27 @@ export const techStack = [
 
 // Project efficiency metrics
 export const efficiencyMetrics = [
-    { label: 'Reducción de Costo vs Centralizado', value: 85, suffix: '%', description: 'Las micro-represas distribuidas cuestan hasta un 85% menos que las mega-represas centralizadas' },
-    { label: 'Cobertura Territorial', value: 7, suffix: ' cuencas', description: '7 cuencas hidrográficas monitoreadas simultáneamente con sensores ESP32' },
-    { label: 'Anticipación a Eventos', value: 6, suffix: ' meses', description: 'Capacidad de predicción de sequías e inundaciones con 3-6 meses de anticipación' },
-    { label: 'Datos Procesados', value: 15, suffix: '+ años', description: 'Más de 15 años de datos climáticos históricos analizados con herramientas SIG' },
+    { label: 'Resultados robustos', value: 5, suffix: ' de 42', description: 'Tendencias que sobreviven preblanqueamiento y FDR; todas de temperatura media' },
+    { label: 'Cobertura Territorial', value: 7, suffix: ' cuencas', description: '7 cuencas analizadas mediante un punto de grilla representativo por cuenca' },
+    { label: 'Pruebas de tendencia', value: 42, suffix: '', description: '42 pruebas de Mann–Kendall con correcciones por autocorrelación y comparaciones múltiples' },
+    { label: 'Serie anual', value: 26, suffix: ' años', description: 'Series anuales NASA POWER 2000–2025 en siete puntos de cuenca' },
 ]
 
 // Timeline data for project milestones
 export const projectTimeline = [
-    { year: '2024', title: 'Investigación Inicial', description: 'Análisis de datos NASA, estudio de cuencas con QGIS, identificación de problemáticas hídricas en Córdoba.' },
-    { year: '2025 Q1', title: 'Desarrollo de Prototipo', description: 'Diseño y programación del sistema de monitoreo con ESP32. Simulación en Proteus.' },
-    { year: '2025 Q2', title: 'NASA Space Apps', description: 'Presentación del proyecto en el NASA Space Apps Challenge 2025. Desarrollo de plataforma web.' },
-    { year: '2025-2030', title: 'Implementación Piloto', description: 'Instalación de micro-represas piloto en cuencas prioritarias con monitoreo continuo.' },
-    { year: '2030-2050', title: 'Escalamiento Regional', description: 'Expansión del modelo a toda la provincia. Gemelo digital completo del sistema hídrico.' },
+    { year: 'Antecedente 2024', title: 'Investigación Inicial', description: 'Estudio de cuencas con QGIS e identificación de problemáticas hídricas; la serie conectada de NASA POWER se descargó en 2026.' },
+    { year: '2026 Q1', title: 'Desarrollo de Prototipo', description: 'Diseño y programación del sistema de monitoreo con ESP32. Simulación en Proteus.' },
+    { year: '2026 Q2', title: 'NASA Space Apps', description: 'Presentación del proyecto en el NASA Space Apps Challenge 2026. Desarrollo de plataforma web.' },
+    { year: '2026-2030', title: 'Implementación Piloto', description: 'Instalación de micro-represas piloto en cuencas prioritarias con monitoreo continuo.' },
+    { year: '2030-2050', title: 'Escalamiento Regional', description: 'Expansión del modelo a toda la provincia. Réplica reproducible y red de monitoreo calibrada, sin prometer telemetría en vivo.' },
 ]
 
 // Knowledge base for AI
 export const knowledgeBase = {
     general: [
         "El proyecto 'El Fin de los Niños' propone una red distribuida de micro-represas para gestionar el agua en Córdoba.",
-        "Utilizamos datos de la NASA para predecir sequías (La Niña) e inundaciones (El Niño).",
-        "El sistema es un 85% más económico que construir una mega-represa centralizada.",
+        "Analizamos tendencias retrospectivas 2000–2025 con NASA POWER y sí atribuimos variabilidad a El Niño / La Niña con ONI y una estación real; publicamos escenarios condicionales, no pronósticos operativos.",
+        "El presupuesto del informe (ARS 262.430) es una estimación de prototipo, no una comparación de costos de obra validada.",
     ],
     basins: cuencasData.map(c => `${c.name}: ${c.description}`),
     technology: techStack.map(t => `${t.name} (${t.category})`),

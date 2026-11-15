@@ -124,7 +124,7 @@ export default function Home() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-water-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-water-500"></span>
               </span>
-              NASA Space Apps 2025
+              NASA Space Apps 2026
             </div>
 
             <h1 className="text-5xl md:text-7xl font-display font-extrabold text-white leading-[1.1] tracking-tight mb-6">
@@ -179,7 +179,7 @@ export default function Home() {
                       Monitoreo Satelital
                     </h3>
                     <p className="text-xs text-white/50">
-                      Estado de Cuencas en Tiempo Real
+                      Serie archivada de cuencas · sin telemetría
                     </p>
                   </div>
                 </div>
@@ -195,7 +195,7 @@ export default function Home() {
               </div>
 
               <div className="mt-8 pt-6 border-t border-white/10 flex justify-between items-center text-xs text-white/40 font-mono">
-                <span>CONEXIÓN OWM: ACTIVA</span>
+                <span>SERIE ARCHIVADA: NASA POWER 2000–2025</span>
                 <span>LAT: -31.42 LON: -64.18</span>
               </div>
             </div>
@@ -208,8 +208,8 @@ export default function Home() {
         <div className="grid-overlay absolute inset-0 opacity-[0.15]" />
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <SectionHeader
-            title="Eficiencia Demostrada"
-            subtitle="El impacto medible de cambiar el paradigma de macro a micro-gestión hídrica."
+            title="Indicadores del análisis 2026"
+            subtitle="Cifras trazables de la serie conectada; la atribución ENSO y los escenarios están en la web activa."
             icon={Target}
           />
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -430,8 +430,8 @@ export default function Home() {
 
         <div className="max-w-7xl mx-auto px-6 relative z-10">
           <SectionHeader
-            title="Simulador de Índice de Vegetación (NDVI)"
-            subtitle="Modelo interactivo que simula el impacto de la temperatura y precipitación en la salud de la vegetación según los fenómenos climáticos."
+            title="Explorador didáctico de NDVI (sin satélite conectado)"
+            subtitle="Fórmula arbitraria de una versión anterior, conservada solo para ilustrar la interfaz. No es un modelo validado; la atribución ENSO se publica por separado en la web activa."
             icon={Sprout}
           />
 
@@ -441,7 +441,7 @@ export default function Home() {
               <div className="p-10 space-y-8">
                 <div>
                   <label className="text-sm font-semibold text-white/50 uppercase tracking-wider mb-4 block">
-                    Fenómeno Climático Global
+                    Contexto ENSO (no modifica este ejemplo didáctico)
                   </label>
                   <div className="grid grid-cols-3 gap-3">
                     {[
@@ -538,7 +538,7 @@ export default function Home() {
                 />
 
                 <h3 className="text-white/50 uppercase tracking-widest text-sm font-bold mb-4 relative z-10">
-                  Valor Predicho (NDVI)
+                  Valor ilustrativo (no medido)
                 </h3>
 
                 <div className="relative mb-8 text-center z-10">
@@ -564,12 +564,12 @@ export default function Home() {
                         : "tag-red"
                   } px-6 py-2 text-sm mb-6 z-10`}
                 >
-                  ESTADO: {prediction.status}
+                  CLASIFICACIÓN DIDÁCTICA: {prediction.status}
                 </div>
 
                 <div className="bg-white/5 border border-white/10 rounded-xl p-6 text-center max-w-sm w-full z-10 backdrop-blur-md">
                   <p className="text-sm text-white/40 uppercase font-semibold mb-2">
-                    Recomendación del Sistema
+                    Limitación del ejemplo
                   </p>
                   <p className={`text-base font-medium ${prediction.color}`}>
                     {prediction.recommendation}
