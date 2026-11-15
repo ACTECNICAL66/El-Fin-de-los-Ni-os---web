@@ -10,14 +10,32 @@ interface Cuenca {
 }
 
 /** Mismos códigos y nombres que public/data/cuencas.geojson y las series anuales. */
+/**
+ * IMPORTANTE: estos siete códigos son celdas de la grilla NASA POWER (0,5° x 0,5°),
+ * NO cuencas hidrográficas. Las cuencas reales del proyecto están en
+ * public/data/cuenca1_real/cuencas_reales.geojson con otros códigos (C1, C2, C6...).
+ * Se mantienen los códigos porque las 42 pruebas y las series anuales se indexan por ellos.
+ */
 const cuencasData: Cuenca[] = [
-  { codigo: "CN-O", nombre: "Norte-Oeste", area_km2: 2850.5, descripcion: "Región de mayor precipitación histórica; punto de grilla en -30,95 / -64,55." },
-  { codigo: "CN", nombre: "Norte", area_km2: 3120.3, descripcion: "Zona de transición climática; punto de grilla en -30,95 / -64,05." },
-  { codigo: "CC", nombre: "Centro", area_km2: 4200.7, descripcion: "Incluye el área metropolitana; punto de grilla en -31,45 / -64,05." },
-  { codigo: "CC-S", nombre: "Centro-Sur", area_km2: 3950.2, descripcion: "Franja intermedia entre pendientes moderadas y zonas de acumulación." },
-  { codigo: "CS", nombre: "Sur", area_km2: 3400.1, descripcion: "Punto de grilla en -32,45 / -64,05; caso de estudio de temperatura media." },
-  { codigo: "CE", nombre: "Este", area_km2: 2980.4, descripcion: "Comparte varias series idénticas con CC: no debe contarse como réplica independiente." },
-  { codigo: "CO", nombre: "Oeste", area_km2: 2670.8, descripcion: "Punto de grilla en -31,45 / -65,05; sin tendencias robustas en este análisis." },
+  { codigo: "CN-O", nombre: "Norte-Oeste", area_km2: 2850.5, descripcion: "Celda POWER de 0,5° en -30,95 / -64,55. No es una cuenca delimitada." },
+  { codigo: "CN", nombre: "Norte", area_km2: 3120.3, descripcion: "Celda POWER de 0,5° en -30,95 / -64,05. No es una cuenca delimitada." },
+  { codigo: "CC", nombre: "Centro", area_km2: 4200.7, descripcion: "Celda POWER de 0,5° en -31,45 / -64,05. Incluye el área metropolitana." },
+  { codigo: "CC-S", nombre: "Centro-Sur", area_km2: 3950.2, descripcion: "Celda POWER de 0,5° en -31,95 / -64,05. No es una cuenca delimitada." },
+  { codigo: "CS", nombre: "Sur", area_km2: 3400.1, descripcion: "Celda POWER de 0,5° en -32,45 / -64,05. No es una cuenca delimitada." },
+  { codigo: "CE", nombre: "Este", area_km2: 2980.4, descripcion: "Celda POWER de 0,5° en -31,45 / -63,55. Comparte series con CC." },
+  { codigo: "CO", nombre: "Oeste", area_km2: 2670.8, descripcion: "Celda POWER de 0,5° en -31,45 / -65,05. Sin tendencias robustas." },
+];
+
+/** Las ocho cuencas hidrográficas reales, medidas sobre los GPKG del proyecto. */
+const cuencasReales = [
+  { codigo: "C6", nombre: "Cuenca 6", area_km2: 22.14, vertices: 2189 },
+  { codigo: "C2", nombre: "Cuenca 2 Norte", area_km2: 14.92, vertices: 96 },
+  { codigo: "C3", nombre: "Cuenca 3 Centro", area_km2: 8.93, vertices: 40 },
+  { codigo: "C1", nombre: "Cuenca 1", area_km2: 8.54, vertices: 1501 },
+  { codigo: "C7M", nombre: "Molinos · Cuenca 7-2", area_km2: 7.93, vertices: 1216 },
+  { codigo: "CSA", nombre: "Cuenca San Antonio", area_km2: 4.55, vertices: 672 },
+  { codigo: "C5", nombre: "Cuenca 5", area_km2: 3.13, vertices: 695 },
+  { codigo: "C6M", nombre: "Molinos · Cuenca 6-1", area_km2: 1.20, vertices: 574 },
 ];
 
 export default function AreaSection() {
@@ -25,12 +43,48 @@ export default function AreaSection() {
     <section className="section-alt py-20">
       <div className="max-w-7xl mx-auto px-6">
         <SectionHeading icon={Map} title="Área de estudio" />
-        <p className="text-white/70 leading-relaxed mb-8 max-w-4xl">
-          Córdoba, Argentina. El informe delimitó cuencas en QGIS a partir de
-          modelos de elevación; la web trabaja con siete puntos representativos
-          de esas zonas para consultar series anuales de NASA POWER.
+        <p className="text-white/70 leading-relaxed mb-4 max-w-4xl">
+          Córdoba, Argentina. El proyecto delimitó <b>ocho cuencas reales</b> en QGIS
+          (C1, C2, C3, C5, C6, San Antonio y dos en Molinos), entre 1,20 y 22,14 km².
+          Las series climáticas, en cambio, se consultan en <b>siete celdas de la grilla
+          NASA POWER</b> de 0,5° (≈50 × 50 km), porque el satélite no resuelve una cuenca
+          de pocos kilómetros.
         </p>
+        <div className="rounded-lg border border-amber-400/30 bg-amber-400/5 px-4 py-3 mb-8 max-w-4xl">
+          <p className="text-amber-200/90 text-sm leading-relaxed">
+            <b>Corrección publicada.</b> Versiones anteriores presentaban los siete puntos
+            como si fueran cuencas de 2.670–4.200 km². No lo son: son celdas de grilla y
+            ninguno cae dentro de una cuenca del proyecto (la más próxima está a 21 km).
+            El análisis estadístico es válido para el punto; extrapolarlo a «la cuenca»
+            sería un error.
+          </p>
+        </div>
 
+        <h3 className="text-white font-semibold text-lg mb-3">Las ocho cuencas reales</h3>
+        <div className="overflow-x-auto mb-10">
+          <table className="w-full text-sm text-left">
+            <thead className="text-white/50 border-b border-white/10">
+              <tr>
+                <th className="py-2 pr-4 font-medium">Código</th>
+                <th className="py-2 pr-4 font-medium">Nombre</th>
+                <th className="py-2 pr-4 font-medium">Área</th>
+                <th className="py-2 pr-4 font-medium">Vértices</th>
+              </tr>
+            </thead>
+            <tbody className="text-white/80">
+              {cuencasReales.map((c) => (
+                <tr key={c.codigo} className="border-b border-white/5">
+                  <td className="py-2 pr-4 font-mono text-orange-300">{c.codigo}</td>
+                  <td className="py-2 pr-4">{c.nombre}</td>
+                  <td className="py-2 pr-4">{c.area_km2.toFixed(2)} km²</td>
+                  <td className="py-2 pr-4 text-white/50">{c.vertices}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <h3 className="text-white font-semibold text-lg mb-3">Las siete celdas NASA POWER</h3>
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           <div className="rounded-xl overflow-hidden shadow-lg border border-white/10">
             <img

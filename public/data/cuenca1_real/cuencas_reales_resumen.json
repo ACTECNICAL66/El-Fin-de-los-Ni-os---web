@@ -1,0 +1,98 @@
+[
+ {
+  "codigo": "C1",
+  "nombre": "Cuenca 1",
+  "area_km2": 8.54,
+  "vertices": 11621,
+  "lon_min": -64.645769,
+  "lon_max": -64.601578,
+  "lat_min": -31.481721,
+  "lat_max": -31.440542,
+  "srs_origen": "EPSG:32720",
+  "fuente": "QGIS/Cuenca 1/Cuenca 1 delimt.gpkg"
+ },
+ {
+  "codigo": "C2",
+  "nombre": "Cuenca 2 Norte",
+  "area_km2": 14.92,
+  "vertices": 96,
+  "lon_min": -64.709582,
+  "lon_max": -64.661814,
+  "lat_min": -31.183227,
+  "lat_max": -31.1302,
+  "srs_origen": "EPSG:4326",
+  "fuente": "QGIS/Cuenca 2/Cuenca Norte.gpkg"
+ },
+ {
+  "codigo": "C3",
+  "nombre": "Cuenca 3 / Centro",
+  "area_km2": 8.93,
+  "vertices": 40,
+  "lon_min": -64.603338,
+  "lon_max": -64.545182,
+  "lat_min": -31.335109,
+  "lat_max": -31.309618,
+  "srs_origen": "EPSG:4326",
+  "fuente": "QGIS/Cuenca 3/cuenca centro.gpkg"
+ },
+ {
+  "codigo": "C5",
+  "nombre": "Cuenca 5",
+  "area_km2": 3.13,
+  "vertices": 2929,
+  "lon_min": -64.572743,
+  "lon_max": -64.54184,
+  "lat_min": -31.415854,
+  "lat_max": -31.399024,
+  "srs_origen": "EPSG:4326",
+  "fuente": "QGIS/Cuenca 5/Cuenca 5.gpkg"
+ },
+ {
+  "codigo": "C6",
+  "nombre": "Cuenca 6",
+  "area_km2": 22.14,
+  "vertices": 9719,
+  "lon_min": -64.571113,
+  "lon_max": -64.487175,
+  "lat_min": -31.191345,
+  "lat_max": -31.139254,
+  "srs_origen": "EPSG:32720",
+  "fuente": "QGIS/Cuenca 6/Cuenca 6.gpkg"
+ },
+ {
+  "codigo": "CSA",
+  "nombre": "Cuenca San Antonio",
+  "area_km2": 4.55,
+  "vertices": 673,
+  "lon_min": -64.572442,
+  "lon_max": -64.53232,
+  "lat_min": -31.498158,
+  "lat_max": -31.451851,
+  "srs_origen": "EPSG:4326",
+  "fuente": "QGIS/Cuenca SA/Cuenca S.A (1).gpkg"
+ },
+ {
+  "codigo": "C6M",
+  "nombre": "Molinos · Cuenca 6-1",
+  "area_km2": 1.2,
+  "vertices": 2527,
+  "lon_min": -64.589574,
+  "lon_max": -64.576396,
+  "lat_min": -31.828632,
+  "lat_max": -31.804833,
+  "srs_origen": "EPSG:4326",
+  "fuente": "QGIS/Molinos/Cuenca 6 - 1 de MOL/Cuenca6.gpkg"
+ },
+ {
+  "codigo": "C7M",
+  "nombre": "Molinos · Cuenca 7-2",
+  "area_km2": 7.93,
+  "vertices": 5551,
+  "lon_min": -64.651101,
+  "lon_max": -64.610959,
+  "lat_min": -31.872131,
+  "lat_max": -31.831501,
+  "srs_origen": "EPSG:32720",
+  "fuente": "QGIS/Molinos/Cuenca 7 - 2 de MOL/Cuenca 7.gpkg"
+ }
+]

@@ -1,152 +1,302 @@
 {
-  "type": "FeatureCollection",
-  "name": "cuencas_cordoba",
-  "crs": {
-    "type": "name",
-    "properties": {
-      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
-    }
+ "type": "FeatureCollection",
+ "name": "cuencas_cordoba",
+ "crs": {
+  "type": "name",
+  "properties": {
+   "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+  }
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "id": 1,
+    "nombre": "Cuenca Norte-Oeste",
+    "codigo": "CN-O",
+    "descripcion": "Cuenca del noroeste de Córdoba, región de mayor precipitación histórica",
+    "area_km2": 2638.6,
+    "tipo": "celda_grilla_power",
+    "paso_grados": 0.5,
+    "area_km2_declarada": 2850.5,
+    "nota": "Celda de 0,5 grados de NASA POWER, NO una cuenca hidrografica. Las cuencas reales estan en cuenca1_real/cuencas_reales.geojson."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -64.8,
+       -31.2
+      ],
+      [
+       -64.3,
+       -31.2
+      ],
+      [
+       -64.3,
+       -30.7
+      ],
+      [
+       -64.8,
+       -30.7
+      ],
+      [
+       -64.8,
+       -31.2
+      ]
+     ]
+    ]
+   }
   },
-  "features": [
-    {
-      "type": "Feature",
-      "properties": {
-        "id": 1,
-        "nombre": "Cuenca Norte-Oeste",
-        "codigo": "CN-O",
-        "descripcion": "Cuenca del noroeste de Córdoba, región de mayor precipitación histórica",
-        "area_km2": 2850.5
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-          [-64.8, -31.2],
-          [-64.3, -31.2],
-          [-64.3, -30.7],
-          [-64.8, -30.7],
-          [-64.8, -31.2]
-        ]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": 2,
-        "nombre": "Cuenca Norte",
-        "codigo": "CN",
-        "descripcion": "Cuenca del norte de Córdoba, zona de transición climática",
-        "area_km2": 3120.3
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-          [-64.3, -31.2],
-          [-63.8, -31.2],
-          [-63.8, -30.7],
-          [-64.3, -30.7],
-          [-64.3, -31.2]
-        ]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": 3,
-        "nombre": "Cuenca Centro",
-        "codigo": "CC",
-        "descripcion": "Cuenca central de Córdoba, incluye el área metropolitana",
-        "area_km2": 4200.7
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-          [-64.3, -31.7],
-          [-63.8, -31.7],
-          [-63.8, -31.2],
-          [-64.3, -31.2],
-          [-64.3, -31.7]
-        ]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": 4,
-        "nombre": "Cuenca Centro-Sur",
-        "codigo": "CC-S",
-        "descripcion": "Cuenca centro-sur, zona agrícola intensiva",
-        "area_km2": 3950.2
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-          [-64.3, -32.2],
-          [-63.8, -32.2],
-          [-63.8, -31.7],
-          [-64.3, -31.7],
-          [-64.3, -32.2]
-        ]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": 5,
-        "nombre": "Cuenca Sur",
-        "codigo": "CS",
-        "descripcion": "Cuenca del sur de Córdoba, región de secano",
-        "area_km2": 3400.1
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-          [-64.3, -32.7],
-          [-63.8, -32.7],
-          [-63.8, -32.2],
-          [-64.3, -32.2],
-          [-64.3, -32.7]
-        ]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": 6,
-        "nombre": "Cuenca Este",
-        "codigo": "CE",
-        "descripcion": "Cuenca oriental de Córdoba, zona de transición",
-        "area_km2": 2980.4
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-          [-63.8, -31.7],
-          [-63.3, -31.7],
-          [-63.3, -31.2],
-          [-63.8, -31.2],
-          [-63.8, -31.7]
-        ]]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": 7,
-        "nombre": "Cuenca Oeste",
-        "codigo": "CO",
-        "descripcion": "Cuenca occidental, zona de influence de sierras",
-        "area_km2": 2670.8
-      },
-      "geometry": {
-        "type": "Polygon",
-        "coordinates": [[
-          [-65.3, -31.7],
-          [-64.8, -31.7],
-          [-64.8, -31.2],
-          [-65.3, -31.2],
-          [-65.3, -31.7]
-        ]]
-      }
-    }
-  ]
+  {
+   "type": "Feature",
+   "properties": {
+    "id": 2,
+    "nombre": "Cuenca Norte",
+    "codigo": "CN",
+    "descripcion": "Cuenca del norte de Córdoba, zona de transición climática",
+    "area_km2": 2638.6,
+    "tipo": "celda_grilla_power",
+    "paso_grados": 0.5,
+    "area_km2_declarada": 3120.3,
+    "nota": "Celda de 0,5 grados de NASA POWER, NO una cuenca hidrografica. Las cuencas reales estan en cuenca1_real/cuencas_reales.geojson."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -64.3,
+       -31.2
+      ],
+      [
+       -63.8,
+       -31.2
+      ],
+      [
+       -63.8,
+       -30.7
+      ],
+      [
+       -64.3,
+       -30.7
+      ],
+      [
+       -64.3,
+       -31.2
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": 3,
+    "nombre": "Cuenca Centro",
+    "codigo": "CC",
+    "descripcion": "Cuenca central de Córdoba, incluye el área metropolitana",
+    "area_km2": 2638.6,
+    "tipo": "celda_grilla_power",
+    "paso_grados": 0.5,
+    "area_km2_declarada": 4200.7,
+    "nota": "Celda de 0,5 grados de NASA POWER, NO una cuenca hidrografica. Las cuencas reales estan en cuenca1_real/cuencas_reales.geojson."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -64.3,
+       -31.7
+      ],
+      [
+       -63.8,
+       -31.7
+      ],
+      [
+       -63.8,
+       -31.2
+      ],
+      [
+       -64.3,
+       -31.2
+      ],
+      [
+       -64.3,
+       -31.7
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": 4,
+    "nombre": "Cuenca Centro-Sur",
+    "codigo": "CC-S",
+    "descripcion": "Cuenca centro-sur, zona agrícola intensiva",
+    "area_km2": 2638.6,
+    "tipo": "celda_grilla_power",
+    "paso_grados": 0.5,
+    "area_km2_declarada": 3950.2,
+    "nota": "Celda de 0,5 grados de NASA POWER, NO una cuenca hidrografica. Las cuencas reales estan en cuenca1_real/cuencas_reales.geojson."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -64.3,
+       -32.2
+      ],
+      [
+       -63.8,
+       -32.2
+      ],
+      [
+       -63.8,
+       -31.7
+      ],
+      [
+       -64.3,
+       -31.7
+      ],
+      [
+       -64.3,
+       -32.2
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": 5,
+    "nombre": "Cuenca Sur",
+    "codigo": "CS",
+    "descripcion": "Cuenca del sur de Córdoba, región de secano",
+    "area_km2": 2638.6,
+    "tipo": "celda_grilla_power",
+    "paso_grados": 0.5,
+    "area_km2_declarada": 3400.1,
+    "nota": "Celda de 0,5 grados de NASA POWER, NO una cuenca hidrografica. Las cuencas reales estan en cuenca1_real/cuencas_reales.geojson."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -64.3,
+       -32.7
+      ],
+      [
+       -63.8,
+       -32.7
+      ],
+      [
+       -63.8,
+       -32.2
+      ],
+      [
+       -64.3,
+       -32.2
+      ],
+      [
+       -64.3,
+       -32.7
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": 6,
+    "nombre": "Cuenca Este",
+    "codigo": "CE",
+    "descripcion": "Cuenca oriental de Córdoba, zona de transición",
+    "area_km2": 2638.6,
+    "tipo": "celda_grilla_power",
+    "paso_grados": 0.5,
+    "area_km2_declarada": 2980.4,
+    "nota": "Celda de 0,5 grados de NASA POWER, NO una cuenca hidrografica. Las cuencas reales estan en cuenca1_real/cuencas_reales.geojson."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -63.8,
+       -31.7
+      ],
+      [
+       -63.3,
+       -31.7
+      ],
+      [
+       -63.3,
+       -31.2
+      ],
+      [
+       -63.8,
+       -31.2
+      ],
+      [
+       -63.8,
+       -31.7
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "id": 7,
+    "nombre": "Cuenca Oeste",
+    "codigo": "CO",
+    "descripcion": "Cuenca occidental, zona de influence de sierras",
+    "area_km2": 2638.6,
+    "tipo": "celda_grilla_power",
+    "paso_grados": 0.5,
+    "area_km2_declarada": 2670.8,
+    "nota": "Celda de 0,5 grados de NASA POWER, NO una cuenca hidrografica. Las cuencas reales estan en cuenca1_real/cuencas_reales.geojson."
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -65.3,
+       -31.7
+      ],
+      [
+       -64.8,
+       -31.7
+      ],
+      [
+       -64.8,
+       -31.2
+      ],
+      [
+       -65.3,
+       -31.2
+      ],
+      [
+       -65.3,
+       -31.7
+      ]
+     ]
+    ]
+   }
+  }
+ ],
+ "metadata": {
+  "advertencia": "Las geometrias de este archivo son rectangulos de 0,5 grados que representan celdas de la grilla NASA POWER. No son delimitaciones hidrologicas. Las cuencas reales del proyecto estan en cuenca1_real/cuencas_reales.geojson."
+ }
 }
