@@ -1,4 +1,4 @@
-import { Map, Droplets, Info } from "lucide-react";
+import { Map, Droplets, Info, ExternalLink } from "lucide-react";
 import { SectionHeading } from "./shared";
 import { asset } from "@/lib/utils";
 
@@ -151,6 +151,28 @@ export default function AreaSection() {
                 <p className="text-white/60 text-sm">{cuenca.descripcion}</p>
               </div>
             ))}
+          </div>
+
+          {/* La demo es un HTML estatico aparte: se abre en pestana nueva con <a>,
+              no con <Link>, para que el router de la SPA no la intercepte.
+              BASE_URL es imprescindible: el sitio vive bajo /El-Fin-de-los-Ni-os---web/ */}
+          <div className="mt-10 glass-card rounded-xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4 border border-eco-500/20">
+            <div>
+              <p className="text-white font-semibold">Visor 2D de la Cuenca 1</p>
+              <p className="text-white/50 text-sm mt-1">
+                Siete capas sobre los polígonos reales: relieve, pendiente, orientación,
+                drenaje, incendios, llenado del embalse y curvas de los seis diques.
+              </p>
+            </div>
+            <a
+              href={`${import.meta.env.BASE_URL}demo/`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-shrink-0 inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-eco-500 hover:bg-eco-600 text-white font-semibold transition-colors"
+            >
+              Abrir el visor
+              <ExternalLink className="w-4 h-4" />
+            </a>
           </div>
         </div>
       </div>

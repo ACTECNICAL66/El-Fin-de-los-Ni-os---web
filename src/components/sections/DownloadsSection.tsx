@@ -1,5 +1,6 @@
-import { Download, FileText, Code, BookOpen, Map } from "lucide-react";
+import { Download, FileText, Code, BookOpen, Map, Layers, Table } from "lucide-react";
 import { SectionHeading } from "./shared";
+import { asset } from "@/lib/utils";
 
 export default function DownloadsSection() {
   const downloads = [
@@ -28,12 +29,28 @@ export default function DownloadsSection() {
       url: "https://iri.columbia.edu/our-expertise/climate/forecasts/enso/current/?enso_tab=enso-cpc_update",
     },
     {
-      title: "Mapa de Cuencas",
-      desc: "Recurso cartografico de Córdoba.",
+      title: "Cuencas Reales (GeoJSON)",
+      desc: "Las 8 cuencas reales del proyecto, con sus límites completos. EPSG:4326.",
       icon: Map,
-      color: "bg-white/20",
-      hoverColor: "",
-      url: null,
+      color: "bg-water-500",
+      hoverColor: "hover:bg-water-600",
+      url: asset("data/cuenca1_real/cuencas_reales.geojson"),
+    },
+    {
+      title: "Curva EVA de la Cuenca 1",
+      desc: "535 filas de cota, área y volumen acumulado del DEM real.",
+      icon: Table,
+      color: "bg-eco-600",
+      hoverColor: "hover:bg-eco-700",
+      url: asset("data/cuenca1_real/elevation_volume_area.json"),
+    },
+    {
+      title: "Escenarios de Inundación",
+      desc: "Huellas por cota y perímetro del vaso. GeoJSON.",
+      icon: Layers,
+      color: "bg-purple-600",
+      hoverColor: "hover:bg-purple-700",
+      url: asset("data/cuenca1_real/flood_scenarios.geojson"),
     },
   ];
 

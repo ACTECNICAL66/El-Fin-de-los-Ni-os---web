@@ -11,6 +11,13 @@ import {
   Plane,
 } from "lucide-react";
 
+/**
+ * La demo es un HTML estatico aparte, no una ruta del router.
+ * Se usa BASE_URL porque el sitio se publica bajo /El-Fin-de-los-Ni-os---web/:
+ * un href="/demo/" a secas daria 404 en GitHub Pages.
+ */
+const DEMO_URL = `${import.meta.env.BASE_URL}demo/`;
+
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -123,6 +130,15 @@ export default function Navigation() {
                 )}
               </Link>
             ))}
+            <a
+              href={DEMO_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-eco-300 hover:text-eco-200 hover:bg-white/5 rounded-lg transition-all duration-300"
+            >
+              Visor 2D
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
@@ -172,6 +188,15 @@ export default function Navigation() {
                   </span>
                 </Link>
               ))}
+              <a
+                href={DEMO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-eco-300 hover:bg-white/5"
+              >
+                <ExternalLink className="w-4 h-4" />
+                Visor 2D de la Cuenca 1
+              </a>
               <div className="pt-2 border-t border-white/10 space-y-2">
                 <a
                   href="https://github.com/ACTECNICAL66/El-Fin-de-los-Ni-os---web"

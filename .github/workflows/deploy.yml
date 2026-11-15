@@ -66,6 +66,15 @@ jobs:
           test -s ./dist/public/simulacion-2d/vendor/chart.umd.min.js
           test -s ./dist/public/panel/PaneldeControlV3.html
           test -s ./dist/public/drone/index.html
+          # La demo es lo que mas se muestra del proyecto: si se rompe en el
+          # build, el deploy no debe pasar en verde.
+          test -s ./dist/public/demo/index.html
+          test -s ./dist/public/demo/atlas.json
+          test -s ./dist/public/demo/cuencas_reales.json
+          test -s ./dist/public/demo/terreno/relieve.png
+          test -s ./dist/public/demo/terreno/pendiente.png
+          test -s ./dist/public/demo/terreno/orientacion.png
+          test -s ./dist/public/demo/terreno/llenado.gif
       # IMPORTANTE: en Settings → Pages → Build and deployment, "Source" debe
       # estar en "GitHub Actions". Si queda en "Deploy from a branch / main /",
       # GitHub sirve el index.html de desarrollo con /src/main.tsx y la app no
