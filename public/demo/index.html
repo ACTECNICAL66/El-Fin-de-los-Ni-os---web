@@ -1362,7 +1362,8 @@ function baseMapa(){
      fmt(ev[1],1)+' hm³ · '+fmt(capa?capa.area_km2:ev[2],2)+' km²</text>';
  }
  /* limite encima */
- s+='<path d="'+lp+'" fill="none" stroke="#F4F7FB" stroke-width="1.6" opacity=".9"/>';
+ s+='<path d="'+lp+'" fill="none" stroke="#FFFFFF" stroke-width="3" opacity="1" '+
+    'stroke-linejoin="round" stroke-linecap="round"/>';
  /* escala */
  var ancho_km=(TERR.x1-TERR.x0)*111.32*Math.cos(31.46*Math.PI/180);
  s+='<g transform="translate(18,644)"><line x1="0" y1="0" x2="'+(VW*(1/ancho_km)).toFixed(0)+
@@ -1398,7 +1399,7 @@ function curvasDiques(){
 
 function puntos(col){return '';}
 function zoom(svg,conClics){
- var vb=[0,0,620,470],drag=null;
+ var vb=[0,0,VW,VH],drag=null;   /* antes 620x470: alto viejo, descentraba el paneo */
  svg.addEventListener('wheel',function(e){e.preventDefault();
   var k=e.deltaY>0?1.15:.87,w=vb[2]*k,h=vb[3]*k;
   if(w>1860||w<150)return;
