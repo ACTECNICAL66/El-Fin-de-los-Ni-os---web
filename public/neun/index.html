@@ -1,0 +1,2032 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEUN × El Fin de los Niños | Centro de Control y Réplica 3D (IPET N°66)</title>
+  <link rel="icon" type="image/png" href="./spider_mark.png">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./neun3d.css">
+</head>
+
+<body data-status-poll-ms="1000">
+  <div id="hydroTopBanner" style="background:linear-gradient(90deg,#081526,#0f243c);border-bottom:1px solid rgba(56,189,248,0.25);padding:7px 16px;font:12px/1.4 system-ui,-apple-system,sans-serif;color:#dbeafe;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;position:relative;z-index:80;">
+    <span><strong style="color:#7dd3fc;">Réplica Reproducible · El Fin de los Niños (IPET N°66):</strong> Simulación local sin sensores de cuenca conectados · Misión: <em id="hydroMissionBadge" style="color:#fde68a;font-style:normal;">Espera en coronamiento (Cuenca 1 · 1167 m)</em></span>
+    <span style="display:inline-flex;gap:8px;align-items:center;">
+      <button type="button" onclick="window.NEUN_HYDRO_MISSION && window.NEUN_HYDRO_MISSION('talud')" style="background:rgba(56,189,248,0.14);border:1px solid rgba(56,189,248,0.35);color:#bae6fd;border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer;">Talud Sequía</button>
+      <button type="button" onclick="window.NEUN_HYDRO_MISSION && window.NEUN_HYDRO_MISSION('alcantarilla')" style="background:rgba(56,189,248,0.14);border:1px solid rgba(56,189,248,0.35);color:#bae6fd;border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer;">Alcantarilla El Niño</button>
+      <button type="button" onclick="window.NEUN_HYDRO_MISSION && window.NEUN_HYDRO_MISSION('sentry')" style="background:rgba(56,189,248,0.14);border:1px solid rgba(56,189,248,0.35);color:#bae6fd;border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer;">Centinela Crecida</button>
+      <a href="../" target="_top" style="color:#7dd3fc;text-decoration:none;font-weight:600;font-size:11px;margin-left:4px;">← Volver a El Fin de los Niños</a>
+    </span>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Connection Dialog -->
+  <div class="conn-overlay" id="connOverlay">
+    <div class="conn-dialog" id="connDialog">
+      <div class="conn-dialog-header">
+        <h2>Enlace con ESP32-S3</h2>
+        <button class="conn-dialog-close" onclick="closeConnDialog()" title="Cerrar">&times;</button>
+      </div>
+      <p>Establece enlace de datos con NEUN. Asegúrate de conectar tu PC a la red inalámbrica
+        <strong>ARANA-ROBOT</strong>.
+      </p>
+      <div class="conn-row"><span class="k">Red SSID</span><span class="v">ARANA-ROBOT</span></div>
+      <div class="conn-row"><span class="k">Clave de Seguridad</span><span class="v">arana1234</span></div>
+      <div class="conn-row">
+        <span class="k">Dirección IP del ESP32</span>
+        <input type="text" id="connEspIp" value="192.168.4.1" placeholder="192.168.4.1" maxlength="15">
+      </div>
+      <div class="conn-row"><span class="k">Estado del Enlace</span><span class="v" id="connStatus"
+          style="color:var(--text-muted)">Verificando...</span></div>
+      <div class="conn-actions">
+        <button class="conn-btn primary" onclick="connectReal()">Enlazar Robot</button>
+        <button class="conn-btn secondary" onclick="connectDemo()">Iniciar Simulación</button>
+      </div>
+      <div class="conn-hint" style="margin-top:10px;font-size:11px;color:var(--text-secondary);">
+        Asegurate de que tu PC esté conectado a la red WiFi <strong>ARANA-ROBOT</strong> del ESP32.
+        Si la IP cambió, escribila arriba y tocá "Enlazar Robot".
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Bindings Modal -->
+  <div class="keybind-modal" id="keybindModal">
+    <div class="keybind-content">
+      <div class="keybind-header">
+        <h2 class="keybind-title">Asignación de Teclas</h2>
+        <button class="keybind-close" onclick="closeKeybindModal()">&times;</button>
+      </div>
+      <p style="font-size:12px;color:var(--text-secondary);margin-bottom:15px">
+        Haz clic en el botón de una acción y presiona la tecla física que deseas asignar. Las asignaciones se guardan
+        localmente.
+      </p>
+      <div class="keybind-list" id="keybindsListContainer">
+        <!-- Se autogenerará por JS -->
+      </div>
+      <button class="key-map-trigger" onclick="resetDefaultKeybinds()"
+        style="margin-top:20px;border-style:solid;color:var(--accent-red);border-color:rgba(255,8,68,0.2)">
+        Restablecer Teclas por Defecto
+      </button>
+    </div>
+  </div>
+
+  <!-- Araña gigante de fondo (logo NEUN con degradado rojo → azul) -->
+  <div class="bg-spider" aria-hidden="true">
+    <img src="./spider_bg.png" alt="">
+  </div>
+
+  <div id="app">
+    <!-- Telarañas decorativas de esquina (generadas por JS) -->
+    <div class="corner-web tl" id="spiderWebTL" aria-hidden="true"></div>
+    <div class="corner-web tr" id="spiderWebTR" aria-hidden="true"></div>
+    <div class="corner-web bl" id="spiderWebBL" aria-hidden="true"></div>
+    <div class="corner-web br" id="spiderWebBR" aria-hidden="true"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-mark">
+          <img src="./spider_mark.png" alt="NEUN">
+        </div>
+        <div>
+          <div class="logo-text">NE<b>UN</b></div>
+          <div class="logo-sub">Araña Robótica</div>
+        </div>
+      </div>
+      <nav class="nav-menu">
+        <button class="nav-item active" id="btn-nav-home" onclick="switchPanel('home', this)">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
+          Dashboard
+        </button>
+        <button class="nav-item" id="btn-nav-control" onclick="switchPanel('control', this)">
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg>
+          Control Manual
+        </button>
+        <button class="nav-item" id="btn-nav-simulator" onclick="window.open('./simulador.html', '_blank', 'noopener')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
+            <path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 17l9 5 9-5"/>
+          </svg>
+          Simulador 3D
+        </button>
+        <button class="nav-item" id="btn-nav-modes" onclick="switchPanel('modes', this)">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+          </svg>
+          Modos de Marcha
+        </button>
+        <button class="nav-item" id="btn-nav-leds" onclick="switchPanel('leds', this)">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M9 18h6M10 22h4M12 2v2M12 8v2M6.34 6.34l1.42 1.42M16.24 16.24l1.42 1.42M2 12h2M20 12h2M6.34 17.66l1.42-1.42M16.24 7.76l1.42-1.42" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          Matriz LED
+        </button>
+        <button class="nav-item" id="btn-nav-terminal" onclick="switchPanel('terminal', this)">
+          <svg viewBox="0 0 24 24">
+            <polyline points="4 17 10 11 4 5" />
+            <line x1="12" y1="19" x2="20" y2="19" />
+          </svg>
+          Terminal / IA
+        </button>
+        <button class="nav-item" id="btn-nav-buzzer" onclick="switchPanel('buzzer', this)">
+          <svg viewBox="0 0 24 24">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+          </svg>
+          Sonido / Buzzer
+        </button>
+        <button class="nav-item" id="btn-nav-sensors" onclick="switchPanel('sensors', this)">
+          <svg viewBox="0 0 24 24">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+          </svg>
+          Sensores
+        </button>
+        <button class="nav-item" id="btn-nav-mando" onclick="switchPanel('mando', this)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="7" y="2" width="10" height="20" rx="2" />
+            <circle cx="12" cy="7" r="2" />
+            <line x1="9" y1="14" x2="15" y2="14" />
+            <line x1="9" y1="18" x2="15" y2="18" />
+          </svg>
+          Mando
+        </button>
+        
+        <button class="nav-item" id="btn-nav-comms" onclick="switchPanel('comms', this)">
+          <svg viewBox="0 0 24 24">
+            <path d="M5 12.55a11 11 0 0 1 14.08 0" />
+            <path d="M1.42 9a16 16 0 0 1 21.16 0" />
+            <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+            <line x1="12" y1="20" x2="12.01" y2="20" />
+          </svg>
+          Comunicación
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <div
+            style="width:8px;height:8px;border-radius:50%;background:var(--accent-green);box-shadow:0 0 8px var(--accent-green)"
+            id="sidebarDot"></div>
+          <span id="sidebarStatus" style="font-weight:600;color:var(--text-primary)">Sistema OK</span>
+        </div>
+        <div>Firmware v2.6.0</div>
+        <button class="sound-toggle-btn" onclick="toggleSound()">
+          <svg id="soundIcon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+          </svg> Sonido: <span id="soundText">ON</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Wrapper -->
+    <div class="main">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="breadcrumb">Proyecto / <span>Electrónica Digital III</span></div>
+        </div>
+        <div class="topbar-center">
+          <div class="spider-emblem" title="NEUN — Araña Robótica">
+            <img src="./spider_mark.png" alt="Logo NEUN">
+          </div>
+          <div class="emblem-caption">
+            <span class="emblem-title">NE<b>UN</b></span>
+            <span class="emblem-sub">Araña Robótica</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <div class="esp-status" id="espStatusBadge" onclick="showConnDialog()" title="Click para configurar enlace">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              style="flex-shrink:0">
+              <path d="M5 12.55a11 11 0 0 1 14.08 0" />
+              <path d="M1.42 9a16 16 0 0 1 21.16 0" />
+              <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+              <line x1="12" y1="20" x2="12.01" y2="20" />
+            </svg>
+            <span id="espStatusText">ESP32: SIN CONEXIÓN</span>
+          </div>
+          <div class="battery-bar">
+            <div class="battery-icon-wrap">
+              <div class="battery-fill" id="topBattFill"></div>
+            </div>
+            <div class="battery-text" id="topBattText">87%</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content Area -->
+      <div class="content">
+
+        <!-- ================= DASHBOARD PANEL ================= -->
+        <div id="panel-home" class="panel active">
+          <div class="layout-toggle" role="tablist" aria-label="Vista del panel">
+            <button class="layout-btn active" type="button" data-layout="telemetry" onclick="setDashboardLayout('telemetry')">Telemetría</button>
+            <button class="layout-btn" type="button" data-layout="controls" onclick="setDashboardLayout('controls')">Controles</button>
+          </div>
+          <section class="card dashboard-model-preview" aria-labelledby="dashboardModelTitle">
+            <div class="neun3d-header">
+              <div>
+                <div class="simulator-kicker">CINEMÁTICA 3D ARTICULADA · 12 EJES EN TIEMPO REAL</div>
+                <h2 id="dashboardModelTitle">NE<b>UN</b> en 3D</h2>
+              </div>
+              <div class="neun3d-head-meta">
+                <span class="neun3d-state" id="neun3dState">Cargando modelo…</span>
+                <button type="button" class="neun3d-upload-btn" id="neun3dLoadBtn" title="Carga neun_model.bin o tu archivo .stl directamente">Cargar .bin / .stl</button>
+                <input type="file" id="neun3dFileInput" accept=".bin,.stl" hidden>
+                <a class="neun3d-reset dashboard-model-open" href="./simulador.html">Simulador completo</a>
+              </div>
+            </div>
+            <div class="neun3d-stage">
+              <div class="neun3d-hud-top">
+                <div class="neun3d-hud-group">
+                  <span class="neun3d-hud-pill source" id="neun3dSourceBadge">MODELO NEUN</span>
+                  <span class="neun3d-hud-pill mode" id="neun3dModeHud">STAND</span>
+                </div>
+                <div class="neun3d-foot-strip" title="Contacto real de patas con el suelo">
+                  <span class="neun3d-foot-dot planted" id="neun3dFoot0">FL</span>
+                  <span class="neun3d-foot-dot planted" id="neun3dFoot1">RL</span>
+                  <span class="neun3d-foot-dot planted" id="neun3dFoot2">FR</span>
+                  <span class="neun3d-foot-dot planted" id="neun3dFoot3">RR</span>
+                </div>
+              </div>
+              <canvas id="neun3dCanvas" class="neun3d-canvas" aria-label="Vista 3D articulada de NEUN"></canvas>
+            </div>
+            <div class="neun3d-camera-presets" role="group" aria-label="Vistas del modelo">
+              <span>VISTA</span>
+              <button type="button" data-neun3d-view="iso">Isométrica</button>
+              <button type="button" data-neun3d-view="front">Frente</button>
+              <button type="button" data-neun3d-view="side">Lateral</button>
+              <button type="button" data-neun3d-view="top">Superior</button>
+              <button type="button" id="neun3dFollow" class="active">Seguir cámara</button>
+              <button type="button" id="neun3dReset">Centrar</button>
+            </div>
+            <div class="dashboard-model-actions" aria-label="Animación cinemática">
+              <button type="button" id="neun3dJointEditBtn" class="neun3d-joint-edit-toggle" title="Modo ajuste de articulaciones en 3D: selecciona y mueve cada servo">
+                🦾 Ajustar Articulaciones 3D
+              </button>
+              <div id="neun3dJointEditPanel" class="neun3d-joint-edit-panel" hidden>
+                <div class="neun3d-je-header">
+                  <span class="neun3d-je-title">AJUSTE DE SERVOS EN 3D</span>
+                  <button type="button" id="neun3dJointEditClose" class="neun3d-je-close" onclick="toggleJointEditMode()">×</button>
+                </div>
+                <div class="neun3d-je-grid" id="neun3dJeGrid"></div>
+                <div class="neun3d-je-actions">
+                  <button type="button" onclick="saveJointEditAsStand()" class="neun3d-je-save">💾 Guardar como STAND (NVS)</button>
+                  <button type="button" onclick="resetJointEditTo90()" class="neun3d-je-reset">↺ Todos a 90°</button>
+                </div>
+              </div>
+            </div>
+              <div class="neun3d-sim-modes" role="group" aria-label="Modos de movimiento 3D">
+                <button type="button" class="active" data-neun3d-mode="WALK_FWD" onclick="setMode(null,'WALK_FWD')">Creep</button>
+                <button type="button" data-neun3d-mode="TROT" onclick="setMode(null,'TROT')">Trote</button>
+                <button type="button" data-neun3d-mode="CRAWL" onclick="setMode(null,'CRAWL')">Gateo</button>
+                <button type="button" data-neun3d-mode="CRAB_RIGHT" onclick="setMode(null,'CRAB_RIGHT')">Cangrejo</button>
+                <button type="button" data-neun3d-mode="TURN_RIGHT" onclick="setMode(null,'TURN_RIGHT')">Giro</button>
+                <button type="button" data-neun3d-mode="TILT" onclick="setMode(null,'TILT')">Balanceo</button>
+                <button type="button" data-neun3d-mode="WAVE" onclick="setMode(null,'WAVE')">Saludo</button>
+                <button type="button" data-neun3d-mode="DANCE" onclick="setMode(null,'DANCE')">Baile</button>
+                <button type="button" data-neun3d-mode="PUSHUP" onclick="setMode(null,'PUSHUP')">Flexiones</button>
+                <button type="button" data-neun3d-mode="ELEVATE" onclick="setMode(null,'ELEVATE')">Sube y Baja</button>
+                <button type="button" data-neun3d-mode="JUMP" onclick="setMode(null,'JUMP')">Salto</button>
+              </div>
+              <div class="neun3d-actions">
+                <div class="neun3d-height-ctrl" role="group" aria-label="Subir y bajar chasis">
+                  <button type="button" class="neun3d-height-btn up" data-neun3d-height="up" title="Subir (tocar o mantener)">▲ Subir</button>
+                  <button type="button" class="neun3d-height-val" id="neun3dHeightVal" data-neun3d-height="reset" title="Restablecer altura neutra">0%</button>
+                  <button type="button" class="neun3d-height-btn down" data-neun3d-height="down" title="Bajar (tocar o mantener)">▼ Bajar</button>
+                </div>
+                <button type="button" class="neun3d-play" id="neun3dPlay">Demo de marcha</button>
+                <button type="button" class="neun3d-stop" id="neun3dStop" onclick="setMode(null,'STAND')">Stand</button>
+              </div>
+            </div>
+            <div class="neun3d-legend" aria-label="Partes del modelo">
+              <span><i class="legend-body"></i> Chasis</span>
+              <span><i class="legend-coxa"></i> Coxa · giro</span>
+              <span><i class="legend-femur"></i> Fémur · elevación</span>
+              <span><i class="legend-tibia"></i> Tibia · extensión</span>
+              <span class="neun3d-help">Arrastra para girar · rueda para acercar · suelta .bin/.stl encima</span>
+            </div>
+          </section>
+          <div class="dashboard-split">
+            <section class="telemetry-section">
+              <div class="content-grid">
+            <!-- Stats Widgets -->
+            <div class="card col-3">
+              <div class="metric-card">
+                <div class="metric-info">
+                  <span class="metric-label">Radar Obstáculos</span>
+                  <span class="metric-value" id="hDist">42 <span class="metric-unit">cm</span></span>
+                  <span class="metric-sub">HC-SR04 - GPIO10/11</span>
+                </div>
+                <div class="metric-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                    <path d="M12 6v6l4 2" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="card col-3">
+              <div class="metric-card">
+                <div class="metric-info">
+                  <span class="metric-label">Temperatura</span>
+                  <span class="metric-value" id="hTemp">24.5 <span class="metric-unit">°C</span></span>
+                  <span class="metric-sub">AHT10 - Sensor Interno</span>
+                </div>
+                <div class="metric-icon"
+                  style="color:var(--accent-orange);background:rgba(255,107,53,0.05);border-color:rgba(255,107,53,0.1)">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="card col-3">
+              <div class="metric-card">
+                <div class="metric-info">
+                  <span class="metric-label">Humedad Ambiente</span>
+                  <span class="metric-value" id="hHum">62 <span class="metric-unit">%</span></span>
+                  <span class="metric-sub">AHT10 - Humedad Relativa</span>
+                </div>
+                <div class="metric-icon"
+                  style="color:var(--accent-purple);background:rgba(157,78,221,0.05);border-color:rgba(157,78,221,0.1)">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="card col-3">
+              <div class="metric-card">
+                <div class="metric-info">
+                  <span class="metric-label">Modo Activo</span>
+                  <span class="metric-value" id="hMode" style="color:var(--accent-cyan)">STAND</span>
+                  <span class="metric-sub">12 Servomotores Activos</span>
+                </div>
+                <div class="metric-icon"
+                  style="color:var(--accent-green);background:rgba(0,255,135,0.05);border-color:rgba(0,255,135,0.1)">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                    <line x1="9" y1="3" x2="9" y2="21" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Buzzer status and quick controls -->
+            <div class="card col-3 dashboard-device-card" id="dashboardBuzzerCard">
+              <div class="card-header">
+                <div class="card-title">Buzzer</div>
+                <span class="dashboard-device-dot offline" id="dashboardBuzzerDot" aria-label="Buzzer offline"></span>
+              </div>
+              <div class="dashboard-device-body">
+                <strong class="dashboard-device-state" id="dashboardBuzzerState">OFFLINE</strong>
+                <span class="dashboard-device-detail" id="dashboardBuzzerDetail">GPIO15 · Sin telemetría</span>
+              </div>
+              <div class="dashboard-device-actions">
+                <button class="comms-btn primary" id="dashboardBuzzerPlay" onclick="playBuzzer('JURASSIC')" disabled>JP3 A</button>
+                <button class="comms-btn primary" id="dashboardBuzzerVariant" onclick="playBuzzer('JP3_VARIANT')" disabled>JP3 B</button>
+                <button class="comms-btn danger" id="dashboardBuzzerStop" onclick="stopBuzzer()" disabled>Detener</button>
+              </div>
+            </div>
+
+            <!-- Headlight status and quick controls -->
+            <div class="card col-3 dashboard-device-card" id="dashboardHeadlightCard">
+              <div class="card-header">
+                <div class="card-title">Linterna frontal</div>
+                <span class="dashboard-device-dot offline" id="dashboardHeadlightDot" aria-label="Linterna offline"></span>
+              </div>
+              <div class="dashboard-device-body">
+                <strong class="dashboard-device-state" id="dashboardHeadlightState">OFFLINE</strong>
+                <span class="dashboard-device-detail" id="dashboardHeadlightDetail">GPIO16 · Brillo 50%</span>
+              </div>
+              <div class="dashboard-device-actions">
+                <button class="comms-btn primary" id="dashboardHeadlightOn" onclick="setHeadlightPower(true)" disabled>Encender</button>
+                <button class="comms-btn danger" id="dashboardHeadlightOff" onclick="setHeadlightPower(false)" disabled>Apagar</button>
+              </div>
+            </div>
+
+            <!-- Radar Card -->
+            <div class="card col-6" id="radarCard">
+              <div class="card-header">
+                <div class="card-title">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+                    <circle cx="12" cy="12" r="3" />
+                  </svg>
+                  Sonar Táctico en Tiempo Real
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="radar-container">
+                  <div class="radar-canvas-wrap">
+                    <canvas id="radarCanvas" width="840" height="840" aria-label="Radar del sensor ultrasónico HC-SR04"></canvas>
+                  </div>
+                  <div class="radar-readout">
+                    <div class="readout-item">
+                      <span class="readout-val" id="radarBigNum">42</span>
+                      <span class="readout-lbl">Obstáculo (cm)</span>
+                    </div>
+                    <div class="readout-item">
+                      <span class="readout-val radar-alert-safe" id="radarAlertStatus">SEGURO</span>
+                      <span class="readout-lbl">Estatus de Colisión</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="radar-controls">
+                  <button class="comms-btn" id="radarScanBtn" onclick="toggleRadarScan()">Iniciar barrido 360°</button>
+                  <button class="comms-btn" id="radarExpandBtn" onclick="toggleRadarExpand()">Ampliar radar</button>
+                  <label class="radar-range-control" for="radarRangeInput">Alcance máx.
+                    <input id="radarRangeInput" class="radar-range-input" type="number" min="25" max="400" step="1"
+                      value="400" onchange="setRadarRange(this.value)">
+                    <span>cm</span>
+                  </label>
+                  <label class="radar-range-control" for="radarRingStepInput">Intervalo
+                    <input id="radarRingStepInput" class="radar-range-input" type="number" min="40" max="400" step="0.1"
+                      value="40" onchange="setRadarRingStep(this.value)">
+                    <span>cm</span>
+                  </label>
+                  <button class="comms-btn radar-auto-btn" id="radarRingAutoBtn" onclick="setRadarRingAuto()">Paso auto</button>
+                  <span id="radarScanState" class="radar-scan-state">Vista relativa al arranque</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sensors Analytics Card -->
+            <div class="card col-6">
+              <div class="card-header">
+                <div class="card-title">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                  </svg>
+                  Analítica de Sensores en Vivo
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="sensor-list" id="sensorStatusList">
+                  <div class="sensor-row" data-sensor="ultrasonic">
+                    <div class="sensor-row-icon"><svg viewBox="0 0 24 24">
+                        <path d="M2 12a10 10 0 0 1 10-10" />
+                        <path d="M2 12a7 7 0 0 1 7-7" />
+                        <path d="M2 12a4 4 0 0 1 4-4" />
+                        <circle cx="2" cy="12" r="1" />
+                      </svg></div>
+                    <div class="sensor-row-info">
+                      <div class="sensor-row-name">HC-SR04 Ultrasonido</div>
+                      <div class="sensor-row-detail">GPIO10/11</div>
+                    </div>
+                    <div class="sensor-row-status"></div>
+                  </div>
+                  <div class="sensor-row" data-sensor="imu">
+                    <div class="sensor-row-icon"><svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" />
+                        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="currentColor"
+                          stroke="none" />
+                      </svg></div>
+                    <div class="sensor-row-info">
+                      <div class="sensor-row-name">MPU6050 IMU</div>
+                      <div class="sensor-row-detail" id="imu-row-address">I2C 0x68</div>
+                    </div>
+                    <div class="sensor-row-status"></div>
+                  </div>
+                  <div class="sensor-row" data-sensor="ir">
+                    <div class="sensor-row-icon"><svg viewBox="0 0 24 24">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg></div>
+                    <div class="sensor-row-info">
+                      <div class="sensor-row-name">TCRT5000 Infrarrojo</div>
+                      <div class="sensor-row-detail">GPIO12</div>
+                    </div>
+                    <div class="sensor-row-status"></div>
+                  </div>
+                  <div class="sensor-row" data-sensor="dht">
+                    <div class="sensor-row-icon"><svg viewBox="0 0 24 24">
+                        <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z" />
+                      </svg></div>
+                    <div class="sensor-row-info">
+                      <div class="sensor-row-name">AHT10 Ambiente</div>
+                      <div class="sensor-row-detail">GPIO13</div>
+                    </div>
+                    <div class="sensor-row-status"></div>
+                  </div>
+                  <div class="sensor-row" data-sensor="leds">
+                    <div class="sensor-row-icon"><svg viewBox="0 0 24 24">
+                        <path d="M9 18h6" />
+                        <path d="M10 22h4" />
+                        <path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z" />
+                      </svg></div>
+                    <div class="sensor-row-info">
+                      <div class="sensor-row-name">NeoPixel 8x8</div>
+                      <div class="sensor-row-detail">GPIO14</div>
+                    </div>
+                    <div class="sensor-row-status"></div>
+                  </div>
+                  <div class="sensor-row" data-sensor="servos">
+                    <div class="sensor-row-icon"><svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="3" />
+                        <path
+                          d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.6.77 1.05 1.51 1.08H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                      </svg></div>
+                    <div class="sensor-row-info">
+                      <div class="sensor-row-name">PCA9685 Servos</div>
+                      <div class="sensor-row-detail">I2C PWM 12ch</div>
+                    </div>
+                    <div class="sensor-row-status"></div>
+                  </div>
+                </div>
+                <!-- Real-time mini charts -->
+                <div class="sensor-chart-container">
+                  <div class="sensor-mini-chart">
+                    <div class="chart-header">
+                      <span class="chart-label"><svg viewBox="0 0 24 24">
+                          <path d="M2 12a10 10 0 0 1 10-10" />
+                          <circle cx="2" cy="12" r="1" />
+                        </svg> Radar</span>
+                      <span class="chart-live-val" id="chartRadarVal">42 cm</span>
+                    </div>
+                    <canvas id="chartRadar" height="80"></canvas>
+                  </div>
+                  <div class="sensor-mini-chart">
+                    <div class="chart-header">
+                      <span class="chart-label"><svg viewBox="0 0 24 24">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                          <circle cx="12" cy="12" r="3" />
+                        </svg> IR Suelo</span>
+                      <span class="chart-live-val green" id="chartIRVal">HIGH</span>
+                    </div>
+                    <canvas id="chartIR" height="80"></canvas>
+                  </div>
+                </div>
+                <!-- Temperature & Humidity Gauges -->
+                <div class="gauge-row">
+                  <div class="gauge-item">
+                    <canvas id="gaugeTemp" width="100" height="100"></canvas>
+                    <span class="gauge-label">Temperatura</span>
+                  </div>
+                  <div class="gauge-item">
+                    <canvas id="gaugeHum" width="100" height="100"></canvas>
+                    <span class="gauge-label">Humedad</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- IMU Attitude Indicator + 3D Cube Card -->
+            <div class="card col-12">
+              <div class="card-header">
+                <div class="card-title">
+                  <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 2v20M2 12h20" />
+                  </svg>
+                  Unidad de Medición Inercial (IMU) — Horizonte Artificial + Compás
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="ahi-container">
+                  <!-- Artificial Horizon Instrument -->
+                  <div class="ahi-instrument-wrap">
+                    <div class="ahi-instrument">
+                      <canvas id="ahiCanvas" width="200" height="200"></canvas>
+                      <div class="ahi-ring"></div>
+                      <div class="ahi-center-mark"></div>
+                      <div class="ahi-wings"></div>
+                    </div>
+                    <span class="ahi-instrument-label">Horizonte Artificial</span>
+                  </div>
+                  <div class="ahi-divider"></div>
+                  <!-- 3D Cube Mejorado -->
+                  <div class="ahi-instrument-wrap">
+                    <div class="cube-container">
+                      <div class="cube3d" id="imuCube">
+                        <div class="cube3d-face front">
+                          <svg viewBox="0 0 24 24">
+                            <polyline points="18 15 12 9 6 15" />
+                          </svg>
+                          FRENTE<span>MPU6050</span>
+                        </div>
+                        <div class="cube3d-face back">
+                          <svg viewBox="0 0 24 24">
+                            <polyline points="6 9 12 15 18 9" />
+                          </svg>
+                          ATRÁS
+                        </div>
+                        <div class="cube3d-face top">
+                          <svg viewBox="0 0 24 24">
+                            <polyline points="18 15 12 9 6 15" />
+                          </svg>
+                          ARRIBA<span>I2C</span>
+                        </div>
+                        <div class="cube3d-face bottom">
+                          <svg viewBox="0 0 24 24">
+                            <polyline points="6 9 12 15 18 9" />
+                          </svg>
+                          ABAJO
+                        </div>
+                        <div class="cube3d-face left">
+                          <svg viewBox="0 0 24 24">
+                            <polyline points="15 18 9 12 15 6" />
+                          </svg>
+                          IZQ
+                        </div>
+                        <div class="cube3d-face right">
+                          <svg viewBox="0 0 24 24">
+                            <polyline points="9 18 15 12 9 6" />
+                          </svg>
+                          DER
+                        </div>
+                      </div>
+                    </div>
+                    <span class="ahi-instrument-label">Orientación 3D</span>
+                  </div>
+                  <div class="ahi-divider"></div>
+                  <!-- Compass Rose for Yaw -->
+                  <div class="ahi-instrument-wrap">
+                    <div class="compass-container">
+                      <canvas id="compassCanvas" width="140" height="140"></canvas>
+                      <div class="compass-ring"></div>
+                      <span class="compass-label">Rumbo (Yaw)</span>
+                    </div>
+                    <span class="ahi-instrument-label">Brújula</span>
+                  </div>
+                  <!-- Data Panel Expandido -->
+                  <div class="ahi-data-panel">
+                    <div class="ahi-data-cell">
+                      <span class="ahi-data-label">Pitch</span>
+                      <div class="ahi-data-val" id="imuP">0.0°</div>
+                    </div>
+                    <div class="ahi-data-cell">
+                      <span class="ahi-data-label purple">Roll</span>
+                      <div class="ahi-data-val purple" id="imuR">0.0°</div>
+                    </div>
+                    <div class="ahi-data-cell">
+                      <span class="ahi-data-label orange">Yaw</span>
+                      <div class="ahi-data-val orange" id="imuY">0.0°</div>
+                    </div>
+                    <div class="ahi-data-cell">
+                      <span class="ahi-data-label green">G Force</span>
+                      <div class="ahi-data-val green" id="imuAcc">1.00G</div>
+                    </div>
+                    <div class="ahi-data-cell">
+                      <span class="ahi-data-label">Giro X</span>
+                      <div class="ahi-data-val small" id="imuGx">0.0 °/s</div>
+                    </div>
+                    <div class="ahi-data-cell">
+                      <span class="ahi-data-label">Giro Y</span>
+                      <div class="ahi-data-val small" id="imuGy">0.0 °/s</div>
+                    </div>
+                    <div class="ahi-data-cell">
+                      <span class="ahi-data-label">Giro Z</span>
+                      <div class="ahi-data-val small" id="imuGz">0.0 °/s</div>
+                    </div>
+                    <div class="ahi-data-cell">
+                      <span class="ahi-data-label red">Temp IMU</span>
+                      <div class="ahi-data-val small red" id="imuTemp">--.-°C</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Servomotores Card -->
+            <div class="card col-6">
+              <div class="card-header">
+                <div class="card-title">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                    <path d="M2 17l10 5 10-5" />
+                    <path d="M2 12l10 5 10-5" />
+                  </svg>
+                  Ángulos de Articulaciones por Pata
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="servos-diagram">
+                  <div class="servo-leg-card">
+                    <div class="leg-name">Pata 0 · Delantera Izq. · canales 0–2</div>
+                    <div class="leg-joints">
+                      <div class="joint-val"><span class="joint-lbl">Coxa</span><span class="joint-num"
+                          id="s0c">90°</span></div>
+                      <div class="joint-val"><span class="joint-lbl">Femur</span><span class="joint-num"
+                          id="s0f">90°</span></div>
+                      <div class="joint-val"><span class="joint-lbl">Tibia</span><span class="joint-num"
+                          id="s0t">90°</span></div>
+                    </div>
+                  </div>
+                  <div class="servo-leg-card">
+                    <div class="leg-name">Pata 1 · Trasera Izq. · canales 3–5</div>
+                    <div class="leg-joints">
+                      <div class="joint-val"><span class="joint-lbl">Coxa</span><span class="joint-num"
+                          id="s1c">90°</span></div>
+                      <div class="joint-val"><span class="joint-lbl">Femur</span><span class="joint-num"
+                          id="s1f">90°</span></div>
+                      <div class="joint-val"><span class="joint-lbl">Tibia</span><span class="joint-num"
+                          id="s1t">90°</span></div>
+                    </div>
+                  </div>
+                  <div class="servo-leg-card">
+                    <div class="leg-name">Pata 2 · Delantera Der. · canales 6–8</div>
+                    <div class="leg-joints">
+                      <div class="joint-val"><span class="joint-lbl">Coxa</span><span class="joint-num"
+                          id="s2c">90°</span></div>
+                      <div class="joint-val"><span class="joint-lbl">Femur</span><span class="joint-num"
+                          id="s2f">90°</span></div>
+                      <div class="joint-val"><span class="joint-lbl">Tibia</span><span class="joint-num"
+                          id="s2t">90°</span></div>
+                    </div>
+                  </div>
+                  <div class="servo-leg-card">
+                    <div class="leg-name">Pata 3 · Trasera Der. · canales 9–11</div>
+                    <div class="leg-joints">
+                      <div class="joint-val"><span class="joint-lbl">Coxa</span><span class="joint-num"
+                          id="s3c">90°</span></div>
+                      <div class="joint-val"><span class="joint-lbl">Femur</span><span class="joint-num"
+                          id="s3f">90°</span></div>
+                      <div class="joint-val"><span class="joint-lbl">Tibia</span><span class="joint-num"
+                          id="s3t">90°</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Faults Log -->
+            <div class="card col-6">
+              <div class="card-header">
+                <div class="card-title" style="color:var(--accent-orange)">
+                  <span class="ct-icon"><svg viewBox="0 0 24 24" style="stroke:var(--accent-orange)">
+                      <path
+                        d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                      <line x1="12" y1="9" x2="12" y2="13" />
+                      <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg></span> Reportes de Falla de Hardware
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="terminal-output" id="faultPanel" style="height:150px;margin-bottom:0">
+                  <div class="term-line"><span class="term-ok">No se registran fallas en sensores. Estado de operación
+                      nominal.</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- General System Info -->
+            <div class="card col-6">
+              <div class="card-header">
+                <div class="card-title">
+                  <span class="ct-icon"><svg viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" y1="16" x2="12" y2="12" />
+                      <line x1="12" y1="8" x2="12.01" y2="8" />
+                    </svg></span> Estado General de Ejecución
+                </div>
+              </div>
+              <div class="card-body">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12px">
+                  <div
+                    style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.03)">
+                    <span style="color:var(--text-secondary)">Modo Táctico</span><span
+                      style="color:var(--accent-cyan);font-weight:600" id="sysMode">STAND</span>
+                  </div>
+                  <div
+                    style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.03)">
+                    <span style="color:var(--text-secondary)">Articulaciones</span><span
+                      style="color:var(--text-primary);font-weight:600">12 Servos Calibrados</span>
+                  </div>
+                  <div
+                    style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.03)">
+                    <span style="color:var(--text-secondary)">Protocolo de Bus</span><span
+                      style="color:var(--text-primary);font-weight:600">HTTP REST + JSON</span>
+                  </div>
+                  <div
+                    style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.03)">
+                    <span style="color:var(--text-secondary)">Dirección Host IP</span><span
+                      style="color:var(--text-primary);font-weight:600">192.168.4.1</span>
+                  </div>
+                  <div
+                    style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.03)">
+                    <span style="color:var(--text-secondary)">Control Local</span><span
+                      style="color:var(--text-primary);font-weight:600">Teclado + Joystick</span>
+                  </div>
+                  <div
+                    style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.03)">
+                    <span style="color:var(--text-secondary)">Tiempo de Enlace</span><span
+                      style="color:var(--text-primary);font-weight:600" id="uptime">00:00:00</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+              </div>
+            </section>
+            <aside class="control-section card" aria-label="Gamepad digital">
+              <div class="card-header">
+                <div class="card-title">Gamepad digital</div>
+                <span class="dashboard-device-detail">Táctil · controles web</span>
+              </div>
+              <div class="card-body dashboard-gamepad">
+                <div class="virtual-joystick" aria-label="Joystick virtual">
+                  <div class="virtual-joystick-base" id="dashboardJoystick" role="application" aria-label="Arrastra para mover el robot">
+                    <span class="joystick-axis joystick-axis-x"></span>
+                    <span class="joystick-axis joystick-axis-y"></span>
+                    <div class="virtual-joystick-knob" id="dashboardJoystickKnob"></div>
+                  </div>
+                  <div class="joystick-values">
+                    <span>X <strong id="dashboardJoyX">0.00</strong></span>
+                    <span>Y <strong id="dashboardJoyY">0.00</strong></span>
+                  </div>
+                  <small>Arrastra y suelta para detener</small>
+                </div>
+                <label class="gamepad-mode-label" for="dashboardModeSelect">Modo de marcha</label>
+                <select id="dashboardModeSelect" class="gamepad-mode-select" aria-label="Modo de marcha"></select>
+                <div class="controls-grid">
+                  <button class="gamepad-button" type="button" onclick="sendAux('height_up')">Altura +</button>
+                  <button class="gamepad-button" type="button" onclick="sendAux('height_down')">Altura −</button>
+                  <button class="gamepad-button" type="button" onclick="playBuzzer('JP3_VARIANT')">Buzzer JP3</button>
+                  <button class="gamepad-button secondary" type="button" onclick="stopBuzzer()">Detener buzzer</button>
+                </div>
+                <button class="gamepad-stop" type="button" onclick="sendMove('stop')">Detener movimiento</button>
+              </div>
+            </aside>
+          </div>
+        </div>
+
+        <!-- ================= CONTROL PANEL PANEL ================= -->
+        <div id="panel-control" class="panel">
+          <div class="content-grid">
+            <!-- Control de Seguridad -->
+            <div class="card col-4">
+              <div class="card-header">
+                <div class="card-title"><span class="ct-icon"><svg viewBox="0 0 24 24">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    </svg></span> Seguridad del Sistema</div>
+              </div>
+              <div class="card-body">
+                <div class="safety-buttons">
+                  <button class="btn-estop" id="btnEStop" onclick="toggleEmergency()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                      style="flex-shrink:0">
+                      <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2" />
+                      <line x1="15" y1="9" x2="9" y2="15" />
+                      <line x1="9" y1="9" x2="15" y2="15" />
+                    </svg> Parada de Emergencia
+                  </button>
+                  <button class="btn-stabilize" id="btnStab" onclick="toggleStabilize()">
+                    ESTABILIZACIÓN ACTIVA (IMU)
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ajuste de Velocidad -->
+            <div class="card col-4">
+              <div class="card-header">
+                <div class="card-title"><span class="ct-icon"><svg viewBox="0 0 24 24">
+                      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                    </svg></span> Velocidad de Marcha</div>
+              </div>
+              <div class="card-body">
+                <div class="speed-indicator">
+                  <span class="palette-label">Factor PWM</span>
+                  <span class="speed-text" id="speedVal">50%</span>
+                </div>
+                <div class="custom-slider-wrap">
+                  <input type="range" class="custom-slider" id="speedSlider" min="0" max="100" value="50"
+                    oninput="updateSpeed(this.value)">
+                </div>
+                <div
+                  style="display:flex;justify-content:space-between;margin-top:8px;font-size:10px;color:var(--text-muted)">
+                  <span>MÍNIMO (10%)</span>
+                  <span>NOMINAL (50%)</span>
+                  <span>MÁXIMO (100%)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ajustes de Altura e Inclinación -->
+            <div class="card col-4">
+              <div class="card-header">
+                <div class="card-title"><span class="ct-icon"><svg viewBox="0 0 24 24">
+                      <path
+                        d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                    </svg></span> Chasis (Altura e Inclinación)</div>
+              </div>
+              <div class="card-body">
+                <div class="aux-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                  <div
+                    style="padding:12px;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.03);border-radius:8px;text-align:center">
+                    <h5 style="font-size:10px;color:var(--text-muted);text-transform:uppercase;margin-bottom:10px">
+                      Altura</h5>
+                    <div style="display:flex;gap:8px;justify-content:center">
+                      <button class="dpad-btn" style="width:40px;height:40px;border-radius:8px"
+                        onclick="sendAux('height_up')">+</button>
+                      <button class="dpad-btn" style="width:40px;height:40px;border-radius:8px"
+                        onclick="sendAux('height_down')">-</button>
+                    </div>
+                  </div>
+                  <div
+                    style="padding:12px;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.03);border-radius:8px;text-align:center">
+                    <h5 style="font-size:10px;color:var(--text-muted);text-transform:uppercase;margin-bottom:10px">
+                      Inclinación</h5>
+                    <div
+                      style="display:grid;grid-template-columns:repeat(3,36px);gap:6px;justify-content:center;margin-bottom:6px">
+                      <div></div>
+                      <button class="dpad-btn" style="width:36px;height:36px;border-radius:8px"
+                        onclick="sendAux('tilt_fwd')" title="Inclinar adelante"><svg width="16" height="16"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                          <polyline points="18 15 12 9 6 15" />
+                        </svg></button>
+                      <div></div>
+                      <button class="dpad-btn" style="width:36px;height:36px;border-radius:8px"
+                        onclick="sendAux('tilt_left')" title="Inclinar izquierda"><svg width="16" height="16"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                          <polyline points="15 18 9 12 15 6" />
+                        </svg></button>
+                      <button class="dpad-btn"
+                        style="width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,0.03);cursor:default;opacity:0.4"><svg
+                          width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <circle cx="12" cy="12" r="3" />
+                        </svg></button>
+                      <button class="dpad-btn" style="width:36px;height:36px;border-radius:8px"
+                        onclick="sendAux('tilt_right')" title="Inclinar derecha"><svg width="16" height="16"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                          <polyline points="9 18 15 12 9 6" />
+                        </svg></button>
+                      <div></div>
+                      <button class="dpad-btn" style="width:36px;height:36px;border-radius:8px"
+                        onclick="sendAux('tilt_bwd')" title="Inclinar atrás"><svg width="16" height="16"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                          <polyline points="6 9 12 15 18 9" />
+                        </svg></button>
+                      <div></div>
+                    </div>
+                    <div style="display:flex;gap:6px;justify-content:center;margin-top:2px">
+                      <span style="font-size:9px;color:var(--text-muted)">Adelante</span>
+                      <span style="font-size:9px;color:var(--text-muted)">Izq</span>
+                      <span style="font-size:9px;color:var(--text-muted)">Centro</span>
+                      <span style="font-size:9px;color:var(--text-muted)">Der</span>
+                      <span style="font-size:9px;color:var(--text-muted)">Atrás</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Joystick Card -->
+            <div class="card col-6">
+              <div class="card-header">
+                <div class="card-title"><span class="ct-icon"><svg viewBox="0 0 24 24">
+                      <circle cx="12" cy="5" r="3" />
+                      <line x1="12" y1="8" x2="12" y2="20" />
+                      <path d="M6 20h12" />
+                    </svg></span> Joystick Vectorial</div>
+              </div>
+              <div class="card-body" style="display:flex;flex-direction:column;justify-content:center;height:290px">
+                <div class="joystick-zone" id="joystick">
+                  <div class="joystick-knob" id="knob"></div>
+                </div>
+                <div class="joystick-output">
+                  Coordenadas Vectoriales: X: <span id="joyX"
+                    style="color:var(--accent-cyan);font-weight:bold">0.00</span> | Y: <span id="joyY"
+                    style="color:var(--accent-cyan);font-weight:bold">0.00</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pad Direccional + Asignador de Teclas -->
+            <div class="card col-6">
+              <div class="card-header">
+                <div class="card-title"><span class="ct-icon"><svg viewBox="0 0 24 24">
+                      <rect x="2" y="6" width="20" height="12" rx="2" />
+                      <line x1="6" y1="10" x2="6" y2="14" />
+                      <line x1="4" y1="12" x2="8" y2="12" />
+                      <circle cx="18" cy="12" r="1" />
+                    </svg></span> Pad de Locomoción Táctica</div>
+              </div>
+              <div class="card-body"
+                style="display:flex;flex-direction:column;justify-content:center;height:290px;position:relative">
+                <div class="dpad">
+                  <button class="dpad-btn empty"></button>
+                  <button class="dpad-btn" id="dpad-forward" onmousedown="sendMove('forward')"
+                    onmouseup="sendMove('stop')" ontouchstart="sendMove('forward')" ontouchend="sendMove('stop')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2.5">
+                      <polyline points="18 15 12 9 6 15" />
+                    </svg><span class="dpad-key-indicator" id="ind-forward">W</span>
+                  </button>
+                  <button class="dpad-btn empty"></button>
+
+                  <button class="dpad-btn" id="dpad-left" onmousedown="sendMove('left')" onmouseup="sendMove('stop')"
+                    ontouchstart="sendMove('left')" ontouchend="sendMove('stop')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2.5">
+                      <polyline points="15 18 9 12 15 6" />
+                    </svg><span class="dpad-key-indicator" id="ind-left">A</span>
+                  </button>
+                  <button class="dpad-btn center" id="dpad-stop" onclick="sendMove('stop')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2.5">
+                      <rect x="6" y="6" width="12" height="12" rx="2" />
+                    </svg><span class="dpad-key-indicator" id="ind-stop">SPC</span>
+                  </button>
+                  <button class="dpad-btn" id="dpad-right" onmousedown="sendMove('right')" onmouseup="sendMove('stop')"
+                    ontouchstart="sendMove('right')" ontouchend="sendMove('stop')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2.5">
+                      <polyline points="9 18 15 12 9 6" />
+                    </svg><span class="dpad-key-indicator" id="ind-right">D</span>
+                  </button>
+
+                  <button class="dpad-btn empty"></button>
+                  <button class="dpad-btn" id="dpad-backward" onmousedown="sendMove('backward')"
+                    onmouseup="sendMove('stop')" ontouchstart="sendMove('backward')" ontouchend="sendMove('stop')">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2.5">
+                      <polyline points="6 9 12 15 18 9" />
+                    </svg><span class="dpad-key-indicator" id="ind-backward">S</span>
+                  </button>
+                  <button class="dpad-btn empty"></button>
+                </div>
+                <button class="key-map-trigger" onclick="openKeybindModal()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    style="flex-shrink:0">
+                    <rect x="2" y="4" width="20" height="16" rx="2" ry="2" />
+                    <path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10" />
+                  </svg> Asignar / Mapear Teclas Físicas
+                </button>
+              </div>
+            </div>
+
+            <!-- Joystick de Rotación (Giro sobre eje propio) -->
+            <div class="card col-6">
+              <div class="card-header">
+                <div class="card-title"><span class="ct-icon"><svg viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M21 12a9 9 0 1 1-3.5-7.1" />
+                      <polyline points="21 3 21 9 15 9" />
+                    </svg></span> Joystick de Rotación</div>
+              </div>
+              <div class="card-body" style="display:flex;flex-direction:column;justify-content:center;height:290px">
+                <div class="joystick-zone rot" id="rotJoystick">
+                  <div class="joystick-knob rot-knob" id="rotKnob"></div>
+                </div>
+                <div class="joystick-output">
+                  Giro sobre su eje: <span id="rotRate"
+                    style="color:var(--accent-cyan);font-weight:bold">0.00</span>
+                  (<span id="rotDir">Neutro</span>)
+                </div>
+              </div>
+            </div>
+
+            <!-- ======= Avanzado ======= -->
+            <div class="col-12">
+              <div style="display:flex;align-items:center;gap:12px;margin:8px 0 4px">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent-cyan)">
+                  <circle cx="12" cy="12" r="3" />
+                  <path d="M12 1v4m0 14v4M1 12h4m14 0h4" />
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06" />
+                  <path
+                    d="M14.7 2.63a1.65 1.65 0 0 0-1.51-1H10.8a1.65 1.65 0 0 0-1.51 1l-.06.06a1.65 1.65 0 0 0-.33 1.82V4.6a1.65 1.65 0 0 0 1.51 1H13.6a1.65 1.65 0 0 0 1.51-1z" />
+                </svg>
+                <h3
+                  style="font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--text-primary);margin:0">
+                  Avanzado</h3>
+              </div>
+            </div>
+
+            <!-- ======= Control de Patas (Individual) ======= -->
+            <div class="card col-12">
+              <div class="card-header">
+                <div class="card-title"><span class="ct-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M14 7l-5 5m0 0l-4 4m4-4l4-4" />
+                      <path d="M3 21l4-4" />
+                      <path d="M18 3l-4 4m0 0l-4 4m4-4l4-4" />
+                      <path d="M21 17l-4-4" />
+                    </svg></span> Control de Patas (Individual)</div>
+              </div>
+              <div class="card-body">
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px" id="legControlsContainer">
+                  <script>
+                    (function () {
+                      var legNames = ['FL · Delantera Izquierda · CH 0–2', 'RL · Trasera Izquierda · CH 3–5', 'FR · Delantera Derecha · CH 6–8', 'RR · Trasera Derecha · CH 9–11'];
+                      var jointNames = ['Coxa', 'Fémur', 'Tibia'];
+                      var container = document.getElementById('legControlsContainer');
+                      for (var l = 0; l < 4; l++) {
+                        var div = document.createElement('div');
+                        div.style.cssText = 'padding:16px;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.04);border-radius:12px';
+                        var title = document.createElement('h5');
+                        title.style.cssText = 'font-size:12px;color:var(--accent-cyan);margin-bottom:14px;font-family:var(--font-display);font-weight:600';
+                        title.textContent = 'Pata ' + legNames[l];
+                        div.appendChild(title);
+                        for (var j = 0; j < 3; j++) {
+                          var row = document.createElement('div');
+                          row.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:10px';
+                          var label = document.createElement('span');
+                          label.style.cssText = 'font-size:11px;color:var(--text-muted);min-width:48px';
+                          label.textContent = jointNames[j];
+                          var slider = document.createElement('input');
+                          slider.type = 'range';
+                          slider.min = 10; slider.max = 170; slider.value = 90;
+                          slider.style.cssText = 'flex:1;height:6px;-webkit-appearance:none;background:rgba(0,242,254,0.15);border-radius:3px;outline:none';
+                          slider.setAttribute('oninput', 'var a=parseInt(this.value); sendCmd("servo_adv", {channel:' + (l * 3 + j) + ', angle: a}); if(window.NEUN3D) window.NEUN3D.setManualJoint(' + (l * 3 + j) + ', a); this.nextElementSibling.textContent = this.value+"°"');
+                          var val = document.createElement('span');
+                          val.style.cssText = 'font-size:12px;color:var(--text-primary);font-family:var(--font-mono);min-width:32px;text-align:right';
+                          val.textContent = '90°';
+                          row.appendChild(label);
+                          row.appendChild(slider);
+                          row.appendChild(val);
+                          div.appendChild(row);
+                        }
+                        container.appendChild(div);
+                      }
+                    })();
+                  </script>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ================= MODES PANEL ================= -->
+        <div id="panel-modes" class="panel">
+          <div class="content-grid">
+            <div class="col-12">
+              <div class="mode-dial-wrap" id="modeDialWrap">
+                <div class="modes-head">
+                  <h2>Modos de <b>Marcha</b></h2>
+                  <p>Girá el aro arrastrándolo · tocá un ícono para ver su detalle</p>
+                </div>
+                <!-- Aro selectal circular interactivo -->
+                <div class="mode-dial" id="modeDial">
+                  <div class="mode-dial-stage" id="modeDialStage"></div>
+                  <div class="mode-dial-center" id="modeDialCenter">
+                    <div class="mode-center-icon" id="modeCenterIcon"></div>
+                    <div class="mode-center-name" id="modeCenterName">Stand</div>
+                    <div class="mode-center-code" id="modeCenterCode">STAND</div>
+                    <button class="mode-go-btn" id="btnModeGo" onclick="activateSelectedMode()">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5" stroke-linejoin="round">
+                        <polygon points="5 3 19 12 5 21 5 3" />
+                      </svg>
+                      ACTIVAR
+                    </button>
+                  </div>
+                </div>
+                <!-- Ficha expandible del modo seleccionado -->
+                <div class="mode-detail-panel" id="modeDetailPanel">
+                  <div class="mode-detail-head">
+                    <div class="mode-detail-icon" id="modeDetailIcon"></div>
+                    <div class="mode-detail-title">
+                      <h3 id="modeDetailName">Stand (Neutral)</h3>
+                      <span class="mode-card-tag" id="modeDetailTag">Estado Base</span>
+                    </div>
+                  </div>
+                  <p class="mode-detail-desc" id="modeDetailDesc">Estación de reposo con soporte equilibrado. Lógica IMU
+                    y autoestabilización en espera.</p>
+                  <ul class="mode-detail-feats" id="modeDetailFeats"></ul>
+                  <div class="mode-detail-meta">
+                    <div class="mdm-item"><span class="mdm-label">ideal para</span><span class="mdm-val"
+                        id="modeDetailRec">Arranque y espera</span></div>
+                    <div class="mdm-item"><span class="mdm-label">velocidad</span><span class="mdm-val"
+                        id="modeDetailSpeed">0 %</span></div>
+                    <div class="mdm-item"><span class="mdm-label">consumo</span><span class="mdm-val"
+                        id="modeDetailPower">Bajo</span></div>
+                  </div>
+                  <div class="mode-detail-foot">
+                    <span class="mode-detail-hint">Girá el aro arrastrándolo · Tocá un ícono para hacer zoom y ver su
+                      ficha · <b>ACTIVAR</b> envía el modo al robot</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= LEDS PANEL ================= -->
+        <div id="panel-leds" class="panel">
+          <div class="content-grid">
+            <!-- Dibujo Matrix 8x8 -->
+            <div class="card col-7">
+              <div class="card-header">
+                <div class="card-title"><span class="ct-icon"><svg viewBox="0 0 24 24">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                      <rect x="7" y="7" width="3" height="3" />
+                      <rect x="14" y="7" width="3" height="3" />
+                      <rect x="7" y="14" width="3" height="3" />
+                      <rect x="14" y="14" width="3" height="3" />
+                    </svg></span> Matriz NeoPixel 8x8 Interactiva</div>
+              </div>
+              <div class="card-body led-matrix-card-body">
+                <div class="led-matrix-wrapper">
+                  <div class="led-grid-draw" id="ledMatrixContainer">
+                    <!-- Generado por JS -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Herramientas y Paleta -->
+            <div class="card col-5">
+              <div class="card-header">
+                <div class="card-title"><span class="ct-icon"><svg viewBox="0 0 24 24">
+                      <circle cx="13.5" cy="6.5" r="2.5" />
+                      <circle cx="17.5" cy="10.5" r="2.5" />
+                      <circle cx="8.5" cy="7.5" r="2.5" />
+                      <circle cx="6.5" cy="12.5" r="2.5" />
+                      <path
+                        d="M12 2C6.49 2 2 6.49 2 12s4.49 10 10 10c.97 0 1.76-.79 1.76-1.76 0-.45-.17-.86-.45-1.19A1.76 1.76 0 0 1 14.76 17h1.52c3.3 0 5.72-2.42 5.72-5.72A10 10 0 0 0 12 2z" />
+                    </svg></span> Paleta y Editor de Matriz</div>
+              </div>
+              <div class="card-body">
+                <div class="led-tools-panel">
+                  <!-- Gama Predefinida -->
+                  <div class="palette-group">
+                    <span class="palette-label">Colores de Selección</span>
+                    <div class="color-swatches-grid" id="presetSwatches">
+                      <!-- Se generará por JS -->
+                    </div>
+                  </div>
+
+                  <!-- Custom Pickers -->
+                  <div class="palette-group" style="border-top:1.5px solid rgba(255,255,255,0.04);padding-top:15px">
+                    <span class="palette-label">Mezclador de Color</span>
+                    <div class="custom-picker-container">
+                      <input type="color" id="customColorPicker" value="#ff2b43" class="picker-styled">
+                      <button class="add-palette-btn" onclick="addCustomColorSwatch()">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2.5" style="flex-shrink:0;vertical-align:middle">
+                          <line x1="12" y1="5" x2="12" y2="19" />
+                          <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg> Añadir a Paleta Rápida
+                      </button>
+                    </div>
+                    <div class="color-swatches-grid" id="customSwatches" style="margin-top:10px">
+                      <!-- Swatches creados por usuario -->
+                    </div>
+                  </div>
+
+                  <!-- Modos de Herramientas -->
+                  <div class="palette-group" style="border-top:1.5px solid rgba(255,255,255,0.04);padding-top:15px">
+                    <span class="palette-label">Herramientas de Dibujo</span>
+                    <div class="draw-tools-group">
+                      <button class="tool-btn active" id="tool-draw" onclick="setDrawingTool('draw')">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2" style="flex-shrink:0">
+                          <path d="M12 19l7-7 3 3-7 7-3-3z" />
+                          <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" />
+                          <path d="M2 2l7.586 7.586" />
+                          <circle cx="11" cy="11" r="2" />
+                        </svg> Pincel
+                      </button>
+                      <button class="tool-btn" id="tool-erase" onclick="setDrawingTool('erase')">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2" style="flex-shrink:0">
+                          <path
+                            d="M20 20H7L3 16a1 1 0 0 1 0-1.41l9.59-9.59a2 2 0 0 1 2.82 0L21 10.59a2 2 0 0 1 0 2.82L13 21" />
+                          <line x1="18" y1="13" x2="11" y2="6" />
+                        </svg> Borrador
+                      </button>
+                      <button class="tool-btn" id="tool-eyedrop" onclick="setDrawingTool('eyedrop')">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                          stroke-width="2" style="flex-shrink:0">
+                          <path d="M2 22l1-1h3l9-9" />
+                          <path d="M3 21v-3l9-9" />
+                          <path d="M14.5 4.5l5 5" />
+                          <path d="M18.5 2.5a2.12 2.12 0 0 1 3 3l-1.5 1.5-5-5 1.5-1.5z" />
+                        </svg> Gotero
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Acciones Rápidas -->
+                  <div class="palette-group" style="border-top:1.5px solid rgba(255,255,255,0.04);padding-top:15px">
+                    <span class="palette-label">Acciones y Lienzo</span>
+                    <div class="draw-actions-group">
+                      <button class="draw-action-btn" onclick="clearMatrixCanvas()">Limpiar</button>
+                      <button class="draw-action-btn" onclick="fillMatrixCanvas()">Rellenar</button>
+                      <button class="draw-action-btn" onclick="invertMatrixCanvas()">Invertir</button>
+                    </div>
+                  </div>
+
+                  <!-- Preconfiguraciones -->
+                  <div class="palette-group" style="border-top:1.5px solid rgba(255,255,255,0.04);padding-top:15px">
+                    <span class="palette-label">Patrones del Firmware</span>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px">
+                      <button class="add-palette-btn" onclick="loadFirmwarePattern('smile')">Carita Feliz</button>
+                      <button class="add-palette-btn" onclick="loadFirmwarePattern('heart')">Corazón</button>
+                      <button class="add-palette-btn" onclick="loadFirmwarePattern('arrow')">Flecha</button>
+                      <button class="add-palette-btn" onclick="loadFirmwarePattern('spider')">Araña</button>
+                    </div>
+                  </div>
+
+                  <!-- Control de Brillo -->
+                  <div class="palette-group" style="border-top:1.5px solid rgba(255,255,255,0.04);padding-top:15px">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                      <span class="palette-label">Brillo NeoPixel</span>
+                      <span id="brightVal"
+                        style="font-family:var(--font-display);font-weight:700;color:var(--accent-cyan)">50%</span>
+                    </div>
+                    <input type="range" class="custom-slider" min="0" max="100" value="50"
+                      oninput="document.getElementById('brightVal').textContent=this.value+'%';sendCmd('brightness',parseInt(this.value))">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= TERMINAL PANEL ================= -->
+        <div id="panel-terminal" class="panel">
+          <div class="content-grid">
+            <!-- Terminal -->
+            <div class="card col-6 terminal-card">
+              <div class="card-header">
+                <div class="card-title"><span class="ct-icon"><svg viewBox="0 0 24 24">
+                      <polyline points="4 17 10 11 4 5" />
+                      <line x1="12" y1="19" x2="20" y2="19" />
+                    </svg></span> Consola de Control de Hardware</div>
+              </div>
+              <div class="card-body" style="display:flex;flex-direction:column">
+                <div class="terminal-output" id="termOutput" style="flex:1">
+                  <div class="term-line"><span class="term-prompt">$</span><span class="term-cmd">init</span></div>
+                  <div class="term-line"> <span class="term-ok">Núcleo NEUN inicializado correctamente. Versión
+                      v2.6.</span></div>
+                </div>
+                <div class="term-input-box">
+                  <input type="text" id="termInput"
+                    placeholder="Introduce comando binario... (ej: mode STAND, stop, ping)"
+                    onkeydown="if(event.key==='Enter')sendTerminalCommand()">
+                  <button onclick="sendTerminalCommand()">EJECUTAR</button>
+                </div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px">
+                  <button class="add-palette-btn" onclick="quickTerminal('status')">status</button>
+                  <button class="add-palette-btn" onclick="quickTerminal('mode STAND')">stand</button>
+                  <button class="add-palette-btn" onclick="quickTerminal('mode WALK_FWD')">caminar</button>
+                  <button class="add-palette-btn" onclick="quickTerminal('stop')">stop</button>
+                  <button class="add-palette-btn" onclick="quickTerminal('ping')">ping</button>
+                  <button class="add-palette-btn" onclick="quickTerminal('calibrate')">calibrar servos</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Chat con IA -->
+            <div class="card col-6 chat-window">
+              <div class="card-header">
+                <div class="card-title" style="color:var(--accent-cyan)">
+                  <span class="ct-icon"><svg viewBox="0 0 24 24">
+                      <rect x="3" y="11" width="18" height="10" rx="2" />
+                      <circle cx="12" cy="5" r="3" />
+                      <line x1="12" y1="8" x2="12" y2="11" />
+                      <circle cx="8" cy="16" r="1" fill="currentColor" stroke="none" />
+                      <circle cx="16" cy="16" r="1" fill="currentColor" stroke="none" />
+                    </svg></span> Copiloto IA de Mantenimiento
+                </div>
+              </div>
+              <div class="card-body" style="display:flex;flex-direction:column">
+                <div class="chat-messages" id="chatMessages" style="flex:1">
+                  <div class="chat-bubble-row ai">
+                    <div class="chat-avatar">AI</div>
+                    <div class="chat-bubble">
+                      Hola. Soy el asistente de operaciones de NEUN, tu araña robótica. ¿Qué subsistema deseas
+                      inspeccionar hoy? Puedo cambiar el modo de marcha, informar el nivel de batería, analizar
+                      telemetría o ejecutar comandos por ti.
+                      <span class="chat-time">Operativo</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="term-input-box">
+                  <input type="text" id="chatInput" placeholder="Pregunta algo al Copiloto de IA..."
+                    onkeydown="if(event.key==='Enter')sendChatMessage()">
+                  <button onclick="sendChatMessage()">ENVIAR</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= BUZZER / SOUND PANEL ================= -->
+        <div id="panel-buzzer" class="panel">
+          <div class="content-grid">
+            <!-- Patrones de sonido -->
+            <div class="card col-6">
+              <div class="card-header">
+                <div class="card-title"><span class="ct-icon"><svg viewBox="0 0 24 24">
+                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                      <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                      <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                    </svg></span> Patrones de Sonido</div>
+              </div>
+              <div class="card-body">
+                <div class="modes-grid" style="grid-template-columns:repeat(2,1fr);gap:12px" id="buzzerPresetGrid">
+                </div>
+              </div>
+            </div>
+
+            <!-- Regulación de tono -->
+            <div class="card col-6">
+              <div class="card-header">
+                <div class="card-title"><span class="ct-icon"><svg viewBox="0 0 24 24">
+                      <path d="M18 12a6 6 0 0 1-6 6" />
+                      <path d="M6 12a12 12 0 0 1 12-12" />
+                      <path d="M6 12a12 12 0 0 0 12 12" />
+                      <circle cx="12" cy="12" r="2" />
+                    </svg></span> Regulación de Tono</div>
+              </div>
+              <div class="card-body">
+                <div class="palette-group">
+                  <span class="palette-label">Tipo de Onda</span>
+                  <div class="draw-tools-group" id="waveSelector">
+                    <button class="tool-btn active" data-wave="sine">Senoidal</button>
+                    <button class="tool-btn" data-wave="square">Cuadrada</button>
+                    <button class="tool-btn" data-wave="triangle">Triangular</button>
+                    <button class="tool-btn" data-wave="sawtooth">Sierra</button>
+                  </div>
+                </div>
+                <div class="palette-group" style="margin-top:18px">
+                  <div class="speed-indicator" style="margin-bottom:4px">
+                    <span class="palette-label">Frecuencia</span>
+                    <span class="speed-text" id="buzzerFreqVal" style="font-size:22px">880 Hz</span>
+                  </div>
+                  <div class="custom-slider-wrap">
+                    <input type="range" class="custom-slider" id="buzzerFreqSlider" min="100" max="5000" step="10"
+                      value="880" oninput="updateBuzzerFreq(this.value)">
+                  </div>
+                </div>
+                <div class="palette-group" style="margin-top:18px">
+                  <div class="speed-indicator" style="margin-bottom:4px">
+                    <span class="palette-label">Duración</span>
+                    <span class="speed-text" id="buzzerDurVal" style="font-size:22px">300 ms</span>
+                  </div>
+                  <div class="custom-slider-wrap">
+                    <input type="range" class="custom-slider" id="buzzerDurSlider" min="50" max="10000" step="50"
+                      value="300" oninput="updateBuzzerDuration(this.value)">
+                  </div>
+                </div>
+                <div class="palette-group" style="margin-top:18px">
+                  <div class="speed-indicator" style="margin-bottom:4px">
+                    <span class="palette-label">Volumen</span>
+                    <span class="speed-text" id="buzzerVolVal" style="font-size:22px">50%</span>
+                  </div>
+                  <div class="custom-slider-wrap">
+                    <input type="range" class="custom-slider" id="buzzerVolSlider" min="0" max="100" step="5" value="50"
+                      oninput="updateBuzzerVolume(this.value)">
+                  </div>
+                </div>
+                <div style="display:flex;gap:12px;margin-top:22px">
+                  <button class="btn-estop" id="btnBuzzerPlay"
+                    style="height:48px;flex:1;background:linear-gradient(135deg,var(--accent-cyan),var(--accent-blue));color:#030712;box-shadow:0 4px 20px rgba(0,242,254,0.25)"
+                    onclick="playBuzzer('CUSTOM')">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                      <polygon points="5 3 19 12 5 21 5 3" />
+                    </svg> REPRODUCIR
+                  </button>
+                  <button class="btn-estop" id="btnBuzzerStop"
+                    style="height:48px;flex:1;background:var(--bg-elevated);color:var(--accent-red);border:1px solid var(--accent-red)"
+                    onclick="stopBuzzer()">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                      <rect x="5" y="5" width="14" height="14" rx="2" />
+                    </svg> DETENER
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Estado del módulo -->
+            <div class="card col-12">
+              <div class="card-header">
+                <div class="card-title"><span class="ct-icon"><svg viewBox="0 0 24 24">
+                      <path d="M5 12.55a11 11 0 0 1 14.08 0" />
+                      <path d="M1.42 9a16 16 0 0 1 21.16 0" />
+                      <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+                      <line x1="12" y1="20" x2="12.01" y2="20" />
+                    </svg></span> Estado del Módulo Buzzer</div>
+              </div>
+              <div class="card-body">
+                <div class="sensor-list">
+                  <div class="sensor-row" data-sensor="buzzer" id="buzzerStatusRow">
+                    <div class="sensor-row-icon"><svg viewBox="0 0 24 24">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                      </svg></div>
+                    <div class="sensor-row-info">
+                      <div class="sensor-row-name">Buzzer Pasivo</div>
+                      <div class="sensor-row-detail">GPIO15 · Sonido vía PWM</div>
+                    </div>
+                    <div class="sensor-row-status" id="buzzerStatusDot"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= SENSORS PANEL ================= -->
+        <div id="panel-sensors" class="panel">
+          <div class="content-grid">
+            <div class="col-12">
+              <div class="sensor-grid" id="sensorsGrid">
+                <!-- GPS -->
+                <div class="sensor-card-lg" data-sensor="gps">
+                  <div class="sensor-card-header">
+                    <span class="sensor-card-name"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M2 12h20M12 2c3 3 3 17 0 20M12 2c-3 3-3 17 0 20" /></svg> GPS NEO-6M</span>
+                    <span class="sensor-card-status" id="sens-gps-dot"></span>
+                  </div>
+                  <div class="sensor-card-value-row">
+                    <span class="sensor-card-value" id="sens-gps-val">SIN FIX</span>
+                    <span class="sensor-card-unit" id="sens-gps-unit"></span>
+                  </div>
+                  <div class="sensor-card-detail">
+                    <span>GPIO17/18</span>
+                    <span id="sens-gps-range">NMEA 9600</span>
+                  </div>
+                  <div class="sensor-analysis-row">
+                    <div class="sensor-analysis-item">SAT <span class="num" id="sens-gps-sats">--</span></div>
+                    <div class="sensor-analysis-item">HDOP <span class="num" id="sens-gps-hdop">--</span></div>
+                    <div class="sensor-analysis-item">VEL <span class="num" id="sens-gps-speed">--</span></div>
+                  </div>
+                  <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+                    <button class="add-palette-btn" onclick="gpsSaveWaypoint()">Waypoint</button>
+                    <button class="add-palette-btn" onclick="gpsCopyCoords()">Copiar coords</button>
+                    <button class="add-palette-btn" onclick="window.open('/api/gps/export?format=csv','_blank')">CSV</button>
+                    <button class="add-palette-btn" onclick="window.open('/api/gps/export?format=gpx','_blank')">GPX</button>
+                    <button class="add-palette-btn" onclick="gpsClearTrack()">Borrar traza</button>
+                  </div>
+                  <canvas id="gpsTrace" width="320" height="320" style="width:100%;height:auto;margin-top:8px;background:rgba(6,9,19,0.35);border-radius:8px"></canvas>
+                  <div class="sensor-analysis-row">
+                    <div class="sensor-analysis-item">PUNTOS <span class="num" id="gpsTracePoints">0</span></div>
+                    <div class="sensor-analysis-item">WAYPOINTS <span class="num" id="gpsWaypoints">0</span></div>
+                    <div class="sensor-analysis-item">UTC <span class="num" id="sens-gps-utc">--</span></div>
+                  </div>
+                </div>
+                <!-- Ultrasonic -->
+                <div class="sensor-card-lg" data-sensor="ultrasonic">
+                  <div class="sensor-card-header">
+                    <span class="sensor-card-name"><svg viewBox="0 0 24 24">
+                        <path d="M2 12a10 10 0 0 1 10-10" />
+                        <path d="M2 12a7 7 0 0 1 7-7" />
+                        <path d="M2 12a4 4 0 0 1 4-4" />
+                        <circle cx="2" cy="12" r="1" />
+                      </svg> Radar HC-SR04</span>
+                    <span class="sensor-card-status" id="sens-ultrasonic-dot"></span>
+                  </div>
+                  <div class="sensor-card-value-row">
+                    <span class="sensor-card-value" id="sens-ultrasonic-val">42</span>
+                    <span class="sensor-card-unit">cm</span>
+                  </div>
+                  <div class="sensor-card-detail">
+                    <span>GPIO10/11</span>
+                    <span id="sens-ultrasonic-range">5-400cm</span>
+                  </div>
+                  <div class="sensor-analysis-row">
+                    <div class="sensor-analysis-item">MIN <span class="num" id="sens-ultrasonic-min">--</span></div>
+                    <div class="sensor-analysis-item">ACTUAL <span class="num" id="sens-ultrasonic-avg">--</span></div>
+                    <div class="sensor-analysis-item">MAX <span class="num" id="sens-ultrasonic-max">--</span></div>
+                  </div>
+                </div>
+                <!-- Infrared -->
+                <div class="sensor-card-lg" data-sensor="ir">
+                  <div class="sensor-card-header">
+                    <span class="sensor-card-name"><svg viewBox="0 0 24 24">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                        <circle cx="12" cy="12" r="3" />
+                      </svg> TCRT5000 IR</span>
+                    <span class="sensor-card-status" id="sens-ir-dot"></span>
+                  </div>
+                  <div class="sensor-card-value-row">
+                    <span class="sensor-card-value" id="sens-ir-val">512</span>
+                    <span class="sensor-card-unit">raw</span>
+                  </div>
+                  <div class="sensor-card-detail">
+                    <span>GPIO12</span>
+                    <span id="sens-ir-range">0-1023</span>
+                  </div>
+                  <div class="sensor-analysis-row">
+                    <div class="sensor-analysis-item">MIN <span class="num" id="sens-ir-min">--</span></div>
+                    <div class="sensor-analysis-item">ACTUAL <span class="num" id="sens-ir-avg">--</span></div>
+                    <div class="sensor-analysis-item">MAX <span class="num" id="sens-ir-max">--</span></div>
+                  </div>
+                </div>
+                <!-- DHT Temp -->
+                <div class="sensor-card-lg" data-sensor="dht">
+                  <div class="sensor-card-header">
+                    <span class="sensor-card-name"><svg viewBox="0 0 24 24">
+                        <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z" />
+                      </svg> AHT10 Temperatura</span>
+                    <span class="sensor-card-status" id="sens-dht-dot"></span>
+                  </div>
+                  <div class="sensor-card-value-row">
+                    <span class="sensor-card-value" id="sens-dht-temp-val">24.5</span>
+                    <span class="sensor-card-unit">°C</span>
+                  </div>
+                  <div class="sensor-card-detail">
+                    <span>GPIO13</span>
+                    <span id="sens-dht-range">-40~80°C</span>
+                  </div>
+                  <div class="sensor-analysis-row">
+                    <div class="sensor-analysis-item">MIN <span class="num" id="sens-dht-min">--</span></div>
+                    <div class="sensor-analysis-item">ACTUAL <span class="num" id="sens-dht-avg">--</span></div>
+                    <div class="sensor-analysis-item">MAX <span class="num" id="sens-dht-max">--</span></div>
+                  </div>
+                </div>
+                <!-- DHT Humidity -->
+                <div class="sensor-card-lg" data-sensor="dht">
+                  <div class="sensor-card-header">
+                    <span class="sensor-card-name"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+                      </svg> AHT10 Humedad</span>
+                    <span class="sensor-card-status" id="sens-hum-dot"></span>
+                  </div>
+                  <div class="sensor-card-value-row">
+                    <span class="sensor-card-value" id="sens-hum-val">62</span>
+                    <span class="sensor-card-unit">%</span>
+                  </div>
+                  <div class="sensor-card-detail">
+                    <span>GPIO13</span>
+                    <span id="sens-hum-range">0-100%</span>
+                  </div>
+                  <div class="sensor-analysis-row">
+                    <div class="sensor-analysis-item">MIN <span class="num" id="sens-hum-min">--</span></div>
+                    <div class="sensor-analysis-item">ACTUAL <span class="num" id="sens-hum-avg">--</span></div>
+                    <div class="sensor-analysis-item">MAX <span class="num" id="sens-hum-max">--</span></div>
+                  </div>
+                </div>
+                <!-- IMU -->
+                <div class="sensor-card-lg" data-sensor="imu">
+                  <div class="sensor-card-header">
+                    <span class="sensor-card-name"><svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" />
+                        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="currentColor"
+                          stroke="none" />
+                      </svg> MPU6050 IMU</span>
+                    <span class="sensor-card-status" id="sens-imu-dot"></span>
+                  </div>
+                  <div class="sensor-card-value-row">
+                    <span class="sensor-card-value" id="sens-imu-val">P:0 R:0 Y:0</span>
+                    <span class="sensor-card-unit">deg</span>
+                  </div>
+                  <div class="sensor-card-detail">
+                    <span id="sens-imu-address">I2C 0x68</span>
+                    <span id="sens-imu-temp">Temp: --°C</span>
+                  </div>
+                  <div class="sensor-analysis-row">
+                    <div class="sensor-analysis-item">ACEL G <span class="num" id="sens-imu-g">1.00</span></div>
+                    <div class="sensor-analysis-item">GIRO X <span class="num" id="sens-imu-gx">0</span></div>
+                    <div class="sensor-analysis-item">GIRO Z <span class="num" id="sens-imu-gz">0</span></div>
+                  </div>
+                </div>
+                <!-- Servos -->
+                <div class="sensor-card-lg" data-sensor="servos">
+                  <div class="sensor-card-header">
+                    <span class="sensor-card-name"><svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="3" />
+                        <path
+                          d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1.08 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.6.77 1.05 1.51 1.08H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                      </svg> PCA9685 Servos</span>
+                    <span class="sensor-card-status" id="sens-servos-dot"></span>
+                  </div>
+                  <div class="sensor-card-value-row">
+                    <span class="sensor-card-value" id="sens-servos-val">12</span>
+                    <span class="sensor-card-unit">canales</span>
+                  </div>
+                  <div class="sensor-card-detail">
+                    <span>I2C PWM</span>
+                    <span id="sens-servos-range">12 Servos</span>
+                  </div>
+                  <div class="sensor-analysis-row">
+                    <div class="sensor-analysis-item">MODO <span class="num" id="sens-servos-mode">STAND</span></div>
+                    <div class="sensor-analysis-item">VEL <span class="num" id="sens-servos-speed">50%</span></div>
+                    <div class="sensor-analysis-item">BATERIA <span class="num" id="sens-servos-bat">87%</span></div>
+                  </div>
+                </div>
+                <!-- Buzzer -->
+                <div class="sensor-card-lg" data-sensor="buzzer">
+                  <div class="sensor-card-header">
+                    <span class="sensor-card-name">Buzzer Pasivo</span>
+                    <span class="sensor-card-status" id="sens-buzzer-dot"></span>
+                  </div>
+                  <div class="sensor-card-value-row">
+                    <span class="sensor-card-value" id="sens-buzzer-val">OFFLINE</span>
+                  </div>
+                  <div class="sensor-card-detail">
+                    <span>Salida PWM</span>
+                    <span id="sens-buzzer-range">GPIO15</span>
+                  </div>
+                </div>
+                <!-- Headlights -->
+                <div class="sensor-card-lg" data-sensor="headlights">
+                  <div class="sensor-card-header">
+                    <span class="sensor-card-name">Linterna frontal</span>
+                    <span class="sensor-card-status" id="sens-headlights-dot"></span>
+                  </div>
+                  <div class="sensor-card-value-row">
+                    <span class="sensor-card-value" id="sens-headlights-val">OFFLINE</span>
+                  </div>
+                  <div class="sensor-card-detail">
+                    <span>Brillo <b id="sens-headlights-brightness-val">50%</b></span>
+                    <span id="sens-headlights-range">GPIO16</span>
+                  </div>
+                  <div class="headlight-control">
+                    <input id="sens-headlights-brightness" class="custom-slider" type="range" min="1" max="100" step="1"
+                      value="50" aria-label="Brillo de la linterna frontal"
+                      oninput="previewHeadlightBrightness(this.value)" onchange="commitHeadlightBrightness(this.value)">
+                    <div class="headlight-buttons">
+                      <button class="comms-btn primary" onclick="setHeadlightPower(true)">Encender</button>
+                      <button class="comms-btn danger" onclick="setHeadlightPower(false)">Apagar</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= COMMS PANEL ================= -->
+        <!-- ================= PANEL MANDO ================= -->
+        <div id="panel-mando" class="panel">
+          <div class="content-grid">
+            <div class="col-12 mando-header">
+              <div class="mando-badge" id="mandoBadge">MANDO<br>OFFLINE</div>
+              <div style="flex:1;min-width:240px">
+                <div style="font-weight:700" id="mandoTitle">Sin mando conectado</div>
+                <div style="font-size:12px;color:var(--text-secondary)" id="mandoSub">Encendi el ESP32-C3: se conecta al AP y baja su perfil del robot</div>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button class="comms-btn primary" onclick="mandoTestLink()">Test de enlace</button>
+                <button class="comms-btn" onclick="mandoLoadProfile()">Leer perfil</button>
+                <button class="comms-btn danger" onclick="mandoResetProfile()">Reset perfil</button>
+              </div>
+            </div>
+
+            <div class="mando-grid col-12">
+              <div class="mando-card">
+                <h4>Vista previa del mando</h4>
+                <div class="mando-preview">
+                  <canvas id="mandoPrevJoy" width="180" height="180" title="Stick: eje X (giro) e Y (avance)"></canvas>
+                  <canvas id="mandoPrevRot" width="140" height="140" title="Giro sobre eje propio (rotate)"></canvas>
+                  <div class="mando-bars">
+                    <div class="mando-bar-label"><span>Velocidad</span><span id="mandoBarSpeedVal">0%</span></div>
+                    <div class="mando-bar" id="mandoBarSpeedBox"><div id="mandoBarSpeed"></div></div>
+                    <div class="mando-bar-label"><span>Chasis (Z)</span><span id="mandoBarBodyVal">+0.00</span></div>
+                    <div class="mando-bar" id="mandoBarBodyBox"><div id="mandoBarBody"></div></div>
+                    <div class="mando-kpi">
+                      <div><div class="lbl">Speed</div><div class="val" id="mandoKpiSpeed">0%</div></div>
+                      <div><div class="lbl">Rotate</div><div class="val" id="mandoKpiRot">+0.00</div></div>
+                      <div><div class="lbl">Body Z</div><div class="val" id="mandoKpiBody">+0.00</div></div>
+                      <div><div class="lbl">Joy X/Y</div><div class="val" id="mandoKpiJoy">0.00/0.00</div></div>
+                    </div>
+                    <div style="font-size:11px;color:var(--text-muted)" id="mandoPreviewNote">Sin telemetria: se enciende cuando el mando mande comandos</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mando-card">
+                <h4>Enlace</h4>
+                <div class="mando-kv"><span class="k">Estado</span><span class="v" id="mandoLinkState">--</span></div>
+                <div class="mando-kv"><span class="k">MAC</span><span class="v" id="mandoMac">--</span></div>
+                <div class="mando-kv"><span class="k">IP</span><span class="v" id="mandoIp">--</span></div>
+                <div class="mando-kv"><span class="k">RSSI</span><span class="v" id="mandoRssiVal">--</span></div>
+                <div class="mando-bar" style="margin:8px 0"><div id="mandoRssi" style="width:0%"></div></div>
+                <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--text-muted)"><span>-100</span><span>-55</span></div>
+                <div class="mando-kv"><span class="k">Latencia</span><span class="v" id="mandoLatency">--</span></div>
+                <div class="mando-kv"><span class="k">Uptime AP</span><span class="v" id="mandoUptime">--</span></div>
+                <div class="mando-kv"><span class="k">HTTP (req / err)</span><span class="v" id="mandoRequests">0 / 0</span></div>
+                <div class="mando-kv"><span class="k">Watchdog</span><span class="v" id="mandoWatchdog">0</span></div>
+                <div style="margin-top:8px">
+                  <div style="font-size:11px;color:var(--text-secondary);margin-bottom:4px">Estaciones conectadas</div>
+                  <div id="mandoStations"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 mando-card">
+              <h4>Mapa físico del mando ESP32-C3</h4>
+              <div class="mando-grid col-12">
+                <div>
+                  <div class="mando-kv"><span class="k">Joystick X / Y</span><span class="v">GPIO3 / GPIO2</span></div>
+                  <div class="mando-kv"><span class="k">Clic del joystick</span><span class="v">GPIO5 · confirmación / buzzer</span></div>
+                  <div class="mando-kv"><span class="k">Potenciómetro</span><span class="v">GPIO4 · velocidad</span></div>
+                </div>
+                <div>
+                  <div class="mando-kv"><span class="k">Altura del chasis + / −</span><span class="v">GPIO7 / GPIO8</span></div>
+                  <div class="mando-kv"><span class="k">Modo configurable</span><span class="v">GPIO10</span></div>
+                  <div class="mando-kv"><span class="k">Buzzer local / LED externo</span><span class="v">GPIO20 / GPIO6</span></div>
+                </div>
+              </div>
+              <div style="margin-top:8px;font-size:11px;color:var(--text-secondary)">
+                GPIO8 es un pin de arranque: no mantengas ese botón pulsado al encender o reiniciar. El LED de GPIO6 es externo y necesita resistencia en serie.
+              </div>
+            </div>
+
+            <div class="col-12 mando-card">
+              <h4>Perfil del mando <span id="mandoProfileV" style="color:var(--text-secondary);font-weight:400">v--</span></h4>
+              <fieldset class="mando-fieldset"><legend>Joystick</legend>
+                <div class="mando-form">
+                  <label>Deadzone (0-0.40)<input type="number" id="mp_deadzone" step="0.01" min="0" max="0.40" value="0.08"></label>
+                  <label>Suavizado EMA (0.05-1)<input type="number" id="mp_ema" step="0.05" min="0.05" max="1" value="0.30"></label>
+                  <label class="mando-switch"><input type="checkbox" id="mp_invx"> Invertir eje X</label>
+                  <label class="mando-switch"><input type="checkbox" id="mp_invy" checked> Invertir eje Y</label>
+                </div>
+              </fieldset>
+              <fieldset class="mando-fieldset"><legend>Envio y velocidad</legend>
+                <div class="mando-form">
+                  <label>Heartbeat (ms)<input type="number" id="mp_heartbeat" step="10" min="50" max="1000" value="200"></label>
+                  <label>Envio max (Hz)<input type="number" id="mp_rate" step="1" min="1" max="50" value="20"></label>
+                  <label>Pot min (ADC)<input type="number" id="mp_potmin" step="1" min="0" max="4095" value="60"></label>
+                  <label>Pot max (ADC)<input type="number" id="mp_potmax" step="1" min="0" max="4095" value="4020"></label>
+                  <label>Velocidad min (%)<input type="number" id="mp_spdmin" step="1" min="0" max="100" value="0"></label>
+                  <label>Velocidad max (%)<input type="number" id="mp_spdmax" step="1" min="0" max="100" value="100"></label>
+                </div>
+              </fieldset>
+              <fieldset class="mando-fieldset"><legend>Salida</legend>
+                <div class="mando-form">
+                  <label>Brillo LED (%)<input type="number" id="mp_led" step="1" min="0" max="100" value="64"></label>
+                  <label>Paso del chasis<input type="number" id="mp_body" step="0.05" min="0.10" max="1" value="0.50"></label>
+                  <label>Boton de modo<select id="mp_mode"></select></label>
+                  <label class="mando-switch"><input type="checkbox" id="mp_buzzer" checked> Activar buzzer del robot al pulsar el joystick</label>
+                </div>
+              </fieldset>
+              <div class="mando-btnrow">
+                <button class="comms-btn primary" onclick="mandoSaveProfile()">Guardar en el robot</button>
+                <button class="comms-btn" onclick="mandoLoadProfile()">Descartar cambios</button>
+              </div>
+            </div>
+
+            <div class="col-12 mando-card">
+              <h4>Comandos rapidos</h4>
+              <div class="mando-quick">
+                <button class="comms-btn primary" onclick="mandoTestLink()">Test de enlace</button>
+                <button class="comms-btn" onclick="mandoSendQuick('beep')">Beep</button>
+                <button class="comms-btn" onclick="mandoSendQuick('siren')">Sirena</button>
+                <button class="comms-btn" onclick="mandoSendQuick('headlight on')">Luces ON</button>
+                <button class="comms-btn" onclick="mandoSendQuick('headlight off')">Luces OFF</button>
+              </div>
+            </div>
+
+            <div class="col-12 mando-card">
+              <h4>Actividad del mando</h4>
+              <div class="mando-log" id="mandoLog">
+                <div class="mando-kv"><span class="k">--:--:--</span><span class="v">sin actividad todavia</span></div>
+              </div>
+            </div>
+
+            <div class="col-12 mando-card">
+              <h4>Ultimo comando y actividad</h4>
+              <div class="mando-grid col-12">
+                <div>
+                  <div class="mando-kv"><span class="k">Comando</span><span class="v" id="mandoLastCmd">--</span></div>
+                  <div class="mando-kv"><span class="k">Fuente</span><span class="v" id="mandoLastSrc">--</span></div>
+                  <div class="mando-kv"><span class="k">Antiguedad</span><span class="v" id="mandoLastAge">--</span></div>
+                  <div class="mando-kv"><span class="k">IP origen</span><span class="v" id="mandoLastIp">--</span></div>
+                </div>
+                <div>
+                  <div class="mando-kv"><span class="k">Comandos del mando</span><span class="v" id="mandoCommands">0</span></div>
+                  <div class="mando-kv"><span class="k">Lecturas de perfil</span><span class="v" id="mandoFetches">0</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12 mando-card mando-guide">
+              <details>
+                <summary>Como conectar el mando fisico (5 pasos)</summary>
+                <div class="mando-kv"><span class="k">1</span><span class="v">Encender el ESP32-C3 (trae el AP ARANA-ROBOT cargado)</span></div>
+                <div class="mando-kv"><span class="k">2</span><span class="v">Baja el perfil: GET /api/mando/config con header X-Arana-Mac: su MAC</span></div>
+                <div class="mando-kv"><span class="k">3</span><span class="v">Comandos con header X-Arana-Source: mando (aparecen como fuente en el panel)</span></div>
+                <div class="mando-kv"><span class="k">4</span><span class="v">Heartbeat de 5 Hz mientras hay orden de movimiento (si no, el watchdog frena)</span></div>
+                <div class="mando-kv"><span class="k">5</span><span class="v">E-STOP = emergency con latch (rearme solo con emergency=false)</span></div>
+              </details>
+            </div>
+          </div>
+        </div>
+<div id="panel-comms" class="panel">
+          <div class="content-grid">
+            <div class="comms-status-card">
+              <div class="comms-status-badge" id="commsBadge">SIN<br>ENLACE</div>
+              <div class="comms-status-info">
+                <div class="comms-status-title" id="commsTitle">Sin conexion</div>
+                <div class="comms-status-sub" id="commsSub">Conecta la PC a la red ARANA-ROBOT para establecer enlace
+                </div>
+                <div class="comms-status-actions">
+                  <button class="comms-btn primary" onclick="connectReal()">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2.5">
+                      <path d="M5 12.55a11 11 0 0 1 14.08 0" />
+                      <path d="M1.42 9a16 16 0 0 1 21.16 0" />
+                      <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+                      <line x1="12" y1="20" x2="12.01" y2="20" />
+                    </svg>
+                    Conectar ESP32
+                  </button>
+                  <button class="comms-btn" onclick="connectDemo()">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2.5">
+                      <circle cx="12" cy="12" r="3" />
+                      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06" />
+                    </svg>
+                    Modo Demo
+                  </button>
+                  <button class="comms-btn danger"
+                    onclick="if(connected){fetch('/api/disconnect').then(function(){showToast('Desconectado','warn')})}">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                      stroke-width="2.5">
+                      <line x1="1" y1="1" x2="23" y2="23" />
+                      <path d="M16.72 7.28a11 11 0 0 1 2.84 5.27" />
+                      <path d="M5.24 6.24a11 11 0 0 0-3.82 6.31" />
+                      <path d="M10.55 10.55a6 6 0 0 0-2.02 5.56" />
+                      <path d="M13.45 13.45a6 6 0 0 1 3.01-1.42" />
+                    </svg>
+                    Desconectar
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Network config -->
+            <div class="comms-detail-card">
+              <div class="comms-detail-title"><svg viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="3" />
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06" />
+                </svg> Configuracion de Red</div>
+              <div class="comms-detail-row"><span class="k">SSID</span><span class="v" id="commsSsid">ARANA-ROBOT</span></div>
+              <div class="comms-detail-row"><span class="k">Clave</span><span class="v" id="commsPass">--</span></div>
+              <div class="comms-detail-row"><span class="k">Canal</span><span class="v" id="commsChannel">--</span></div>
+              <div class="comms-detail-row"><span class="k">Clientes</span><span class="v" id="commsClients">0 / 4</span></div>
+              <div class="comms-detail-row"><span class="k">IP ESP32</span><span class="v"
+                  id="commsEspIp">192.168.4.1</span></div>
+              <div class="comms-detail-row"><span class="k">Puerto</span><span class="v">80 (HTTP)</span></div>
+              <div class="comms-detail-row"><span class="k">Host PC</span><span class="v">localhost:5000</span></div>
+            </div>
+
+            <!-- Signal strength -->
+            <div class="comms-detail-card">
+              <div class="comms-detail-title"><svg viewBox="0 0 24 24">
+                  <path d="M5 12.55a11 11 0 0 1 14.08 0" />
+                  <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+                  <line x1="12" y1="20" x2="12.01" y2="20" />
+                </svg> Calidad de Enlace</div>
+              <div class="comms-detail-row"><span class="k">Estado</span><span class="v" id="commsLinkStatus"
+                  style="color:var(--accent-yellow)">Sin enlace</span></div>
+              <div class="comms-detail-row"><span class="k">Telemetría</span><span class="v" id="commsTelemetryStatus"
+                  style="color:var(--text-muted)">Esperando datos</span></div>
+              <div class="comms-detail-row"><span class="k">Señal WiFi</span>
+                <span class="v"><span class="comms-signal-bars" id="commsSignalBars">
+                    <span class="comms-signal-bar" style="height:8px"></span>
+                    <span class="comms-signal-bar" style="height:14px"></span>
+                    <span class="comms-signal-bar" style="height:20px"></span>
+                    <span class="comms-signal-bar" style="height:26px"></span>
+                  </span></span>
+              </div>
+              <div class="comms-detail-row"><span class="k">Latencia</span><span class="v" id="commsLatency">--
+                  ms</span></div>
+              <div class="comms-detail-row"><span class="k">Ultimo ping</span><span class="v"
+                  id="commsLastPing">--</span></div>
+              <div class="comms-detail-row"><span class="k">Tiempo activo</span><span class="v"
+                  id="commsUptime">00:00:00</span></div>
+            </div>
+
+            <!-- Connection log -->
+            <div class="comms-detail-card" style="grid-column: span 12;">
+              <div class="comms-detail-title"><svg viewBox="0 0 24 24">
+                  <polyline points="4 17 10 11 4 5" />
+                  <line x1="12" y1="19" x2="20" y2="19" />
+                </svg> Historial de Conexion</div>
+              <div class="comms-log-box" id="commsLog">
+                <div class="comms-log-line"><span class="comms-log-time">--:--:--</span><span
+                    class="comms-log-info">Sistema de comunicacion iniciado</span></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="./static-api-shim.js"></script>
+  <script src="./neun3d.js"></script>
+  <script src="./app.js"></script>
+</body>
+
+</html>

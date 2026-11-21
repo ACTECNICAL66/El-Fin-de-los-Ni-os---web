@@ -1,0 +1,1122 @@
+.simulator-intro {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  margin: 4px 0 20px;
+  padding: 20px 22px;
+  border: 1px solid rgba(0, 242, 254, 0.13);
+  border-radius: 14px;
+  background: linear-gradient(110deg, rgba(0, 242, 254, 0.055), rgba(255, 8, 68, 0.035) 55%, rgba(11, 15, 26, 0.4));
+}
+
+.simulator-kicker {
+  color: var(--accent-cyan);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.simulator-intro h2 {
+  margin: 5px 0 3px;
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 24px;
+}
+
+.simulator-intro h2 b { color: var(--accent-red); }
+
+.simulator-intro p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.simulator-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  padding: 8px 11px;
+  border: 1px solid rgba(0, 255, 135, 0.22);
+  border-radius: 999px;
+  color: var(--accent-green);
+  background: rgba(0, 255, 135, 0.06);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+
+.simulator-live i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent-green);
+  box-shadow: 0 0 10px var(--accent-green);
+}
+
+.neun3d-card {
+  overflow: hidden;
+  border-color: rgba(255, 255, 255, 0.08);
+  background: linear-gradient(145deg, rgba(15, 20, 34, 0.96), rgba(8, 12, 22, 0.98));
+}
+
+.neun3d-header {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.neun3d-head-meta {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.neun3d-badge,
+.neun3d-state {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+.neun3d-badge {
+  color: #ffbdc9;
+  background: rgba(255, 8, 68, 0.12);
+  border: 1px solid rgba(255, 8, 68, 0.24);
+}
+
+.neun3d-state {
+  color: var(--accent-green);
+  background: rgba(0, 255, 135, 0.07);
+  border: 1px solid rgba(0, 255, 135, 0.18);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  text-transform: none;
+}
+
+.neun3d-reset,
+.neun3d-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 29px;
+  padding: 5px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.04);
+  font: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 140ms ease, color 140ms ease, background 140ms ease;
+}
+
+.neun3d-upload-btn {
+  color: var(--accent-cyan);
+  border-color: rgba(0, 242, 254, 0.30);
+  background: rgba(0, 242, 254, 0.08);
+}
+
+.neun3d-reset:hover,
+.neun3d-upload-btn:hover {
+  color: var(--text-primary);
+  border-color: rgba(0, 242, 254, 0.55);
+  background: rgba(0, 242, 254, 0.14);
+}
+
+.neun3d-body {
+  padding-top: 12px;
+}
+
+/* Stage wrapper with HUD overlays and Drag-and-Drop feedback */
+.neun3d-stage {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.neun3d-stage.neun3d-drop-active::after {
+  content: "Suelta neun_model.bin o tu archivo .stl aquí";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(8, 15, 28, 0.84);
+  border: 2px dashed var(--accent-cyan);
+  border-radius: 12px;
+  color: var(--accent-cyan);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  pointer-events: none;
+  z-index: 6;
+}
+
+.neun3d-hud-top {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.neun3d-hud-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.neun3d-hud-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: rgba(7, 11, 20, 0.72);
+  backdrop-filter: blur(6px);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+}
+
+.neun3d-hud-pill.mode {
+  color: var(--accent-cyan);
+  border-color: rgba(0, 242, 254, 0.28);
+}
+
+.neun3d-hud-pill.source.is-real {
+  color: var(--accent-green);
+  border-color: rgba(0, 255, 135, 0.30);
+}
+
+.neun3d-foot-strip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(7, 11, 20, 0.72);
+  backdrop-filter: blur(6px);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-muted);
+}
+
+.neun3d-foot-dot {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-weight: 700;
+  transition: background 110ms ease, color 110ms ease;
+}
+
+.neun3d-foot-dot::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.neun3d-foot-dot.planted {
+  color: #37e69b;
+  background: rgba(55, 230, 155, 0.12);
+}
+
+.neun3d-foot-dot.airborne {
+  color: #ffb038;
+  background: rgba(255, 176, 56, 0.16);
+}
+
+.neun3d-canvas {
+  display: block;
+  width: 100%;
+  height: min(62vh, 540px);
+  min-height: 340px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  background: radial-gradient(ellipse at 50% 35%, #111c30, #060a12 78%);
+  cursor: grab;
+  touch-action: none;
+}
+
+.neun3d-canvas.dragging {
+  cursor: grabbing;
+}
+
+.neun3d-legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 11px 2px 3px;
+  color: var(--text-secondary);
+  font-size: 10px;
+}
+
+.neun3d-legend span:not(.neun3d-help) {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.neun3d-legend i {
+  width: 9px;
+  height: 9px;
+  display: inline-block;
+  border-radius: 50%;
+}
+
+.legend-body { background: #8a929e; }
+.legend-coxa { background: #3b668f; }
+.legend-femur { background: #dcdfe6; }
+.legend-tibia { background: #d62038; }
+
+.neun3d-help {
+  margin-left: auto;
+  color: var(--text-muted);
+}
+
+.neun3d-note {
+  margin: 7px 0 0;
+  color: var(--text-muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.neun3d-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.neun3d-sim-modes,
+.neun3d-actions,
+.neun3d-camera-presets {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.neun3d-sim-modes button,
+.neun3d-camera-presets button,
+.neun3d-play,
+.neun3d-stop {
+  min-height: 31px;
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.035);
+  font: inherit;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 130ms ease, color 130ms ease, background 130ms ease;
+}
+
+.neun3d-sim-modes button:hover,
+.neun3d-camera-presets button:hover,
+.neun3d-stop:hover {
+  border-color: rgba(0, 242, 254, 0.38);
+  color: var(--text-primary);
+}
+
+.neun3d-sim-modes button.active,
+.neun3d-camera-presets button.active {
+  border-color: rgba(0, 242, 254, 0.50);
+  color: var(--accent-cyan);
+  background: rgba(0, 242, 254, 0.11);
+}
+
+.neun3d-play {
+  border-color: rgba(0, 255, 135, 0.35);
+  color: #05150e;
+  background: var(--accent-green);
+  font-weight: 800;
+}
+
+.neun3d-play:hover { filter: brightness(1.08); }
+
+.neun3d-height-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.neun3d-height-label {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.neun3d-height-ctrl {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.neun3d-height-btn,
+.neun3d-height-val {
+  min-height: 31px;
+  padding: 5px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+  touch-action: none;
+  transition: border-color 120ms ease, background 120ms ease, color 120ms ease, transform 90ms ease;
+}
+
+.neun3d-height-btn.up:hover,
+.neun3d-height-btn.up.pressed {
+  border-color: rgba(0, 255, 135, 0.55);
+  background: rgba(0, 255, 135, 0.14);
+  color: var(--accent-green);
+}
+
+.neun3d-height-btn.down:hover,
+.neun3d-height-btn.down.pressed {
+  border-color: rgba(255, 176, 56, 0.55);
+  background: rgba(255, 176, 56, 0.14);
+  color: #ffb038;
+}
+
+.neun3d-height-btn.pressed {
+  transform: translateY(1px);
+}
+
+.neun3d-height-val {
+  min-width: 44px;
+  padding: 5px 7px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.neun3d-height-val.is-high {
+  color: var(--accent-green);
+  border-color: rgba(0, 255, 135, 0.35);
+}
+
+.neun3d-height-val.is-low {
+  color: #ffb038;
+  border-color: rgba(255, 176, 56, 0.35);
+}
+
+.neun3d-camera-presets {
+  margin-top: 11px;
+  color: var(--text-muted);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+.neun3d-camera-presets button {
+  min-height: 27px;
+  padding: 4px 9px;
+  font-size: 9px;
+}
+
+@media (max-width: 700px) {
+  .simulator-intro { align-items: flex-start; padding: 16px; }
+  .simulator-intro p { max-width: 90%; }
+  .simulator-live { font-size: 8px; }
+
+  .neun3d-canvas {
+    height: 44vh;
+    min-height: 280px;
+  }
+
+  .neun3d-head-meta {
+    width: 100%;
+    justify-content: flex-start;
+    margin-left: 0;
+  }
+
+  .neun3d-help {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .neun3d-hud-top {
+    top: 7px;
+    left: 7px;
+    right: 7px;
+  }
+
+  .neun3d-sim-modes,
+  .neun3d-actions { width: 100%; }
+
+  .neun3d-sim-modes button { flex: 1 1 auto; }
+  .neun3d-actions button { flex: 1; }
+  .neun3d-jl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ==================== LIVE 12-SERVO JOINT TELEMETRY STRIP ==================== */
+.neun3d-hud-pill.mode.is-real {
+  color: #6effb8;
+  border-color: rgba(0, 255, 135, 0.45);
+  background: rgba(0, 255, 135, 0.14);
+  box-shadow: 0 0 12px rgba(0, 255, 135, 0.22);
+}
+
+.neun3d-joints-live {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(6, 10, 18, 0.72);
+  border-radius: 0 0 12px 12px;
+}
+
+.neun3d-jl-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 9px;
+}
+
+.neun3d-jl-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary, #9db0cc);
+}
+
+.neun3d-jl-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #00f2fe;
+  box-shadow: 0 0 8px rgba(0, 242, 254, 0.7);
+}
+
+.neun3d-jl-dot.is-real {
+  background: #00ff87;
+  box-shadow: 0 0 10px rgba(0, 255, 135, 0.85);
+}
+
+.neun3d-jl-src {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-family: var(--font-mono, monospace);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #7eeeff;
+  background: rgba(0, 242, 254, 0.10);
+  border: 1px solid rgba(0, 242, 254, 0.25);
+}
+
+.neun3d-jl-src.is-real {
+  color: #7dffbe;
+  background: rgba(0, 255, 135, 0.12);
+  border-color: rgba(0, 255, 135, 0.35);
+}
+
+.neun3d-jl-switch {
+  display: inline-flex;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 2px;
+}
+
+.neun3d-jl-switch button {
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary, #8fa3bf);
+  font: inherit;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 3px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.neun3d-jl-switch button.active {
+  background: rgba(0, 242, 254, 0.16);
+  color: #ffffff;
+}
+
+.neun3d-jl-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.neun3d-jl-leg {
+  padding: 7px 9px;
+  border-radius: 9px;
+  background: rgba(15, 22, 36, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.neun3d-jl-leg.airborne {
+  border-color: rgba(255, 174, 52, 0.36);
+  background: rgba(34, 24, 14, 0.65);
+}
+
+.neun3d-jl-leg-head {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin-bottom: 5px;
+  font-size: 9px;
+}
+
+.neun3d-jl-leg-head b {
+  color: #ffffff;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+
+.neun3d-jl-leg-head span {
+  color: var(--text-secondary, #8fa3bf);
+}
+
+.neun3d-jl-leg-head em {
+  margin-left: auto;
+  font-style: normal;
+  font-family: var(--font-mono, monospace);
+  font-size: 8.5px;
+  color: rgba(160, 180, 210, 0.65);
+}
+
+.neun3d-jl-row {
+  display: grid;
+  grid-template-columns: 14px 1fr 30px;
+  align-items: center;
+  gap: 6px;
+  margin: 3px 0;
+}
+
+.neun3d-jl-j {
+  font-family: var(--font-mono, monospace);
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(185, 205, 230, 0.78);
+}
+
+.neun3d-jl-bar {
+  position: relative;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+}
+
+.neun3d-jl-mid {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.neun3d-jl-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 49%;
+  width: 2%;
+  border-radius: 999px;
+  background: #43d9ff;
+  transition: left 0.05s linear, width 0.05s linear;
+}
+
+.neun3d-jl-fill.moved {
+  background: #ff4769;
+  box-shadow: 0 0 6px rgba(255, 71, 105, 0.6);
+}
+
+.neun3d-jl-fill.is-real {
+  background: #00ff87;
+  box-shadow: 0 0 6px rgba(0, 255, 135, 0.55);
+}
+
+.neun3d-jl-deg {
+  text-align: right;
+  font-family: var(--font-mono, monospace);
+  font-size: 9.5px;
+  font-weight: 600;
+  color: #e6eefc;
+}
+
+.neun3d-jl-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.neun3d-jl-pwm {
+  margin-top: 5px;
+  padding-top: 4px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.08);
+  font-family: var(--font-mono, monospace);
+  font-size: 8.5px;
+  color: #6fe7ff;
+  letter-spacing: 0.02em;
+}
+
+.neun3d-cal-toggle {
+  border: 1px solid rgba(255, 190, 75, 0.34);
+  background: rgba(255, 190, 75, 0.09);
+  color: #ffd57e;
+  font: inherit;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 4px 10px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.neun3d-cal-toggle:hover,
+.neun3d-cal-toggle.active {
+  background: rgba(255, 190, 75, 0.22);
+  border-color: rgba(255, 190, 75, 0.65);
+  color: #fff6df;
+}
+
+.neun3d-cal-toggle.is-calibrated {
+  border-color: rgba(0, 255, 135, 0.45);
+  background: rgba(0, 255, 135, 0.12);
+  color: #7bffbd;
+}
+
+.neun3d-cal-drawer {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(6, 11, 21, 0.88);
+  border: 1px solid rgba(255, 190, 75, 0.28);
+}
+
+.neun3d-cal-banner {
+  font-size: 10px;
+  line-height: 1.45;
+  color: #cdd9ee;
+  margin-bottom: 9px;
+}
+
+.neun3d-cal-banner b {
+  color: #ffd57e;
+}
+
+.neun3d-cal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 10px;
+}
+
+.neun3d-cal-btn {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.06);
+  color: #edf4ff;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.neun3d-cal-btn:hover {
+  transform: translateY(-1px);
+}
+
+.neun3d-cal-btn.primary {
+  border-color: rgba(0, 255, 135, 0.5);
+  background: rgba(0, 255, 135, 0.18);
+  color: #9effcd;
+}
+
+.neun3d-cal-btn.cyan {
+  border-color: rgba(0, 242, 254, 0.45);
+  background: rgba(0, 242, 254, 0.14);
+  color: #99f8ff;
+}
+
+.neun3d-cal-btn.warn {
+  border-color: rgba(255, 92, 117, 0.42);
+  background: rgba(255, 92, 117, 0.12);
+  color: #ffadb9;
+}
+
+.neun3d-cal-toast {
+  font-family: var(--font-mono, monospace);
+  font-size: 9.5px;
+  margin-left: auto;
+}
+
+.neun3d-cal-toast.is-ok {
+  color: #55ffaa;
+}
+
+.neun3d-cal-toast.is-err {
+  color: #ff6b81;
+}
+
+.neun3d-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.neun3d-cal-leg {
+  padding: 7px 9px;
+  border-radius: 8px;
+  background: rgba(15, 23, 39, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.neun3d-cal-leg-head {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin-bottom: 6px;
+  font-size: 9px;
+}
+
+.neun3d-cal-leg-head b {
+  color: #ffffff;
+  font-size: 10px;
+}
+
+.neun3d-cal-leg-head span {
+  color: #8fa3bf;
+}
+
+.neun3d-cal-leg-head em {
+  margin-left: auto;
+  font-style: normal;
+  font-family: var(--font-mono, monospace);
+  font-size: 8.5px;
+  color: rgba(160, 180, 210, 0.65);
+}
+
+.neun3d-cal-row {
+  display: grid;
+  grid-template-columns: 14px 1fr 31px 26px;
+  align-items: center;
+  gap: 5px;
+  margin: 4px 0;
+}
+
+.neun3d-cal-j {
+  font-family: var(--font-mono, monospace);
+  font-size: 9px;
+  font-weight: 700;
+  color: #b9cde6;
+}
+
+.neun3d-cal-row input[type="range"] {
+  width: 100%;
+  accent-color: #00f2fe;
+  cursor: pointer;
+}
+
+.neun3d-cal-val {
+  text-align: right;
+  font-family: var(--font-mono, monospace);
+  font-size: 9px;
+  font-weight: 700;
+  color: #f0f6ff;
+}
+
+.neun3d-cal-dir {
+  border: 1px solid rgba(0, 242, 254, 0.32);
+  background: rgba(0, 242, 254, 0.10);
+  color: #8ef5ff;
+  font-family: var(--font-mono, monospace);
+  font-size: 8.5px;
+  font-weight: 700;
+  padding: 2px 0;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.neun3d-cal-dir.is-neg {
+  border-color: rgba(255, 118, 145, 0.42);
+  background: rgba(255, 118, 145, 0.14);
+  color: #ff9bb0;
+}
+
+@media (max-width: 960px) {
+  .neun3d-cal-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .neun3d-cal-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== Panel de Ajuste de Articulaciones 3D ===== */
+.neun3d-joint-edit-toggle {
+  background: linear-gradient(135deg, rgba(0, 242, 254, 0.18), rgba(255, 8, 68, 0.12));
+  border: 1px solid rgba(0, 242, 254, 0.45);
+  color: #00f2fe;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: all 0.2s;
+}
+
+.neun3d-joint-edit-toggle:hover {
+  background: rgba(0, 242, 254, 0.28);
+  box-shadow: 0 0 10px rgba(0, 242, 254, 0.35);
+}
+
+.neun3d-joint-edit-toggle.active {
+  background: rgba(0, 242, 254, 0.35);
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.55);
+}
+
+.neun3d-joint-edit-panel {
+  position: fixed;
+  top: 120px;
+  right: 20px;
+  width: 320px;
+  max-width: 90vw;
+  background: linear-gradient(135deg, rgba(11, 15, 26, 0.95), rgba(11, 15, 26, 0.85));
+  border: 1px solid rgba(0, 242, 254, 0.35);
+  border-radius: 12px;
+  padding: 14px;
+  z-index: 1000;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+}
+
+.neun3d-je-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(0, 242, 254, 0.2);
+}
+
+.neun3d-je-title {
+  color: #00f2fe;
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.neun3d-je-close {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.neun3d-je-close:hover {
+  background: rgba(255, 8, 68, 0.3);
+}
+
+.neun3d-je-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.neun3d-je-leg {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.neun3d-je-leg-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  font-weight: 800;
+  color: #00f2fe;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.neun3d-je-leg-head span {
+  font-size: 8.5px;
+  font-weight: 400;
+  color: rgba(185, 205, 230, 0.7);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.neun3d-je-row {
+  display: grid;
+  grid-template-columns: 14px 1fr 30px 26px;
+  align-items: center;
+  gap: 6px;
+  margin: 3px 0;
+}
+
+.neun3d-je-j {
+  font-family: var(--font-mono, monospace);
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(185, 205, 230, 0.78);
+}
+
+.neun3d-je-minus,
+.neun3d-je-plus {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #e6eefc;
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 700;
+  width: 24px;
+  height: 24px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.neun3d-je-minus:hover,
+.neun3d-je-plus:hover {
+  background: rgba(0, 242, 254, 0.2);
+  border-color: #00f2fe;
+  color: #00f2fe;
+}
+
+.neun3d-je-val {
+  text-align: center;
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  font-weight: 800;
+  color: #f0f6ff;
+  min-width: 30px;
+}
+
+.neun3d-je-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.neun3d-je-save,
+.neun3d-je-reset {
+  flex: 1;
+  padding: 7px;
+  border: none;
+  border-radius: 6px;
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.neun3d-je-save {
+  background: rgba(0, 255, 135, 0.15);
+  border: 1px solid rgba(0, 255, 135, 0.4);
+  color: #00ff87;
+}
+
+.neun3d-je-save:hover {
+  background: rgba(0, 255, 135, 0.3);
+  box-shadow: 0 0 10px rgba(0, 255, 135, 0.35);
+}
+
+.neun3d-je-reset {
+  background: rgba(255, 8, 68, 0.12);
+  border: 1px solid rgba(255, 8, 68, 0.35);
+  color: #ff4769;
+}
+
+.neun3d-je-reset:hover {
+  background: rgba(255, 8, 68, 0.25);
+  box-shadow: 0 0 10px rgba(255, 8, 68, 0.35);
+}
+
+@media (max-width: 768px) {
+  .neun3d-joint-edit-panel {
+    width: 90vw;
+    right: 10px;
+    top: 100px;
+  }
+}

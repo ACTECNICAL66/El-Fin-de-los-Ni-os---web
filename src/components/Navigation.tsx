@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router";
 import { useScrollProgress } from "@/hooks/useAnimations";
+import { asset } from "@/lib/utils";
 import {
   Droplets,
   Menu,
@@ -71,6 +72,11 @@ export default function Navigation() {
       href: "/drone",
       active: location.pathname === "/drone",
     },
+    {
+      label: "NEUN",
+      href: "/neun",
+      active: location.pathname === "/neun",
+    },
   ];
 
   return (
@@ -112,7 +118,7 @@ export default function Navigation() {
               <Link
                 key={link.href}
                 to={link.href}
-                className={`relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-lg ${
+                className={`relative px-3 py-2 text-sm font-medium transition-all duration-300 rounded-lg ${
                   link.active
                     ? "text-water-300"
                     : "text-white/60 hover:text-white/90 hover:bg-white/5"
@@ -123,6 +129,13 @@ export default function Navigation() {
                     <BookOpen className="w-4 h-4" />
                   )}
                   {link.label === "Dron (futuro)" && <Plane className="w-4 h-4" />}
+                  {link.label === "NEUN" && (
+                    <img
+                      src={asset("/neun/spider_mark.png")}
+                      alt=""
+                      className="w-4 h-4 object-contain"
+                    />
+                  )}
                   {link.label}
                 </span>
                 {link.active && (
@@ -184,6 +197,13 @@ export default function Navigation() {
                       <BookOpen className="w-4 h-4" />
                     )}
                     {link.label === "Dron (futuro)" && <Plane className="w-4 h-4" />}
+                    {link.label === "NEUN" && (
+                      <img
+                        src={asset("/neun/spider_mark.png")}
+                        alt=""
+                        className="w-4 h-4 object-contain"
+                      />
+                    )}
                     {link.label}
                   </span>
                 </Link>
