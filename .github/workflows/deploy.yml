@@ -66,6 +66,9 @@ jobs:
           test -s ./dist/public/simulacion-2d/vendor/chart.umd.min.js
           test -s ./dist/public/panel/PaneldeControlV3.html
           test -s ./dist/public/drone/index.html
+          test -s ./dist/public/neun/index.html
+          test -s ./dist/public/neun/simulador.html
+          test -s ./dist/public/neun/neun_model.bin
           # La demo es lo que mas se muestra del proyecto: si se rompe en el
           # build, el deploy no debe pasar en verde.
           test -s ./dist/public/demo/index.html

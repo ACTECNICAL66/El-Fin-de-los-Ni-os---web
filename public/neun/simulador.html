@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEUN 3D · Simulador Hidrológico Cuadrúpedo | El Fin de los Niños (IPET N°66)</title>
+  <link rel="icon" type="image/png" href="./spider_mark.png">
+  <link rel="stylesheet" href="./neun3d.css">
+  <link rel="stylesheet" href="./simulator.css">
+</head>
+
+<body class="sim-page">
+  <div class="sim-shell">
+    <header class="sim-topbar">
+      <a class="sim-brand" href="./index.html">
+        <img src="./spider_mark.png" alt="Logo NEUN">
+        <span>
+          NE<b>UN</b> · H1
+          <small>EXPLORADOR CUADRÚPEDO · IPET N°66</small>
+        </span>
+      </a>
+      <span class="sim-local-badge">
+        <i></i> RÉPLICA REPRODUCIBLE · SIN SENSORES DE CAMPO EN VIVO
+      </span>
+      <a class="sim-back" href="./index.html">Centro de control</a>
+      <a class="sim-back" href="../" target="_top">← El Fin de los Niños</a>
+    </header>
+
+    <section class="sim-heading">
+      <div>
+        <div class="sim-kicker">ADAPTACIÓN HIDROLÓGICA · EL FIN DE LOS NIÑOS 2026</div>
+        <h1>Simulador 3D Articulado <b>NEUN</b></h1>
+        <p>
+          Cinemática inversa analítica 3-DOF en los 12 servos (PCA9685 + ESP32-S3) para evaluar locomoción en taludes
+          agrietados post-sequía, reconocimiento de alcantarillas antes de pulsos El Niño y vigilancia temporal de ribera.
+        </p>
+      </div>
+      <div class="sim-state-wrap">
+        <span class="sim-state-dot"></span>
+        <span id="neun3dState">Cargando modelo NEUN3D03…</span>
+      </div>
+    </section>
+
+    <main class="sim-layout">
+      <section class="sim-view-card">
+        <div class="sim-view-head">
+          <div>
+            <strong id="neun3dModeHud">Stand · postura estable</strong>
+            <span id="hydroMissionBadge">Coronamiento Cuenca 1 (1167 m) · Arrastrá con el mouse para orbitar · Rueda para zoom</span>
+          </div>
+          <span class="sim-part-count" id="neun3dSourceBadge">17 grupos · 12 ejes IK</span>
+        </div>
+
+        <div class="sim-model-import">
+          <div>
+            <strong>Importar una malla 3D (.STL / .BIN)</strong>
+            <span>La malla importada reemplaza el modelo visible para revisar su geometría. También podés soltar el archivo sobre la escena.</span>
+          </div>
+          <div class="sim-model-import-actions">
+            <input id="neun3dFileInput" type="file" accept=".stl,.bin,model/stl,application/sla" hidden>
+            <button type="button" class="neun3d-chip" id="neun3dLoadBtn">Cargar archivo .STL / .BIN</button>
+            <span>Se carga localmente en este navegador</span>
+          </div>
+        </div>
+
+        <div class="neun3d-stage">
+          <canvas id="neun3dCanvas" class="neun3d-canvas"></canvas>
+          <div class="sim-scene-hud sim-scene-hud-top" aria-hidden="true">
+            <span><i class="sim-hud-dot"></i> VISTA DE RECONOCIMIENTO</span>
+            <span class="sim-hud-coordinate">CUENCA 1 <b>·</b> 1167 m</span>
+          </div>
+          <div class="sim-scene-hud sim-scene-hud-bottom" aria-hidden="true">
+            <span>ESCENA 3D · RÉPLICA LOCAL</span>
+            <span>IMU <b>·</b> SONAR <b>·</b> GPS <i>SIMULADOS</i></span>
+          </div>
+        </div>
+
+        <div class="neun3d-camera-presets">
+          <span>VISTAS TÉCNICAS:</span>
+          <button type="button" class="neun3d-chip" data-neun3d-view="iso">Isométrica</button>
+          <button type="button" class="neun3d-chip" data-neun3d-view="front">Frontal (HC-SR04)</button>
+          <button type="button" class="neun3d-chip" data-neun3d-view="side">Perfil de talud</button>
+          <button type="button" class="neun3d-chip" data-neun3d-view="top">Cenital</button>
+          <button type="button" class="neun3d-chip" data-neun3d-view="bottom">Chasis inferior</button>
+          <button type="button" class="neun3d-chip active" id="neun3dFollow">Seguir robot</button>
+          <button type="button" class="neun3d-chip" id="neun3dReset">Centrar origen</button>
+        </div>
+      </section>
+
+      <aside class="sim-controls">
+        <section class="sim-control-card">
+          <div class="sim-card-title"><span>01</span> MISIONES EN CUENCA</div>
+          <div class="sim-actions" style="margin-top:0">
+            <button type="button" class="neun3d-chip" onclick="runHydroPreset('talud')">Talud post-sequía (WALK + pitch)</button>
+            <button type="button" class="neun3d-chip" onclick="runHydroPreset('alcantarilla')">Alcantarilla pre-El Niño (CRAWL bajo)</button>
+            <button type="button" class="neun3d-chip" onclick="runHydroPreset('transecta')">Transecta Ground-Truthing (EXPLORE)</button>
+            <button type="button" class="neun3d-chip" onclick="runHydroPreset('sentry')">Centinela crecida serrana (SENTRY +48mm)</button>
+          </div>
+        </section>
+
+        <section class="sim-control-card">
+          <div class="sim-card-title"><span>02</span> MODOS DE MARCHA IK</div>
+          <div class="sim-mode-list gap-2" style="gap:6px">
+            <button type="button" class="neun3d-chip active" data-neun3d-mode="STAND">STAND</button>
+            <button type="button" class="neun3d-chip" data-neun3d-mode="WALK_FWD">WALK</button>
+            <button type="button" class="neun3d-chip" data-neun3d-mode="TROT">TROT</button>
+            <button type="button" class="neun3d-chip" data-neun3d-mode="CRAWL">CRAWL</button>
+            <button type="button" class="neun3d-chip" data-neun3d-mode="SENTRY">SENTRY</button>
+            <button type="button" class="neun3d-chip" data-neun3d-mode="EXPLORE">EXPLORE</button>
+            <button type="button" class="neun3d-chip" data-neun3d-mode="ELEVATE">ELEVATE</button>
+            <button type="button" class="neun3d-chip" data-neun3d-mode="SLEEP">SLEEP</button>
+          </div>
+          <div class="sim-speed-label">
+            <span>Frecuencia de marcha</span>
+            <b id="simSpeedLabel">60%</b>
+          </div>
+          <input id="simSpeed" class="sim-speed" type="range" min="15" max="100" value="60">
+          <div class="sim-actions">
+            <button type="button" class="neun3d-chip" id="neun3dPlay">Demo de marcha</button>
+            <button type="button" class="neun3d-chip" id="neun3dStop">Detener (STAND 90°)</button>
+          </div>
+        </section>
+
+        <section class="sim-control-card">
+          <div class="sim-card-title"><span>03</span> CONDUCCIÓN Y ALTURA</div>
+          <div class="sim-drive-layout">
+            <div class="sim-dpad">
+              <span></span>
+              <button type="button" data-drive="forward" title="Avanzar">▲</button>
+              <span></span>
+              <button type="button" data-drive="left" title="Lateral izquierda">◀</button>
+              <button type="button" onclick="runHydroPreset('standby')" title="Postura neutra">●</button>
+              <button type="button" data-drive="right" title="Lateral derecha">▶</button>
+              <span></span>
+              <button type="button" data-drive="backward" title="Retroceder">▼</button>
+              <span></span>
+            </div>
+            <div class="sim-turn-pad">
+              <span>GIRO / TORSO</span>
+              <button type="button" data-turn="left" title="Girar izquierda">↺</button>
+              <button type="button" data-turn="right" title="Girar derecha">↻</button>
+              <button type="button" data-neun3d-height="up" title="Subir chasis (+48 mm)">＋Z</button>
+              <button type="button" data-neun3d-height="down" title="Bajar chasis (-29 mm)">－Z</button>
+            </div>
+          </div>
+          <p class="sim-help">
+            Despeje actual: <kbd id="neun3dHeightVal">0%</kbd> · Clic en <button type="button" data-neun3d-height="reset" style="background:none;border:0;color:#32d8e6;cursor:pointer;padding:0;font-size:9px;">reiniciar Z</button>.
+            Los valores simulados no participan en los resultados estadísticos de NASA POWER ni ONI.
+          </p>
+        </section>
+
+        <section class="sim-control-card sim-joints-card">
+          <div class="sim-card-title"><span>04</span> 12 CANALES PCA9685</div>
+          <p class="sim-joint-hint">Inspección directa canal por canal (Coxa, Fémur y Tibia en las 4 patas).</p>
+          <div class="sim-joints-grid" id="simJointControls"></div>
+          <button type="button" class="sim-joint-reset" id="simJointReset">Volver los 12 servos a 90° neutros</button>
+        </section>
+      </aside>
+    </main>
+
+    <footer class="sim-footer">
+      <span>IPET N°66 Dr. José Antonio Balseiro · Electrónica Digital III × El Fin de los Niños (NASA Space Apps 2026)</span>
+      <span>Modelo binario NEUN3D03 · Simulación local reproducible</span>
+    </footer>
+  </div>
+
+  <script src="./static-api-shim.js"></script>
+  <script src="./neun3d.js"></script>
+  <script>
+    function runHydroPreset(preset) {
+      if (window.NEUN_HYDRO_MISSION) {
+        const res = window.NEUN_HYDRO_MISSION(preset);
+        const badge = document.getElementById('hydroMissionBadge');
+        if (badge && res && res.label) badge.textContent = res.label;
+      }
+    }
+  </script>
+</body>
+
+</html>

@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound";
 import DetectiveModePage from "./pages/DetectiveModePage";
 import Monitoreo from "./pages/Monitoreo";
 import DronePage from "./pages/DronePage";
+import NeunPage from "./pages/NeunPage";
 import PanelPage from "./pages/PanelPage";
 
 export default function App() {
@@ -18,6 +19,7 @@ export default function App() {
       <Route path="/monitoreo" element={<Monitoreo />} />
       <Route path="/panel" element={<PanelPage />} />
       <Route path="/drone" element={<DronePage />} />
+      <Route path="/neun" element={<NeunPage />} />
       <Route path="/paradigmas" element={<Paradigmas />} />
       <Route path="/documentacion" element={<Documentacion />} />
       <Route path="/admin" element={<Admin />} />

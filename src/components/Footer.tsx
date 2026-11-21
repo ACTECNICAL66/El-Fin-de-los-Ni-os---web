@@ -12,6 +12,8 @@ import {
   Target,
   CloudSun,
   Layers,
+  Plane,
+  Radar,
 } from "lucide-react";
 
 export default function Footer() {
@@ -132,6 +134,22 @@ export default function Footer() {
                   className="text-white/60 hover:text-water-400 transition-colors text-sm inline-flex items-center gap-2"
                 >
                   <LayoutDashboard className="w-3.5 h-3.5" /> Panel de control V4 (demo)
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/neun"
+                  className="text-white/60 hover:text-water-400 transition-colors text-sm inline-flex items-center gap-2"
+                >
+                  <Radar className="w-3.5 h-3.5" /> Araña NEUN (exploración 3D)
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/drone"
+                  className="text-white/60 hover:text-water-400 transition-colors text-sm inline-flex items-center gap-2"
+                >
+                  <Plane className="w-3.5 h-3.5" /> Dron AG-01 (concepto)
                 </Link>
               </li>
               <li>
