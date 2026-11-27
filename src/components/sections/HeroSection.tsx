@@ -1,4 +1,4 @@
-import { MapPinned, Sigma, Target } from "lucide-react";
+import { MapPinned, Sigma, Target, PlayCircle } from "lucide-react";
 import { asset } from "@/lib/utils";
 import { StatCard } from "./shared";
 
@@ -33,7 +33,10 @@ export default function HeroSection() {
         </p>
 
         <div className="flex flex-wrap justify-center gap-3 mb-12">
-          <a href="#mapa-comparativo" className="btn-primary inline-flex">
+          <a href="#video-proyecto" className="btn-primary inline-flex">
+            <PlayCircle className="w-4 h-4" /> Ver video del proyecto
+          </a>
+          <a href="#mapa-comparativo" className="btn-secondary inline-flex">
             <MapPinned className="w-4 h-4" /> Ver mapa comparativo
           </a>
           <a href="#respaldo-estadistico" className="btn-secondary inline-flex">

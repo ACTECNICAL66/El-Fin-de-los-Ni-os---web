@@ -6,6 +6,7 @@ import ChatWidget from "@/components/ChatWidget";
 import DetectiveErrorBoundary from "@/components/sections/DetectiveErrorBoundary";
 import {
   HeroSection,
+  ProjectVideoSection,
   AboutSection,
   ProblemSection,
   AreaSection,
@@ -43,6 +44,7 @@ export default function Home() {
     <div className="min-h-screen">
       <Navigation />
       <HeroSection />
+      <ProjectVideoSection />
       <AboutSection />
       <ProblemSection />
       <AreaSection />
