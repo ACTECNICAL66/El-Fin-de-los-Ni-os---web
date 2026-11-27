@@ -1,4 +1,5 @@
 export { default as HeroSection } from "./HeroSection";
+export { default as ProjectVideoSection } from "./ProjectVideoSection";
 export { default as AboutSection } from "./AboutSection";
 export { default as AreaSection } from "./AreaSection";
 export { default as ClimateSection } from "./ClimateSection";

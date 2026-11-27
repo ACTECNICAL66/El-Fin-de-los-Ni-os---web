@@ -1,4 +1,4 @@
-import { MapPinned, Sigma, Target } from "lucide-react";
+import { MapPinned, Sigma, Target, PlayCircle } from "lucide-react";
 import { asset } from "@/lib/utils";
 import { StatCard } from "./shared";
 
@@ -18,11 +18,23 @@ export default function HeroSection() {
       <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-water-500/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-1/4 right-0 w-[400px] h-[400px] bg-eco-500/10 rounded-full blur-[100px] pointer-events-none" />
       <div className="max-w-7xl mx-auto px-6 relative z-10 text-center pt-32 pb-20">
-        <span className="inline-block tag-blue mb-4">
-          NASA Space Apps Challenge 2026
-        </span>
+        <div className="mb-5 flex flex-col items-center">
+          <span className="inline-block tag-blue mb-3">
+            Ciencia de datos para la gestión del agua
+          </span>
+          <div className="flex max-w-4xl flex-wrap justify-center gap-2" aria-label="Ejes y ámbitos de interés del proyecto">
+            {["ONIET", "Feria de Ciencias", "Desarrollo sostenible", "Ideas innovadoras", "CONICET"].map(label => (
+              <span
+                key={label}
+                className="rounded-full border border-water-300/20 bg-[#0a1a2b]/75 px-3 py-1.5 text-[10px] font-medium tracking-wide text-water-100/85 shadow-sm shadow-black/20 sm:text-xs"
+              >
+                {label}
+              </span>
+            ))}
+          </div>
+        </div>
         <p className="text-xs font-mono uppercase tracking-[0.18em] text-water-300/70 mb-5">
-          Desafío · Be an Earth System Trend Detective!
+          Investigación climática · cuencas · desarrollo sostenible
         </p>
         <h1 className="font-display font-bold text-5xl md:text-7xl text-white mb-4 leading-tight">
           El Fin de los <span className="gradient-text">Niños</span>
@@ -33,7 +45,10 @@ export default function HeroSection() {
         </p>
 
         <div className="flex flex-wrap justify-center gap-3 mb-12">
-          <a href="#mapa-comparativo" className="btn-primary inline-flex">
+          <a href="#video-proyecto" className="btn-primary inline-flex">
+            <PlayCircle className="w-4 h-4" /> Ver video del proyecto
+          </a>
+          <a href="#mapa-comparativo" className="btn-secondary inline-flex">
             <MapPinned className="w-4 h-4" /> Ver mapa comparativo
           </a>
           <a href="#respaldo-estadistico" className="btn-secondary inline-flex">
